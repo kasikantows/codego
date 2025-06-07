@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Errors - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    section {
+      display: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+      flex: 0 1 auto;
+      min-width: max-content;
+    }
+
+    .subsection-nav button.active {
+      background-color: #1700d1;
+      color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .example-box, .practice-exercise {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      .subsection-nav {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding: 5px;
+        gap: 2px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 60px;
+        right: 10px;
+        padding: 8px 16px;
+      }
+
+      .prev-lesson-btn {
+        bottom: 60px;
+        left: 10px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .subsection-nav button {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 50px;
+        right: 5px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .prev-lesson-btn {
+        bottom: 50px;
+        left: 5px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .progress-container {
+        padding: 5px;
+      }
+    }
+
+    @media screen and (max-height: 600px) {
+      .sidebar {
+        max-height: 100px;
+      }
+
+      .main-content {
+        padding-bottom: 80px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .subsection-nav button,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        padding: 8px 12px;
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">C++ Errors - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#errors" class="sidebar-item active" onclick="showSection('errors')">C++ Errors</a>
+        <a href="#debugging" class="sidebar-item" onclick="showSection('debugging')">C++ Debugging</a>
+        <a href="#exceptions" class="sidebar-item" onclick="showSection('exceptions')">C++ Exceptions</a>
+        <a href="#validation" class="sidebar-item" onclick="showSection('validation')">C++ Input Validation</a>
+      </div>
+
+      <div class="main-content">
+        <section id="errors">
+          <h2>C++ Errors</h2>
+          <p>In C++, there are three main types of errors:</p>
+          <ul>
+            <li><strong>Syntax Errors:</strong> Errors in the code structure that prevent compilation</li>
+            <li><strong>Runtime Errors:</strong> Errors that occur during program execution</li>
+            <li><strong>Logical Errors:</strong> Errors in program logic that produce incorrect results</li>
+          </ul>
+
+          <div class="example-box">
+            <h3>Syntax Error Example:</h3>
+            <code>
+// Missing semicolon
+int x = 5
+cout << x;
+
+// Missing closing brace
+if (x > 0) {
+    cout << "Positive";
+
+// Undeclared variable
+cout << y;</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Runtime Error Example:</h3>
+            <code>
+// Division by zero
+int a = 10;
+int b = 0;
+int result = a / b;  // Runtime error
+
+// Array out of bounds
+int arr[3] = {1, 2, 3};
+cout << arr[5];  // Accessing invalid index</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Logical Error Example:</h3>
+            <code>
+// Incorrect calculation
+double celsius = 100;
+double fahrenheit = celsius * 1.8;  // Forgot to add 32
+cout << "Fahrenheit: " << fahrenheit;  // Wrong result
+
+// Infinite loop
+int i = 1;
+while (i > 0) {
+    cout << i << " ";
+    i++;  // Will never end</code>
+          </div>
+        </section>
+
+        <section id="debugging">
+          <h2>C++ Debugging</h2>
+          <p>Debugging is the process of finding and fixing errors in your code. Here are some common debugging techniques:</p>
+
+          <div class="example-box">
+            <h3>Using cout for Debugging:</h3>
+            <code>
+int calculateSum(int arr[], int size) {
+    int sum = 0;
+    cout << "Debug: Starting sum calculation" << endl;
+    
+    for(int i = 0; i < size; i++) {
+        cout << "Debug: Processing index " << i 
+             << ", value: " << arr[i] << endl;
+        sum += arr[i];
+        cout << "Debug: Current sum: " << sum << endl;
+    }
+    
+    cout << "Debug: Final sum: " << sum << endl;
+    return sum;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Using assert:</h3>
+            <code>
+#include <cassert>
+
+double divide(double a, double b) {
+    // Check for division by zero
+    assert(b != 0 && "Division by zero!");
+    return a / b;
+}
+
+int main() {
+    double result = divide(10.0, 0.0);  // Will trigger assertion
+    return 0;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Using Debugger Breakpoints:</h3>
+            <code>
+// Place breakpoints on these lines in your IDE
+void processData(vector<int>& data) {
+    for(int i = 0; i < data.size(); i++) {
+        data[i] *= 2;  // Breakpoint here
+        
+        if(data[i] > 100) {
+            data[i] = 100;  // Breakpoint here
+        }
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="exceptions">
+          <h2>C++ Exceptions</h2>
+          <p>Exceptions provide a way to handle runtime errors gracefully. They use try, throw, and catch blocks.</p>
+
+          <div class="example-box">
+            <h3>Basic Exception Handling:</h3>
+            <code>
+try {
+    int age = -5;
+    if (age < 0) {
+        throw "Age cannot be negative!";
+    }
+    cout << "Age is: " << age << endl;
+}
+catch (const char* msg) {
+    cerr << "Error: " << msg << endl;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Custom Exception Class:</h3>
+            <code>
+class DivisionByZeroException : public exception {
+public:
+    const char* what() const throw() {
+        return "Division by zero is not allowed!";
+    }
+};
+
+double safeDivide(double a, double b) {
+    if (b == 0) {
+        throw DivisionByZeroException();
+    }
+    return a / b;
+}
+
+int main() {
+    try {
+        cout << safeDivide(10.0, 0.0) << endl;
+    }
+    catch (const DivisionByZeroException& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+    return 0;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Multiple Exception Handling:</h3>
+            <code>
+try {
+    string input;
+    cout << "Enter a number: ";
+    cin >> input;
+    
+    int number = stoi(input);  // Might throw invalid_argument
+    
+    if (number < 0) {
+        throw out_of_range("Number cannot be negative");
+    }
+}
+catch (const invalid_argument& e) {
+    cerr << "Invalid input: " << e.what() << endl;
+}
+catch (const out_of_range& e) {
+    cerr << "Out of range: " << e.what() << endl;
+}
+catch (...) {
+    cerr << "Unknown error occurred" << endl;
+}</code>
+          </div>
+        </section>
+
+        <section id="validation">
+          <h2>C++ Input Validation</h2>
+          <p>Input validation ensures that user input meets the required criteria before processing.</p>
+
+          <div class="example-box">
+            <h3>Basic Input Validation:</h3>
+            <code>
+int getPositiveNumber() {
+    int number;
+    bool validInput = false;
+    
+    do {
+        cout << "Enter a positive number: ";
+        if (cin >> number && number > 0) {
+            validInput = true;
+        } else {
+            cout << "Invalid input. Please try again." << endl;
+            cin.clear();  // Clear error flags
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    } while (!validInput);
+    
+    return number;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>String Validation:</h3>
+            <code>
+bool isValidEmail(const string& email) {
+    // Basic email validation
+    size_t atPos = email.find('@');
+    size_t dotPos = email.rfind('.');
+    
+    return atPos != string::npos &&  // Has @
+           dotPos != string::npos &&  // Has .
+           atPos > 0 &&               // @ not first
+           dotPos > atPos + 1 &&      // . after @
+           dotPos < email.length() - 1; // . not last
+}
+
+string getValidEmail() {
+    string email;
+    do {
+        cout << "Enter email: ";
+        getline(cin, email);
+        
+        if (!isValidEmail(email)) {
+            cout << "Invalid email format!" << endl;
+        }
+    } while (!isValidEmail(email));
+    
+    return email;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Range Validation:</h3>
+            <code>
+int getNumberInRange(int min, int max) {
+    int number;
+    bool validInput = false;
+    
+    do {
+        cout << "Enter a number between " 
+             << min << " and " << max << ": ";
+             
+        if (cin >> number && 
+            number >= min && 
+            number <= max) {
+            validInput = true;
+        } else {
+            cout << "Invalid input. Please try again." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    } while (!validInput);
+    
+    return number;
+}</code>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson4.html')">← Previous Lesson</button>
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson6.html')">Next Lesson →</button>
+
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 4;  // Total sections count
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['cpp_lesson5_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        if (!visitedSections || !(visitedSections instanceof Set)) {
+            console.error('Invalid visitedSections in updateProgress:', visitedSections);
+            return;
+        }
+
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        document.getElementById('progressBar').style.width = progressPercent + '%';
+        document.getElementById('progressText').textContent = 
+            `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        
+        // Save to user's data
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {};
+            }
+            allUsers[currentUser]['cpp_lesson5_progress'] = JSON.stringify([...visitedSections]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('section').forEach(section => {
+            section.style.display = 'none';
+            section.classList.remove('active');
+        });
+        
+        // Show the target section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            targetSection.classList.add('active');
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick').includes(sectionId)) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Show first subsection if exists
+            const firstSubsection = targetSection.querySelector('.subsection');
+            if (firstSubsection) {
+                showSubsection(sectionId, firstSubsection.getAttribute('data-id'));
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            // Hide all subsections in this section
+            section.querySelectorAll('.subsection').forEach(sub => {
+                sub.style.display = 'none';
+                sub.classList.remove('active');
+            });
+            
+            // Show the selected subsection
+            const subsection = section.querySelector(`.subsection[data-id="${subsectionId}"]`);
+            if (subsection) {
+                subsection.style.display = 'block';
+                subsection.classList.add('active');
+            }
+
+            // Update button states
+            section.querySelectorAll('.subsection-nav button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const activeButton = section.querySelector(`button[onclick*="${subsectionId}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
+    }
+
+    function playClickAndGo(destination) {
+        const clickSound = document.getElementById('clickSound');
+        if (clickSound) {
+            clickSound.currentTime = 0;
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 300);
+        }
+    }
+
+    // Initialize when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+
+        // Get the first section
+        const firstSection = document.querySelector('section');
+        if (firstSection) {
+            // Show the first section
+            showSection(firstSection.id);
+            // Mark it as visited
+            visitedSections.add(firstSection.id);
+            updateProgress();
+        }
+
+        // Add click sound element if it doesn't exist
+        if (!document.getElementById('clickSound')) {
+            const audio = document.createElement('audio');
+            audio.id = 'clickSound';
+            audio.src = '../../music/click_sound.mp3';
+            audio.preload = 'auto';
+            document.body.appendChild(audio);
+        }
+    });
+  </script>
+</body>
+</html> 

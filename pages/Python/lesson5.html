@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning Part 1 - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    section {
+      display: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .main-content {
+        padding: 10px;
+        padding-bottom: 100px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 8px;
+        line-height: 1.4;
+      }
+
+      .example-box {
+        padding: 10px;
+        margin: 5px 0;
+        font-size: 13px;
+      }
+
+      h2, h3 {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        bottom: 60px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 8px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 6px;
+        line-height: 1.3;
+      }
+
+      .example-box {
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      h2, h3 {
+        font-size: 16px;
+      }
+
+      p, li {
+        font-size: 13px;
+      }
+
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        bottom: 50px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Machine Learning Part 1 - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#getting-started" class="sidebar-item active" onclick="showSection('getting-started')">Getting Started</a>
+        <a href="#mean-median-mode" class="sidebar-item" onclick="showSection('mean-median-mode')">Mean Median Mode</a>
+        <a href="#standard-deviation" class="sidebar-item" onclick="showSection('standard-deviation')">Standard Deviation</a>
+        <a href="#percentile" class="sidebar-item" onclick="showSection('percentile')">Percentile</a>
+        <a href="#data-distribution" class="sidebar-item" onclick="showSection('data-distribution')">Data Distribution</a>
+        <a href="#normal-distribution" class="sidebar-item" onclick="showSection('normal-distribution')">Normal Data Distribution</a>
+        <a href="#scatter-plot" class="sidebar-item" onclick="showSection('scatter-plot')">Scatter Plot</a>
+        <a href="#linear-regression" class="sidebar-item" onclick="showSection('linear-regression')">Linear Regression</a>
+        <a href="#polynomial-regression" class="sidebar-item" onclick="showSection('polynomial-regression')">Polynomial Regression</a>
+        <a href="#multiple-regression" class="sidebar-item" onclick="showSection('multiple-regression')">Multiple Regression</a>
+        <a href="#scale" class="sidebar-item" onclick="showSection('scale')">Scale</a>
+        <a href="#train-test" class="sidebar-item" onclick="showSection('train-test')">Train/Test</a>
+        <a href="#decision-tree" class="sidebar-item" onclick="showSection('decision-tree')">Decision Tree</a>
+      </div>
+
+      <div class="main-content">
+        <section id="getting-started" class="active">
+          <h2 class="section-title">Getting Started with Machine Learning</h2>
+          <p>Machine Learning in Python typically uses libraries like NumPy, Pandas, and Scikit-learn. Let's start with the basics:</p>
+          <div class="example-box">
+            <ul>
+              <li>Essential libraries for Machine Learning</li>
+              <li>Data preparation and cleaning</li>
+              <li>Basic statistical concepts</li>
+              <li>Working with datasets</li>
+            </ul>
+          </div>
+          <code># Install required libraries
+pip install numpy pandas scikit-learn matplotlib
+
+# Import common libraries
+import numpy as np
+import pandas as pd
+from sklearn import datasets
+import matplotlib.pyplot as plt
+
+# Load sample dataset
+iris = datasets.load_iris()
+data = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+# Basic data exploration
+print("Dataset Shape:", data.shape)
+print("\nFirst 5 rows:")
+print(data.head())
+
+# Basic statistics
+print("\nBasic Statistics:")
+print(data.describe())
+
+# Check for missing values
+print("\nMissing Values:")
+print(data.isnull().sum())
+
+# Simple visualization
+plt.figure(figsize=(10, 6))
+data.boxplot()
+plt.title("Feature Distribution")
+plt.xticks(rotation=45)
+plt.show()</code>
+        </section>
+
+        <section id="mean-median-mode">
+          <h2 class="section-title">Mean, Median, and Mode</h2>
+          <p>Understanding central tendency measures is crucial for data analysis:</p>
+          <div class="example-box">
+            <ul>
+              <li>Mean (average of numbers)</li>
+              <li>Median (middle value)</li>
+              <li>Mode (most common value)</li>
+              <li>Practical applications</li>
+            </ul>
+          </div>
+          <code># Using NumPy for calculations
+import numpy as np
+from scipy import stats
+
+# Sample data
+data = [12, 15, 12, 18, 20, 12, 15, 18, 19, 20]
+
+# Calculate Mean
+mean = np.mean(data)
+print(f"Mean: {mean}")
+
+# Calculate Median
+median = np.median(data)
+print(f"Median: {median}")
+
+# Calculate Mode
+mode = stats.mode(data)
+print(f"Mode: {mode.mode[0]} (count: {mode.count[0]})")
+
+# Using Pandas
+import pandas as pd
+df = pd.DataFrame(data, columns=['values'])
+
+print("\nPandas Statistics:")
+print(f"Mean: {df['values'].mean()}")
+print(f"Median: {df['values'].median()}")
+print(f"Mode: {df['values'].mode().values}")
+
+# Visualization
+plt.figure(figsize=(10, 6))
+plt.hist(data, bins='auto', alpha=0.7)
+plt.axvline(mean, color='red', linestyle='dashed', linewidth=2, label='Mean')
+plt.axvline(median, color='green', linestyle='dashed', linewidth=2, label='Median')
+plt.legend()
+plt.title("Data Distribution with Mean and Median")
+plt.show()</code>
+        </section>
+
+        <section id="standard-deviation">
+          <h2 class="section-title">Standard Deviation</h2>
+          <p>Standard deviation measures the spread of data points from their mean:</p>
+          <div class="example-box">
+            <ul>
+              <li>Variance calculation</li>
+              <li>Standard deviation</li>
+              <li>Population vs. sample</li>
+              <li>Data spread analysis</li>
+            </ul>
+          </div>
+          <code># Calculate standard deviation
+import numpy as np
+
+# Sample data
+data = [2, 4, 4, 4, 5, 5, 7, 9]
+
+# Calculate variance
+variance = np.var(data)
+print(f"Variance: {variance}")
+
+# Calculate standard deviation
+std_dev = np.std(data)
+print(f"Standard Deviation: {std_dev}")
+
+# Population vs Sample
+pop_std = np.std(data, ddof=0)  # Population
+sam_std = np.std(data, ddof=1)  # Sample
+print(f"Population Std: {pop_std}")
+print(f"Sample Std: {sam_std}")
+
+# Visualization
+plt.figure(figsize=(10, 6))
+plt.hist(data, bins='auto', density=True, alpha=0.7)
+mean = np.mean(data)
+
+# Plot mean and standard deviations
+plt.axvline(mean, color='red', linestyle='dashed', label='Mean')
+plt.axvline(mean + std_dev, color='green', linestyle='dashed', label='+1 Std Dev')
+plt.axvline(mean - std_dev, color='green', linestyle='dashed', label='-1 Std Dev')
+plt.legend()
+plt.title("Data Distribution with Standard Deviation")
+plt.show()</code>
+        </section>
+
+        <section id="percentile">
+          <h2 class="section-title">Percentile</h2>
+          <p>Percentiles help understand data distribution and identify outliers:</p>
+          <div class="example-box">
+            <ul>
+              <li>Quartile calculation</li>
+              <li>Percentile ranges</li>
+              <li>Box plots</li>
+              <li>Outlier detection</li>
+            </ul>
+          </div>
+          <code># Calculate percentiles
+import numpy as np
+
+# Sample data
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+# Calculate various percentiles
+p25 = np.percentile(data, 25)  # First quartile
+p50 = np.percentile(data, 50)  # Median
+p75 = np.percentile(data, 75)  # Third quartile
+iqr = p75 - p25  # Interquartile range
+
+print(f"25th Percentile: {p25}")
+print(f"Median (50th): {p50}")
+print(f"75th Percentile: {p75}")
+print(f"IQR: {iqr}")
+
+# Calculate outlier boundaries
+lower_bound = p25 - 1.5 * iqr
+upper_bound = p75 + 1.5 * iqr
+print(f"Outlier boundaries: {lower_bound} to {upper_bound}")
+
+# Identify outliers
+outliers = [x for x in data if x < lower_bound or x > upper_bound]
+print(f"Outliers: {outliers}")
+
+# Create box plot
+plt.figure(figsize=(10, 6))
+plt.boxplot(data)
+plt.title("Box Plot with Quartiles")
+plt.show()
+
+# Create violin plot
+plt.figure(figsize=(10, 6))
+plt.violinplot(data)
+plt.title("Violin Plot showing Data Distribution")
+plt.show()</code>
+        </section>
+
+        <section id="data-distribution">
+          <h2 class="section-title">Data Distribution</h2>
+          <p>Understanding how data is distributed is essential for machine learning:</p>
+          <div class="example-box">
+            <ul>
+              <li>Types of distributions</li>
+              <li>Skewness and kurtosis</li>
+              <li>Distribution plots</li>
+              <li>Data transformation</li>
+            </ul>
+          </div>
+          <code># Analyze data distribution
+import numpy as np
+import scipy.stats as stats
+
+# Generate sample data
+normal_data = np.random.normal(0, 1, 1000)
+skewed_data = np.random.exponential(2, 1000)
+
+# Calculate statistics
+def analyze_distribution(data, name):
+    print(f"\n{name} Distribution:")
+    print(f"Skewness: {stats.skew(data):.3f}")
+    print(f"Kurtosis: {stats.kurtosis(data):.3f}")
+
+analyze_distribution(normal_data, "Normal")
+analyze_distribution(skewed_data, "Skewed")
+
+# Visualization
+plt.figure(figsize=(12, 6))
+
+# Normal distribution
+plt.subplot(1, 2, 1)
+plt.hist(normal_data, bins=30, density=True, alpha=0.7)
+plt.title("Normal Distribution")
+
+# Skewed distribution
+plt.subplot(1, 2, 2)
+plt.hist(skewed_data, bins=30, density=True, alpha=0.7)
+plt.title("Skewed Distribution")
+
+plt.tight_layout()
+plt.show()
+
+# Q-Q Plot for normality test
+plt.figure(figsize=(10, 6))
+stats.probplot(normal_data, dist="norm", plot=plt)
+plt.title("Q-Q Plot")
+plt.show()</code>
+        </section>
+
+        <section id="normal-distribution">
+          <h2 class="section-title">Normal Data Distribution</h2>
+          <p>The normal (Gaussian) distribution is fundamental in statistics and machine learning:</p>
+          <div class="example-box">
+            <ul>
+              <li>Properties of normal distribution</li>
+              <li>Z-scores</li>
+              <li>Probability density function</li>
+              <li>Empirical rule (68-95-99.7)</li>
+            </ul>
+          </div>
+          <code># Working with normal distribution
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+# Generate normal distribution
+mu = 0    # mean
+sigma = 1  # standard deviation
+x = np.linspace(mu - 4*sigma, mu + 4*sigma, 100)
+y = stats.norm.pdf(x, mu, sigma)
+
+# Plot normal distribution
+plt.figure(figsize=(10, 6))
+plt.plot(x, y)
+plt.fill_between(x, y, where=(x >= -sigma) & (x <= sigma), 
+                alpha=0.3, label='68%')
+plt.fill_between(x, y, where=(x >= -2*sigma) & (x <= 2*sigma), 
+                alpha=0.2, label='95%')
+plt.fill_between(x, y, where=(x >= -3*sigma) & (x <= 3*sigma), 
+                alpha=0.1, label='99.7%')
+plt.title("Normal Distribution with Empirical Rule")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Calculate Z-scores
+data = np.random.normal(mu, sigma, 1000)
+z_scores = stats.zscore(data)
+print("\nZ-scores statistics:")
+print(f"Mean: {z_scores.mean():.3f}")
+print(f"Std: {z_scores.std():.3f}")
+
+# Probability calculations
+print("\nProbability examples:")
+print(f"P(Z < 1): {stats.norm.cdf(1):.3f}")
+print(f"P(Z > 2): {1 - stats.norm.cdf(2):.3f}")
+print(f"P(-1 < Z < 1): {stats.norm.cdf(1) - stats.norm.cdf(-1):.3f}")
+
+# Test for normality
+_, p_value = stats.normaltest(data)
+print(f"\nNormality test p-value: {p_value:.3f}")</code>
+        </section>
+
+        <section id="scatter-plot">
+          <h2 class="section-title">Scatter Plot</h2>
+          <p>Scatter plots help visualize relationships between variables:</p>
+          <div class="example-box">
+            <ul>
+              <li>Visualize correlations</li>
+              <li>Identify patterns</li>
+              <li>Detect outliers</li>
+              <li>Analyze relationships</li>
+            </ul>
+          </div>
+          <code># Create scatter plots
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_regression
+
+# Generate sample data
+X, y = make_regression(n_samples=100, n_features=1, noise=10, random_state=42)
+
+# Basic scatter plot
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y, alpha=0.5)
+plt.title("Basic Scatter Plot")
+plt.xlabel("X")
+plt.ylabel("y")
+plt.show()
+
+# Scatter plot with different colors and sizes
+colors = np.random.rand(100)
+sizes = np.random.rand(100) * 200
+
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y, c=colors, s=sizes, alpha=0.5, cmap='viridis')
+plt.colorbar(label='Color Scale')
+plt.title("Scatter Plot with Colors and Sizes")
+plt.xlabel("X")
+plt.ylabel("y")
+plt.show()
+
+# Multiple groups scatter plot
+group1_x = np.random.normal(0, 1, 100)
+group1_y = np.random.normal(0, 1, 100)
+group2_x = np.random.normal(2, 1, 100)
+group2_y = np.random.normal(2, 1, 100)
+
+plt.figure(figsize=(10, 6))
+plt.scatter(group1_x, group1_y, alpha=0.5, label='Group 1')
+plt.scatter(group2_x, group2_y, alpha=0.5, label='Group 2')
+plt.title("Multiple Groups Scatter Plot")
+plt.xlabel("X")
+plt.ylabel("y")
+plt.legend()
+plt.show()</code>
+        </section>
+
+        <section id="linear-regression">
+          <h2 class="section-title">Linear Regression</h2>
+          <p>Linear regression models the relationship between variables using a linear approach:</p>
+          <div class="example-box">
+            <ul>
+              <li>Simple linear regression</li>
+              <li>Model fitting</li>
+              <li>Prediction</li>
+              <li>Model evaluation</li>
+            </ul>
+          </div>
+          <code># Linear Regression Example
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate sample data
+np.random.seed(42)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X + np.random.randn(100, 1)
+
+# Create and fit the model
+model = LinearRegression()
+model.fit(X, y)
+
+# Print model parameters
+print("Intercept:", model.intercept_[0])
+print("Slope:", model.coef_[0][0])
+
+# Make predictions
+X_new = np.array([[0], [2]])
+y_pred = model.predict(X_new)
+
+# Plot results
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y, alpha=0.5)
+plt.plot(X_new, y_pred, 'r-', linewidth=2, label='Regression Line')
+plt.xlabel("X")
+plt.ylabel("y")
+plt.title("Linear Regression")
+plt.legend()
+plt.show()
+
+# Model evaluation
+from sklearn.metrics import r2_score, mean_squared_error
+y_pred_all = model.predict(X)
+print("\nModel Evaluation:")
+print("R² Score:", r2_score(y, y_pred_all))
+print("MSE:", mean_squared_error(y, y_pred_all))
+print("RMSE:", np.sqrt(mean_squared_error(y, y_pred_all)))</code>
+        </section>
+
+        <section id="polynomial-regression">
+          <h2 class="section-title">Polynomial Regression</h2>
+          <p>Polynomial regression handles non-linear relationships between variables:</p>
+          <div class="example-box">
+            <ul>
+              <li>Feature transformation</li>
+              <li>Polynomial features</li>
+              <li>Model complexity</li>
+              <li>Overfitting risks</li>
+            </ul>
+          </div>
+          <code># Polynomial Regression Example
+import numpy as np
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+# Generate sample data
+X = np.linspace(-3, 3, 100).reshape(-1, 1)
+y = 0.5 * X**2 + X + 2 + np.random.randn(100, 1) * 0.5
+
+# Create polynomial features
+poly_features = PolynomialFeatures(degree=2, include_bias=False)
+X_poly = poly_features.fit_transform(X)
+
+# Fit polynomial regression
+model = LinearRegression()
+model.fit(X_poly, y)
+
+# Make predictions
+y_pred = model.predict(X_poly)
+
+# Plot results
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y, alpha=0.5)
+plt.plot(X, y_pred, 'r-', label='Polynomial Regression')
+plt.xlabel("X")
+plt.ylabel("y")
+plt.title("Polynomial Regression (degree=2)")
+plt.legend()
+plt.show()
+
+# Compare different degrees
+plt.figure(figsize=(15, 5))
+for i, degree in enumerate([1, 3, 10]):
+    plt.subplot(1, 3, i+1)
+    
+    poly_features = PolynomialFeatures(degree=degree, include_bias=False)
+    X_poly = poly_features.fit_transform(X)
+    
+    model = LinearRegression()
+    model.fit(X_poly, y)
+    y_pred = model.predict(X_poly)
+    
+    plt.scatter(X, y, alpha=0.5)
+    plt.plot(X, y_pred, 'r-', label=f'Degree {degree}')
+    plt.title(f'Polynomial Regression (degree={degree})')
+    plt.legend()
+
+plt.tight_layout()
+plt.show()</code>
+        </section>
+
+        <section id="multiple-regression">
+          <h2 class="section-title">Multiple Regression</h2>
+          <p>Multiple regression analyzes relationships between multiple independent variables and a dependent variable:</p>
+          <div class="example-box">
+            <ul>
+              <li>Multiple features</li>
+              <li>Feature importance</li>
+              <li>Model interpretation</li>
+              <li>Prediction with multiple variables</li>
+            </ul>
+          </div>
+          <code># Multiple Regression Example
+from sklearn.datasets import load_boston
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+import pandas as pd
+import numpy as np
+
+# Load dataset
+boston = load_boston()
+X = boston.data
+y = boston.target
+
+# Create DataFrame
+df = pd.DataFrame(X, columns=boston.feature_names)
+df['PRICE'] = y
+
+# Split features and target
+X = df.drop('PRICE', axis=1)
+y = df['PRICE']
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and fit model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Print feature importance
+feature_importance = pd.DataFrame({
+    'Feature': X.columns,
+    'Coefficient': model.coef_
+})
+print("Feature Importance:")
+print(feature_importance.sort_values(by='Coefficient', ascending=False))
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Model evaluation
+from sklearn.metrics import r2_score, mean_squared_error
+print("\nModel Evaluation:")
+print("R² Score:", r2_score(y_test, y_pred))
+print("RMSE:", np.sqrt(mean_squared_error(y_test, y_pred)))
+
+# Visualize actual vs predicted
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred, alpha=0.5)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+plt.xlabel("Actual Prices")
+plt.ylabel("Predicted Prices")
+plt.title("Actual vs Predicted Prices")
+plt.show()</code>
+        </section>
+
+        <section id="scale">
+          <h2 class="section-title">Scale</h2>
+          <p>Scaling features is crucial for many machine learning algorithms:</p>
+          <div class="example-box">
+            <ul>
+              <li>Standardization</li>
+              <li>Normalization</li>
+              <li>Min-Max scaling</li>
+              <li>Robust scaling</li>
+            </ul>
+          </div>
+          <code># Scaling Examples
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+import numpy as np
+import pandas as pd
+
+# Generate sample data
+np.random.seed(42)
+data = np.random.randn(100, 3) * [10, 1, 50]
+df = pd.DataFrame(data, columns=['Feature1', 'Feature2', 'Feature3'])
+
+# Standard Scaler (Z-score normalization)
+scaler = StandardScaler()
+scaled_standard = scaler.fit_transform(df)
+df_standard = pd.DataFrame(scaled_standard, columns=df.columns)
+
+# Min-Max Scaler
+min_max_scaler = MinMaxScaler()
+scaled_minmax = min_max_scaler.fit_transform(df)
+df_minmax = pd.DataFrame(scaled_minmax, columns=df.columns)
+
+# Robust Scaler
+robust_scaler = RobustScaler()
+scaled_robust = robust_scaler.fit_transform(df)
+df_robust = pd.DataFrame(scaled_robust, columns=df.columns)
+
+# Compare distributions
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+fig.suptitle("Feature Scaling Comparison")
+
+# Original data
+axes[0, 0].boxplot(df)
+axes[0, 0].set_title("Original Data")
+
+# Standard scaling
+axes[0, 1].boxplot(df_standard)
+axes[0, 1].set_title("Standard Scaling")
+
+# Min-Max scaling
+axes[1, 0].boxplot(df_minmax)
+axes[1, 0].set_title("Min-Max Scaling")
+
+# Robust scaling
+axes[1, 1].boxplot(df_robust)
+axes[1, 1].set_title("Robust Scaling")
+
+plt.tight_layout()
+plt.show()
+
+# Print statistics
+print("Original Data Statistics:")
+print(df.describe())
+print("\nStandardized Data Statistics:")
+print(df_standard.describe())</code>
+        </section>
+
+        <section id="train-test">
+          <h2 class="section-title">Train/Test</h2>
+          <p>Splitting data into training and testing sets is fundamental for model evaluation:</p>
+          <div class="example-box">
+            <ul>
+              <li>Data splitting strategies</li>
+              <li>Cross-validation</li>
+              <li>Model validation</li>
+              <li>Preventing overfitting</li>
+            </ul>
+          </div>
+          <code># Train-Test Split Examples
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_classification
+
+# Generate sample dataset
+X, y = make_classification(n_samples=1000, n_features=20, n_informative=15,
+                         n_redundant=5, random_state=42)
+
+# Simple train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+
+print("Dataset shapes:")
+print(f"X_train: {X_train.shape}")
+print(f"X_test: {X_test.shape}")
+print(f"y_train: {y_train.shape}")
+print(f"y_test: {y_test.shape}")
+
+# Train and evaluate model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+print("\nModel Performance:")
+print(f"Training accuracy: {model.score(X_train, y_train):.3f}")
+print(f"Testing accuracy: {model.score(X_test, y_test):.3f}")
+
+# Cross-validation
+cv_scores = cross_val_score(model, X, y, cv=5)
+print("\nCross-validation scores:", cv_scores)
+print(f"Mean CV score: {cv_scores.mean():.3f} (+/- {cv_scores.std() * 2:.3f})")
+
+# Learning curves
+from sklearn.model_selection import learning_curve
+
+train_sizes, train_scores, test_scores = learning_curve(
+    model, X, y, cv=5, n_jobs=-1, 
+    train_sizes=np.linspace(0.1, 1.0, 10))
+
+train_mean = np.mean(train_scores, axis=1)
+train_std = np.std(train_scores, axis=1)
+test_mean = np.mean(test_scores, axis=1)
+test_std = np.std(test_scores, axis=1)
+
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes, train_mean, label='Training score')
+plt.plot(train_sizes, test_mean, label='Cross-validation score')
+plt.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.1)
+plt.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, alpha=0.1)
+plt.xlabel('Training Examples')
+plt.ylabel('Score')
+plt.title('Learning Curves')
+plt.legend(loc='best')
+plt.grid(True)
+plt.show()</code>
+        </section>
+
+        <section id="decision-tree">
+          <h2 class="section-title">Decision Tree</h2>
+          <p>Decision trees are versatile machine learning algorithms for classification and regression:</p>
+          <div class="example-box">
+            <ul>
+              <li>Tree structure</li>
+              <li>Feature importance</li>
+              <li>Tree visualization</li>
+              <li>Hyperparameter tuning</li>
+            </ul>
+          </div>
+          <code># Decision Tree Example
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.datasets import load_iris
+import matplotlib.pyplot as plt
+
+# Load dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+
+# Create and train model
+dt = DecisionTreeClassifier(max_depth=3, random_state=42)
+dt.fit(X_train, y_train)
+
+# Evaluate model
+print("Model Accuracy:")
+print(f"Training: {dt.score(X_train, y_train):.3f}")
+print(f"Testing: {dt.score(X_test, y_test):.3f}")
+
+# Feature importance
+importance = pd.DataFrame({
+    'feature': iris.feature_names,
+    'importance': dt.feature_importances_
+})
+print("\nFeature Importance:")
+print(importance.sort_values('importance', ascending=False))
+
+# Visualize tree
+plt.figure(figsize=(20,10))
+plot_tree(dt, feature_names=iris.feature_names, 
+         class_names=iris.target_names, filled=True)
+plt.title("Decision Tree Visualization")
+plt.show()
+
+# Decision boundaries (for 2 features)
+def plot_decision_boundary(model, X, y, features):
+    h = 0.02  # step size
+    x_min, x_max = X[:, features[0]].min() - 1, X[:, features[0]].max() + 1
+    y_min, y_max = X[:, features[1]].min() - 1, X[:, features[1]].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    
+    plt.contourf(xx, yy, Z, alpha=0.4)
+    plt.scatter(X[:, features[0]], X[:, features[1]], c=y, alpha=0.8)
+    plt.xlabel(iris.feature_names[features[0]])
+    plt.ylabel(iris.feature_names[features[1]])
+
+# Plot decision boundaries
+plt.figure(figsize=(10, 6))
+features = [0, 1]  # sepal length and sepal width
+simple_dt = DecisionTreeClassifier(max_depth=3)
+simple_dt.fit(X[:, features], y)
+plot_decision_boundary(simple_dt, X, y, features)
+plt.title("Decision Boundaries")
+plt.show()</code>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson4.html')">← Previous Lesson</button>
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson6.html')">Next Lesson →</button>
+
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 13;  // Total sections count
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['python_lesson5_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+        // Save to legacy storage
+        localStorage.setItem('python_lesson5_progress', JSON.stringify([...visitedSections]));
+
+        // Also save to user's data
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        if (!allUsers[currentUser]) {
+            allUsers[currentUser] = {};
+        }
+        allUsers[currentUser]['python_lesson5_progress'] = JSON.stringify([...visitedSections]);
+        
+        // Save completion status if 100%
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            allUsers[currentUser]['python_lesson5_last_progress'] = '100';
+        }
+        
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+
+    function updateProgress() {
+      const progressPercent = (visitedSections.size / totalSections) * 100;
+      document.getElementById('progressBar').style.width = progressPercent + '%';
+      document.getElementById('progressText').textContent = 
+        `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        saveProgress();
+
+        // Check if lesson was just completed (100%) and show popup
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const lastProgress = allUsers[currentUser]?.['python_lesson5_last_progress'] || '0';
+            if (parseFloat(lastProgress) < 100) {
+                showCompletionPopup();
+            }
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('.main-content section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show the selected section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeItem = document.querySelector(`.sidebar-item[href="#${sectionId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    // Load progress when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+        showSection('getting-started');  // Show the first section
+        
+        // Count the first section as visited since it's the first thing users see
+        visitedSections.add('getting-started');
+        updateProgress();
+        
+        // Add click handlers to sidebar items
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = item.getAttribute('href').substring(1);
+                showSection(sectionId);
+            });
+        });
+    });
+  </script>
+</body>
+</html> 

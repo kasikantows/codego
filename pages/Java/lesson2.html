@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java Methods - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      height: calc(100vh - 160px);
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      padding-bottom: 120px;
+      overflow-y: auto;
+      background-color: white;
+      color: black;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+
+    th, td {
+      border: 1px solid #1700d1;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+      height: 50px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+      display: block;
+    }
+
+    .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+      display: block;
+    }
+
+    .next-lesson-btn:active,
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    .practice-exercise {
+      background-color: #e6e6ff;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 5px 10px;
+      margin: 2px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .subsection-nav button.active {
+      background-color: #1700d1;
+      color: white;
+      border: 2px inset #1700d1;
+    }
+
+    /* Add horizontal scrolling for long lines in code blocks */
+    .code-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 40px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, black);
+      pointer-events: none;
+      opacity: 0.8;
+      display: none;
+    }
+
+    .code-container.has-scroll::after {
+      display: block;
+    }
+
+    @media screen and (max-width: 768px) {
+      code {
+        font-size: 12px;
+        padding: 10px;
+        line-height: 1.4;
+      }
+
+      .window-content {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        max-height: 200px;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      .subsection-nav {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 5px 0;
+      }
+
+      .subsection-nav button {
+        font-size: 12px;
+        padding: 3px 8px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      th, td {
+        padding: 6px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+        margin: 8px 0;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .window-title {
+        font-size: 14px;
+      }
+
+      .sidebar-item {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .progress-container {
+        height: 40px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        font-size: 12px;
+        padding: 8px 16px;
+        bottom: 50px;
+      }
+    }
+
+    /* Add popup styles */
+    
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+  
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Java Methods - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#methods" class="sidebar-item active" onclick="showSection('methods')">Java Methods</a>
+        <a href="#parameters" class="sidebar-item" onclick="showSection('parameters')">Method Parameters</a>
+        <a href="#overloading" class="sidebar-item" onclick="showSection('overloading')">Method Overloading</a>
+        <a href="#scope" class="sidebar-item" onclick="showSection('scope')">Java Scope</a>
+        <a href="#recursion" class="sidebar-item" onclick="showSection('recursion')">Java Recursion</a>
+      </div>
+
+      <div class="main-content">
+        <section id="methods" class="active">
+          <h1>Java Methods</h1>
+          <p>A method is a block of code that performs a specific task. Methods are used to achieve code reusability and modularity.</p>
+
+          <h2>Method Declaration</h2>
+          <code>
+// Basic method structure
+public static void methodName() {
+    // code to be executed
+}
+
+// Method with return value
+public static int addNumbers() {
+    int sum = 5 + 10;
+    return sum;
+}
+
+// Method with parameters
+public static void greetPerson(String name) {
+    System.out.println("Hello " + name);
+}</code>
+
+          <div class="example-box">
+            <h3>Method Components</h3>
+            <ul>
+              <li><strong>Access Modifier:</strong> public, private, protected</li>
+              <li><strong>Static:</strong> Optional keyword for class-level methods</li>
+              <li><strong>Return Type:</strong> void, int, String, etc.</li>
+              <li><strong>Method Name:</strong> follows camelCase naming convention</li>
+              <li><strong>Parameters:</strong> input values (optional)</li>
+              <li><strong>Method Body:</strong> code to be executed</li>
+            </ul>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise</h3>
+            <p>Create a method that calculates the area of a rectangle:</p>
+            <code>
+public class AreaCalculator {
+    public static double calculateRectangleArea(double length, double width) {
+        return length * width;
+    }
+
+    public static void main(String[] args) {
+        double area = calculateRectangleArea(5.0, 3.0);
+        System.out.println("Rectangle area: " + area);
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="parameters">
+          <h1>Method Parameters</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('parameters', 'params-basic')" class="active">Parameters</button>
+              <button onclick="showSubsection('parameters', 'return-values')">Return Values</button>
+          </div>
+
+          <div id="params-basic" class="subsection active">
+              <h2>Parameters</h2>
+              <p>Parameters are used to pass information to methods. They act as variables inside the method.</p>
+
+              <h3>Parameter Types</h3>
+              <code>
+// Single parameter
+public static void printName(String name) {
+    System.out.println("Name: " + name);
+}
+
+// Multiple parameters
+public static void printPersonInfo(String name, int age, String city) {
+    System.out.println("Name: " + name);
+    System.out.println("Age: " + age);
+    System.out.println("City: " + city);
+}
+
+// Array parameter
+public static double calculateAverage(int[] numbers) {
+    int sum = 0;
+    for (int num : numbers) {
+        sum += num;
+    }
+    return (double) sum / numbers.length;
+}
+
+// Object parameter
+public class Person {
+    String name;
+    int age;
+}
+
+public static void displayPerson(Person person) {
+    System.out.println("Name: " + person.name);
+    System.out.println("Age: " + person.age);
+}</code>
+
+              <h3>Parameter Passing</h3>
+              <code>
+// Pass by value example
+public static void modifyValue(int x) {
+    x = x + 10;  // Only modifies local copy
+}
+
+public static void main(String[] args) {
+    int num = 5;
+    modifyValue(num);
+    System.out.println(num);  // Still prints 5
+}
+
+// Pass by reference example (with objects)
+public static void modifyPerson(Person person) {
+    person.name = "Modified";  // Modifies actual object
+}
+
+public static void main(String[] args) {
+    Person p = new Person();
+    p.name = "Original";
+    modifyPerson(p);
+    System.out.println(p.name);  // Prints "Modified"
+}</code>
+          </div>
+
+          <div id="return-values" class="subsection">
+              <h2>Return Values</h2>
+              <p>Methods can return values using the return statement. The return type must match the method declaration.</p>
+
+              <h3>Basic Return Types</h3>
+              <code>
+// Return primitive types
+public static int add(int a, int b) {
+    return a + b;
+}
+
+public static double calculateCircleArea(double radius) {
+    return Math.PI * radius * radius;
+}
+
+public static boolean isAdult(int age) {
+    return age >= 18;
+}
+
+// Return String
+public static String generateGreeting(String name) {
+    return "Hello, " + name + "!";
+}
+
+// Return array
+public static int[] generateNumbers(int size) {
+    int[] numbers = new int[size];
+    for (int i = 0; i < size; i++) {
+        numbers[i] = i + 1;
+    }
+    return numbers;
+}</code>
+
+              <h3>Complex Return Types</h3>
+              <code>
+// Return custom objects
+public class Result {
+    double value;
+    String message;
+    
+    Result(double v, String m) {
+        value = v;
+        message = m;
+    }
+}
+
+public static Result calculateGrade(double score) {
+    if (score >= 90) {
+        return new Result(score, "Excellent!");
+    } else if (score >= 70) {
+        return new Result(score, "Good!");
+    } else {
+        return new Result(score, "Need improvement");
+    }
+}
+
+// Multiple return values using record (Java 16+)
+public record StudentStats(
+    double average,
+    double highest,
+    double lowest
+) {}
+
+public static StudentStats analyzeGrades(double[] grades) {
+    double sum = 0, max = grades[0], min = grades[0];
+    
+    for (double grade : grades) {
+        sum += grade;
+        max = Math.max(max, grade);
+        min = Math.min(min, grade);
+    }
+    
+    return new StudentStats(
+        sum / grades.length,
+        max,
+        min
+    );
+}</code>
+          </div>
+        </section>
+
+        <section id="overloading">
+          <h1>Method Overloading</h1>
+          <p>Method overloading allows you to have multiple methods with the same name but different parameters.</p>
+
+          <h2>Overloading Examples</h2>
+          <code>
+public class Calculator {
+    // Method with two int parameters
+    public static int add(int a, int b) {
+        return a + b;
+    }
+    
+    // Method with three int parameters
+    public static int add(int a, int b, int c) {
+        return a + b + c;
+    }
+    
+    // Method with double parameters
+    public static double add(double a, double b) {
+        return a + b;
+    }
+    
+    // Method with mixed parameters
+    public static double add(int a, double b) {
+        return a + b;
+    }
+}</code>
+
+          <div class="example-box">
+            <h3>Real-World Example</h3>
+            <code>
+public class MessageFormatter {
+    // Basic message
+    public static String format(String message) {
+        return "[INFO] " + message;
+    }
+    
+    // Message with timestamp
+    public static String format(String message, String timestamp) {
+        return "[" + timestamp + "] " + message;
+    }
+    
+    // Message with level and timestamp
+    public static String format(String message, String level, String timestamp) {
+        return "[" + level + "][" + timestamp + "] " + message;
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(format("Hello"));  // [INFO] Hello
+        System.out.println(format("Hello", "2024-03-20"));  // [2024-03-20] Hello
+        System.out.println(format("Hello", "ERROR", "2024-03-20"));  
+        // [ERROR][2024-03-20] Hello
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="scope">
+          <h1>Java Scope</h1>
+          <p>Scope determines the visibility and lifetime of variables in Java.</p>
+
+          <h2>Types of Scope</h2>
+          <code>
+public class ScopeExample {
+    // Class/Instance scope
+    private String instanceVar = "I'm an instance variable";
+    
+    // Static/Class scope
+    private static String classVar = "I'm a class variable";
+    
+    public void demonstrateScope() {
+        // Method scope
+        String methodVar = "I'm a method variable";
+        
+        // Block scope
+        for (int i = 0; i < 3; i++) {
+            String blockVar = "I'm a block variable";
+            System.out.println(blockVar);
+        }
+        // blockVar is not accessible here
+        
+        // Local scope
+        if (true) {
+            int localVar = 42;
+            System.out.println(localVar);
+        }
+        // localVar is not accessible here
+    }
+    
+    public static void main(String[] args) {
+        ScopeExample example = new ScopeExample();
+        example.demonstrateScope();
+    }
+}</code>
+
+          <div class="example-box">
+            <h3>Scope Rules</h3>
+            <ul>
+              <li>Class variables (static) are accessible by all methods in the class</li>
+              <li>Instance variables are accessible by all non-static methods in the class</li>
+              <li>Method variables are only accessible within the method</li>
+              <li>Block variables are only accessible within the block</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="recursion">
+          <h1>Java Recursion</h1>
+          <p>Recursion is when a method calls itself to solve a problem by breaking it down into smaller subproblems.</p>
+
+          <h2>Basic Recursion</h2>
+          <code>
+// Factorial calculation using recursion
+public static int factorial(int n) {
+    if (n == 0 || n == 1) {  // Base case
+        return 1;
+    }
+    return n * factorial(n - 1);  // Recursive case
+}
+
+// Fibonacci sequence using recursion
+public static int fibonacci(int n) {
+    if (n <= 1) {  // Base case
+        return n;
+    }
+    return fibonacci(n - 1) + fibonacci(n - 2);  // Recursive case
+}</code>
+
+          <div class="example-box">
+            <h3>Real-World Examples</h3>
+            <code>
+// Directory traversal using recursion
+public static void listFiles(File directory) {
+    File[] files = directory.listFiles();
+    if (files != null) {
+        for (File file : files) {
+            if (file.isDirectory()) {
+                System.out.println("Directory: " + file.getName());
+                listFiles(file);  // Recursive call
+            } else {
+                System.out.println("File: " + file.getName());
+            }
+        }
+    }
+}
+
+// Binary tree traversal
+class TreeNode {
+    int value;
+    TreeNode left;
+    TreeNode right;
+    
+    public static void inorderTraversal(TreeNode node) {
+        if (node != null) {
+            inorderTraversal(node.left);
+            System.out.print(node.value + " ");
+            inorderTraversal(node.right);
+        }
+    }
+}</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise</h3>
+            <p>Create a recursive method to calculate the sum of numbers from 1 to n:</p>
+            <code>
+public static int sumToN(int n) {
+    if (n <= 1) {  // Base case
+        return n;
+    }
+    return n + sumToN(n - 1);  // Recursive case
+}
+
+public static void main(String[] args) {
+    System.out.println("Sum from 1 to 5: " + sumToN(5));  // Output: 15
+}</code>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text">Progress: 0% (0/5 sections)</div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson1.html')">
+    ← Previous Lesson
+  </button>
+
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson3.html')">
+    Next Lesson →
+  </button>
+
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 5;  // Total number of sections in lesson 2
+
+    // Load progress from localStorage
+    function loadProgress() {
+        const currentUser = localStorage.getItem('username');
+        const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        const userData = allUsers[currentUser] || {};
+        const savedProgress = userData['java_lesson2_progress'];
+        if (savedProgress) {
+            visitedSections = new Set(JSON.parse(savedProgress));
+            updateProgress();
+        }
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        if (!allUsers[currentUser]) {
+            allUsers[currentUser] = {};
+        }
+        allUsers[currentUser]['java_lesson2_progress'] = JSON.stringify([...visitedSections]);
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+
+    function updateProgress() {
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        document.querySelector('.progress-fill').style.width = progressPercent + '%';
+        document.querySelector('.progress-text').textContent = 
+            `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        saveProgress(); // Save progress after each update
+    }
+
+    function showSection(sectionId) {
+      // Remove all sections from display
+      const allSections = document.querySelectorAll('section');
+      allSections.forEach(section => {
+        section.style.display = 'none';
+        section.classList.remove('active');
+      });
+
+      // Get and show the requested section
+      const targetSection = document.getElementById(sectionId);
+      if (targetSection) {
+        targetSection.style.display = 'block';
+        targetSection.classList.add('active');
+        
+        // Update sidebar active state
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+          item.classList.remove('active');
+          if (item.getAttribute('href') === '#' + sectionId) {
+            item.classList.add('active');
+          }
+        });
+
+        // Mark as visited
+        visitedSections.add(sectionId);
+        updateProgress();
+      }
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+        // Hide all subsections in the current section
+        const section = document.getElementById(sectionId);
+        section.querySelectorAll('.subsection').forEach(sub => {
+            sub.classList.remove('active');
+        });
+        
+        // Show selected subsection
+        const subsection = document.getElementById(subsectionId);
+        if (subsection) {
+            subsection.classList.add('active');
+        }
+
+        // Update button states
+        section.querySelectorAll('.subsection-nav button').forEach(button => {
+            button.classList.remove('active');
+        });
+        const activeButton = section.querySelector(`button[onclick*="${subsectionId}"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+    }
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved progress
+      loadProgress();
+
+      // Initially hide all sections
+      document.querySelectorAll('section').forEach(section => {
+        section.style.display = 'none';
+      });
+
+      // Show intro section by default
+      const introSection = document.getElementById('methods');
+      if (introSection) {
+        showSection('methods');
+      }
+
+      // Add click handlers to all sidebar items
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sectionId = item.getAttribute('href').substring(1);
+          showSection(sectionId);
+        });
+
+        // Mark sections as visited if they were previously visited
+        const sectionId = item.getAttribute('href').substring(1);
+        if (visitedSections.has(sectionId)) {
+          const section = document.getElementById(sectionId);
+          if (section) {
+            section.classList.add('visited');
+          }
+        }
+      });
+    });
+
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+        setTimeout(() => {
+          window.location.href = destination;
+        }, 300);
+      } else {
+        window.location.href = destination;
+      }
+    }
+
+    // Function to check if code blocks need scrolling
+    function checkCodeScroll() {
+      document.querySelectorAll('code').forEach(codeBlock => {
+        const container = codeBlock.parentElement;
+        if (codeBlock.scrollWidth > codeBlock.clientWidth) {
+          container.classList.add('has-scroll');
+        } else {
+          container.classList.remove('has-scroll');
+        }
+      });
+    }
+
+    // Wrap all code blocks in a container
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('code').forEach(codeBlock => {
+        const container = document.createElement('div');
+        container.className = 'code-container';
+        codeBlock.parentNode.insertBefore(container, codeBlock);
+        container.appendChild(codeBlock);
+      });
+
+      // Show first section by default
+      showSection('methods');
+    });
+
+    // Check for scroll on load and resize
+    window.addEventListener('load', checkCodeScroll);
+    window.addEventListener('resize', checkCodeScroll);
+
+    // Add popup functions
+
+  </script>
+</body>
+</html> 

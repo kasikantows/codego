@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Quiz - Difficult Level - C0D3G0</title>
+    <style>
+        /* Same styles as other game files */
+        @font-face {
+            font-family: 'Computer Says No';
+            src: url('../../font/Computer Says No.otf') format('opentype');
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url('../../images/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+        }
+
+        .window-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #c0c0c0;
+            border: 2px solid #1700d1;
+            border-radius: 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+        }
+
+        .window-titlebar {
+            background: linear-gradient(to right, #1700d1, #0066cc);
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 30px;
+        }
+
+        .window-title {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .window-button {
+            width: 20px;
+            height: 20px;
+            border: 1px outset #c0c0c0;
+            background-color: #c0c0c0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: black;
+        }
+
+        .window-button:active {
+            border: 1px inset #c0c0c0;
+        }
+
+        .window-content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            color: black;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #dfdfdf;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+        }
+
+        .timer, .question-counter, .score {
+            font-size: 24px;
+            color: #000080;
+            padding: 5px 10px;
+            background: #fff;
+            border: 2px solid;
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        .code-container {
+            background: #000080;
+            color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 18px;
+            white-space: pre-wrap;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+        }
+
+        .answer-container {
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            font-family: monospace;
+            border: 2px solid;
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        .submit-btn {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 10px 20px;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:active {
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        #gameOverScreen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #gameOverScreen h2 {
+            font-size: 36px;
+            color: #000080;
+            margin-bottom: 20px;
+        }
+
+        .restart-btn {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 15px 30px;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .window-container {
+                margin: 10px;
+                height: calc(100vh - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .timer, .question-counter, .score {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+    <audio autoplay loop hidden>
+        <source src="../../music/games_music.mp3" type="audio/mpeg">
+      </audio>
+
+    <div class="window-container">
+        <div class="window-titlebar">
+            <div class="window-title">Python Quiz - Difficult Level</div>
+            <div class="window-buttons">
+                <div class="window-button" onclick="playClickAndGo('difficult.html')">✕</div>
+            </div>
+        </div>
+        <div class="window-content">
+            <div id="gameScreen">
+                <div class="game-header">
+                    <div class="timer">Time: <span id="timeLeft">3:00</span></div>
+                    <div class="question-counter">Question: <span id="currentQuestion">1</span>/20</div>
+                    <div class="score">Score: <span id="currentScore">0</span></div>
+                </div>
+                <div class="code-container" id="questionCode">
+                    <!-- Question will be inserted here -->
+                </div>
+                <div class="answer-container">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here...">
+                    <button class="submit-btn" onclick="checkAnswer()">Submit Answer</button>
+                </div>
+            </div>
+
+            <div id="gameOverScreen">
+                <h2>Game Over!</h2>
+                <div id="finalScore"></div>
+                <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                <button class="restart-btn" onclick="window.location.href='difficult.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            {
+                code: `# Advanced metaclass implementation
+class MetaValidator(type):
+    def __new__(cls, name, bases, attrs):
+        for key, value in attrs.items():
+            if callable(value) and not key.startswith('__'):
+                attrs[key] = cls.___(value)
+        return super().__new__(cls, name, bases, attrs)`,
+                answer: "validate",
+                explanation: "Metaclass validation method"
+            },
+            {
+                code: `# Custom descriptor protocol
+class LazyProperty:
+    def __init__(self, func):
+        self.func = func
+        self.___ = func.__name__
+
+    def __get__(self, obj, cls):
+        if obj is None:
+            return self
+        value = self.func(obj)
+        setattr(obj, self.name, value)
+        return value`,
+                answer: "name",
+                explanation: "Descriptor attribute name"
+            },
+            {
+                code: `# Advanced async pattern
+async def process_stream(stream):
+    async with stream as s:
+        while True:
+            chunk = await s.___()
+            if not chunk:
+                break
+            yield chunk`,
+                answer: "read",
+                explanation: "Async stream reading"
+            },
+            {
+                code: `# Custom context manager with async
+class AsyncResource:
+    async def ____(self):
+        await self.connect()
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb):
+        await self.cleanup()`,
+                answer: "aenter",
+                explanation: "Async enter method"
+            },
+            {
+                code: `# Advanced type hints
+from typing import TypeVar, Protocol
+
+class Comparable(Protocol):
+    def __lt__(self, other: Any) -> bool: ...
+
+T = TypeVar('T', bound=___)
+
+def min(x: T, y: T) -> T:
+    return x if x < y else y`,
+                answer: "Comparable",
+                explanation: "Protocol type bound"
+            },
+            {
+                code: `# Custom memory management
+import weakref
+
+class Cache:
+    def __init__(self):
+        self._cache = weakref.___()
+    
+    def get(self, key):
+        return self._cache.get(key)`,
+                answer: "WeakKeyDictionary",
+                explanation: "Weak reference dictionary"
+            },
+            {
+                code: `# Advanced decorator pattern
+def singleton(cls):
+    instances = {}
+    def ___(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+    return wrapper`,
+                answer: "wrapper",
+                explanation: "Decorator wrapper function"
+            },
+            {
+                code: `# Custom event loop
+class EventLoop:
+    def run_until_complete(self, coro):
+        task = Task(coro)
+        task.add_done_callback(self.___)
+        return task.result()`,
+                answer: "stop",
+                explanation: "Event loop callback"
+            },
+            {
+                code: `# Advanced generator pattern
+def pipeline():
+    while True:
+        value = yield
+        if value is None:
+            return
+        result = process(value)
+        ___ result`,
+                answer: "yield",
+                explanation: "Generator yield statement"
+            },
+            {
+                code: `# Custom attribute access
+class Proxy:
+    def __init__(self, obj):
+        self._obj = obj
+    
+    def ___(self, name):
+        return getattr(self._obj, name)`,
+                answer: "__getattr__",
+                explanation: "Attribute access method"
+            },
+            {
+                code: `# Advanced async comprehension
+async def fetch_all(urls):
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, url) for url in urls]
+        return await asyncio.___(tasks)`,
+                answer: "gather",
+                explanation: "Async gathering"
+            },
+            {
+                code: `# Custom module import
+class Importer:
+    def find_spec(self, fullname, path, target=None):
+        if self._is_namespace(fullname):
+            return ___.ModuleSpec(fullname, None)`,
+                answer: "importlib",
+                explanation: "Import machinery"
+            },
+            {
+                code: `# Advanced type system
+from typing import Literal, Union
+
+def process(mode: ___ ["read", "write"]) -> None:
+    pass`,
+                answer: "Literal",
+                explanation: "Literal type"
+            },
+            {
+                code: `# Custom metaclass registry
+class Registry(type):
+    _classes = {}
+    
+    def __new__(cls, name, bases, attrs):
+        new_cls = super().__new__(cls, name, bases, attrs)
+        cls._classes[new_cls.___] = new_cls
+        return new_cls`,
+                answer: "__name__",
+                explanation: "Class name attribute"
+            },
+            {
+                code: `# Advanced async iterator
+class AsyncIterator:
+    def __aiter__(self):
+        return self
+    
+    async def ___(self):
+        if not self.has_next():
+            raise StopAsyncIteration
+        return await self.next()`,
+                answer: "__anext__",
+                explanation: "Async next method"
+            },
+            {
+                code: `# Custom descriptor validation
+class Validator:
+    def __set_name__(self, owner, name):
+        self.___ = name
+    
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        return obj.__dict__[self.name]`,
+                answer: "name",
+                explanation: "Descriptor name storage"
+            },
+            {
+                code: `# Advanced context manager
+from contextlib import contextmanager
+
+@contextmanager
+def transaction():
+    try:
+        yield
+    ___:
+        rollback()
+    else:
+        commit()`,
+                answer: "except",
+                explanation: "Exception handling"
+            },
+            {
+                code: `# Custom async context manager
+class AsyncResource:
+    async def __aenter__(self):
+        await self.open()
+        return self
+    
+    async def ___(self, exc_type, exc, tb):
+        await self.close()`,
+                answer: "__aexit__",
+                explanation: "Async exit method"
+            },
+            {
+                code: `# Advanced type variance
+from typing import TypeVar, Generic
+
+T = TypeVar('T', ___)
+class Stack(Generic[T]):
+    def push(self, item: T) -> None:
+        self.items.append(item)`,
+                answer: "covariant=True",
+                explanation: "Type variance specifier"
+            },
+            {
+                code: `# Custom attribute descriptor
+class Cached:
+    def __init__(self, func):
+        self.func = func
+        self.___ = {}
+    
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        val = self.cache.get(obj)
+        if val is None:
+            val = self.func(obj)
+            self.cache[obj] = val
+        return val`,
+                answer: "cache",
+                explanation: "Cache storage attribute"
+            }
+        ];
+
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let timeLeft = 180; // 3 minutes
+        let score = 0;
+        let timer;
+
+        // Initialize the game
+        function initGame() {
+            // Check if user is logged in
+            const currentUser = localStorage.getItem('username');
+            if (!currentUser) {
+                alert('Please log in first!');
+                window.location.href = '../../index.html';
+                return;
+            }
+            
+            questions = shuffleArray(allQuestions).slice(0, 20);
+            currentQuestionIndex = 0;
+            timeLeft = 180;
+            score = 0;
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('currentScore').textContent = score;
+            document.getElementById('currentQuestion').textContent = '1';
+            showQuestion();
+            startTimer();
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                document.getElementById('questionCode').textContent = questions[currentQuestionIndex].code;
+                document.getElementById('answerInput').value = '';
+                document.getElementById('currentQuestion').textContent = `${currentQuestionIndex + 1}`;
+            }
+        }
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Start timer
+        function startTimer() {
+            document.getElementById('timeLeft').textContent = formatTime(timeLeft);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').textContent = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            if (userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
+                // Base score is 10 points
+                // Add time bonus: 1-5 extra points based on time left
+                const timeBonus = Math.ceil((timeLeft / 180) * 5);
+                const pointsEarned = 10 + timeBonus;
+                score += pointsEarned;
+            } else {
+                // Deduct 5 points for wrong answer
+                score = Math.max(0, score - 5); // Prevent negative score
+            }
+            
+            document.getElementById('currentScore').textContent = score;
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+            } else {
+                showQuestion();
+            }
+        }
+
+        // Handle Enter key press
+        document.getElementById('answerInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // End game
+        function endGame() {
+            clearInterval(timer);
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('gameOverScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+            updateLeaderboard();
+        }
+
+        // Update leaderboard
+        function updateLeaderboard() {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            // Initialize user data if it doesn't exist
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {
+                    scores: []
+                };
+            }
+            if (!allUsers[currentUser].scores) {
+                allUsers[currentUser].scores = [];
+            }
+            
+            // Add new score
+            allUsers[currentUser].scores.push({
+                score: score,
+                timestamp: new Date().toISOString(),
+                language: 'Python',
+                difficulty: 'difficult'
+            });
+            
+            // Save progress
+            localStorage.setItem('users', JSON.stringify(allUsers));
+
+            // Update lesson progress
+            let lessonProgress = new Set(JSON.parse(allUsers[currentUser]['python_lesson3_progress'] || '[]'));
+            lessonProgress.add('completed');
+            allUsers[currentUser]['python_lesson3_progress'] = JSON.stringify([...lessonProgress]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+
+        // Play click sound and go to destination
+        function playClickAndGo(destination) {
+            const clickSound = document.getElementById('clickSound');
+            clickSound.currentTime = 0;
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 300);
+        }
+
+        // Restart game
+        function restartGame() {
+            initGame();
+        }
+
+        // Initialize the game when the page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html> 

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - C0D3G0</title>
+  <style>
+    @font-face {
+      font-family: 'ComputerSaysNo';
+      src: url('../font/Computer Says No.otf') format('opentype');
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .window-container {
+      width: 400px;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 28px;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .window-button {
+      width: 32px;
+      height: 32px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: black;
+      font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      padding: 20px;
+      background-color: #c0c0c0;
+      color: black;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 12px;
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 15px;
+      border: 2px inset #fff;
+      background-color: white;
+      font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+      font-size: 20px;
+      box-sizing: border-box;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .win95-button {
+      padding: 15px 30px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+      min-width: 150px;
+      font-size: 22px;
+    }
+
+    .win95-button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 25px;
+      padding-top: 25px;
+      border-top: 1px solid #1700d1;
+      font-size: 20px;
+      font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .signup-link a {
+      color: #1700d1;
+      text-decoration: none;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 8px 15px;
+      font-size: 18px;
+      color: black;
+      font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-container input {
+      flex: 1;
+    }
+
+    .show-password-btn {
+      position: absolute;
+      right: 10px;
+      background: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+      font-size: 16px;
+    }
+
+    .show-password-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-container {
+        width: 95%;
+        margin: 20px;
+      }
+
+      .win95-button {
+        padding: 12px 25px;
+        font-size: 18px;
+      }
+
+      label {
+        font-size: 18px;
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        padding: 12px;
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../music/click_sound.mp3" preload="auto"></audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Login to C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('codego_auth.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <div class="password-container">
+            <input type="password" id="password" name="password" required>
+            <button type="button" class="show-password-btn" onclick="togglePassword('password')" onmousedown="playClickSound()">Show</button>
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button type="button" class="win95-button" onclick="playClickAndGo('codego_signup.html')">Cancel</button>
+          <button type="submit" class="win95-button">Login</button>
+        </div>
+
+        <div class="signup-link">
+          Don't have an account? <a href="codego_signup.html" onclick="playClickSound()">Sign Up Here</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <script>
+    // Initialize IndexedDB with better error handling
+    let db;
+    const dbName = "CodeGoUsers";
+    const dbVersion = 1;
+
+    // Function to delete existing database (only used for error recovery)
+    function deleteDatabase() {
+      return new Promise((resolve, reject) => {
+        const deleteRequest = indexedDB.deleteDatabase(dbName);
+        
+        deleteRequest.onerror = () => {
+          console.error("Error deleting database");
+          reject(new Error("Could not delete database"));
+        };
+        
+        deleteRequest.onsuccess = () => {
+          console.log("Database deleted successfully");
+          resolve();
+        };
+      });
+    }
+
+    function initDatabase() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(dbName, dbVersion);
+
+        request.onerror = async (event) => {
+          console.error("Database error:", event.target.error);
+          // If there's an error, try deleting and recreating the database
+          try {
+            await deleteDatabase();
+            // Try to open the database again
+            const newRequest = indexedDB.open(dbName, dbVersion);
+            newRequest.onerror = (e) => {
+              console.error("Database error after reset:", e.target.error);
+              reject("Database error. Please try again later.");
+            };
+            newRequest.onupgradeneeded = (e) => {
+              console.log("Creating new database after reset");
+              const db = e.target.result;
+              if (!db.objectStoreNames.contains("users")) {
+                const store = db.createObjectStore("users", { keyPath: "username" });
+                store.createIndex("email", "email", { unique: true });
+              }
+            };
+            newRequest.onsuccess = (e) => {
+              db = e.target.result;
+              resolve(db);
+            };
+          } catch (error) {
+            reject("Could not reset database. Please try clearing your browser data.");
+          }
+        };
+
+        request.onblocked = (event) => {
+          console.error("Database blocked:", event);
+          alert("Please close other tabs with this site open and try again.");
+        };
+
+        request.onupgradeneeded = (event) => {
+          console.log("Database upgrade needed");
+          db = event.target.result;
+          
+          if (!db.objectStoreNames.contains("users")) {
+            const store = db.createObjectStore("users", { keyPath: "username" });
+            store.createIndex("email", "email", { unique: true });
+            console.log("Created users store and email index");
+          }
+        };
+
+        request.onsuccess = (event) => {
+          db = event.target.result;
+          console.log("Database initialized successfully");
+          
+          // Handle database errors
+          db.onerror = (event) => {
+            console.error("Database error:", event.target.error);
+          };
+
+          // Handle version change
+          db.onversionchange = (event) => {
+            db.close();
+            alert("Database is outdated, please reload the page.");
+            window.location.reload();
+          };
+
+          resolve(db);
+        };
+      });
+    }
+
+    // Initialize database when page loads
+    window.addEventListener('load', async () => {
+      try {
+        await initDatabase();
+        checkSession();
+      } catch (error) {
+        console.error("Failed to initialize database:", error);
+        alert("Database error. Please try clearing your browser data and reloading the page.");
+      }
+    });
+
+    function checkSession() {
+      const sessionToken = localStorage.getItem('sessionToken');
+      const username = localStorage.getItem('username');
+      
+      if (sessionToken && username) {
+        try {
+          const sessionData = JSON.parse(sessionToken);
+          if (sessionData.expires && Date.now() < sessionData.expires) {
+            window.location.replace('codego_homepage.html');
+          } else {
+            // Session expired
+            logout();
+          }
+        } catch (e) {
+          // Invalid session data
+          logout();
+        }
+      }
+    }
+
+    function playClickSound() {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+    }
+
+    function playClickAndGo(destination) {
+      playClickSound();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    function togglePassword(fieldId) {
+      const passwordField = document.getElementById(fieldId);
+      const button = passwordField.nextElementSibling;
+      
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        button.textContent = 'Hide';
+      } else {
+        passwordField.type = 'password';
+        button.textContent = 'Show';
+      }
+    }
+
+    // Simple password hashing function (for demo purposes)
+    // In a real app, use a proper hashing library
+    async function hashPassword(password) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hash))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    let loginAttempts = {};
+    const MAX_ATTEMPTS = 3;
+    const LOCKOUT_DURATION = 300000; // 5 minutes in milliseconds
+
+    function isUserLockedOut(username) {
+      const attempts = loginAttempts[username];
+      if (!attempts) return false;
+      
+      if (attempts.count >= MAX_ATTEMPTS && 
+          Date.now() - attempts.lastAttempt < LOCKOUT_DURATION) {
+        const remainingTime = Math.ceil((LOCKOUT_DURATION - (Date.now() - attempts.lastAttempt)) / 60000);
+        alert(`Account is locked. Please try again in ${remainingTime} minutes.`);
+        return true;
+      }
+      
+      if (Date.now() - attempts.lastAttempt >= LOCKOUT_DURATION) {
+        delete loginAttempts[username];
+      }
+      return false;
+    }
+
+    function recordLoginAttempt(username, success) {
+      if (!loginAttempts[username]) {
+        loginAttempts[username] = { count: 0, lastAttempt: Date.now() };
+      }
+      
+      if (!success) {
+        loginAttempts[username].count++;
+        loginAttempts[username].lastAttempt = Date.now();
+      } else {
+        delete loginAttempts[username];
+      }
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      playClickSound();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        alert('Please enter both username and password.');
+        return false;
+      }
+
+      if (isUserLockedOut(username)) {
+        return false;
+      }
+
+      try {
+        if (!db) {
+          await initDatabase();
+        }
+
+        // Hash the entered password
+        const hashedPassword = await hashPassword(password);
+
+        const transaction = db.transaction(["users"], "readwrite");
+        transaction.onerror = (event) => {
+          console.error("Transaction error:", event.target.error);
+          alert("Error during login. Please try again.");
+        };
+
+        const store = transaction.objectStore("users");
+        const request = store.get(username);
+
+        request.onsuccess = (event) => {
+          const userData = event.target.result;
+          
+          if (!userData) {
+            alert('User not found. Please check your username.');
+            return;
+          }
+
+          if (userData.password === hashedPassword) {
+            recordLoginAttempt(username, true);
+            
+            // Update last login
+            userData.lastLogin = new Date().toISOString().split('T')[0];
+            const updateRequest = store.put(userData);
+            
+            updateRequest.onsuccess = () => {
+              // Set session with expiration
+              const sessionData = {
+                token: 'logged_in',
+                expires: Date.now() + (30 * 60 * 1000) // 30 minutes
+              };
+              localStorage.setItem('sessionToken', JSON.stringify(sessionData));
+              localStorage.setItem('username', username);
+              
+              // Make sure user data exists in localStorage
+              const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+              if (!allUsers[username]) {
+                allUsers[username] = {
+                  scores: [],
+                  progress: userData.progress || "0",
+                  completedLessons: userData.completedLessons || "[]"
+                };
+                localStorage.setItem('users', JSON.stringify(allUsers));
+              }
+              
+              window.location.href = 'codego_homepage.html';
+            };
+
+            updateRequest.onerror = () => {
+              console.error("Error updating last login");
+              // Still proceed with login even if last login update fails
+              window.location.href = 'codego_homepage.html';
+            };
+          } else {
+            recordLoginAttempt(username, false);
+            const remainingAttempts = MAX_ATTEMPTS - loginAttempts[username].count;
+            
+            if (remainingAttempts > 0) {
+              alert(`Invalid password. ${remainingAttempts} attempts remaining.`);
+            } else {
+              alert('Account locked for 5 minutes due to too many failed attempts.');
+            }
+          }
+        };
+
+        request.onerror = () => {
+          console.error("Error fetching user data");
+          alert('Error during login. Please try again.');
+        };
+
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error during login. Please try again.');
+      }
+
+      return false;
+    }
+
+    // Session management
+    let inactivityTimeout;
+    const INACTIVITY_TIMEOUT = 1800000; // 30 minutes
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimeout);
+      
+      // Check if session is expired
+      const sessionData = JSON.parse(localStorage.getItem('sessionToken') || '{}');
+      if (sessionData.expires && Date.now() > sessionData.expires) {
+        logout();
+        return;
+      }
+
+      // Reset session expiration
+      if (sessionData.token) {
+        sessionData.expires = Date.now() + INACTIVITY_TIMEOUT;
+        localStorage.setItem('sessionToken', JSON.stringify(sessionData));
+      }
+
+      inactivityTimeout = setTimeout(logout, INACTIVITY_TIMEOUT);
+    }
+
+    function logout() {
+      // Only remove session-related data
+      localStorage.removeItem('sessionToken');
+      localStorage.removeItem('username');
+      window.location.href = 'codego_login.html';
+    }
+
+    // Set up activity listeners
+    ['mousemove', 'keydown', 'click', 'scroll'].forEach(event => {
+      document.addEventListener(event, resetInactivityTimer);
+    });
+
+    // Initialize inactivity timer
+    resetInactivityTimer();
+  </script>
+</body>
+</html> 

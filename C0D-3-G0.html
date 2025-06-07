@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loading...</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    @font-face {
+      font-family: 'ComputerSaysNo';
+      src: url('font/Computer Says No.otf') format('opentype');
+    }
+
+    body {
+      background-image: url('images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+      color: #000;
+      font-family: 'ComputerSaysNo', sans-serif;
+      padding: 20px;
+    }
+
+    .loader {
+      text-align: center;
+      max-width: 90%;
+      width: 500px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 3rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .spinner {
+      border: 8px solid #333;
+      border-top: 8px solid #00ffcc;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 30px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    p {
+      margin-bottom: 2rem;
+      font-size: 24px;
+      font-family: 'ComputerSaysNo', sans-serif;
+    }
+
+    .continue-btn {
+      display: none;
+      padding: 20px 40px;
+      background-color: #00ffcc;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      font-size: 24px;
+      font-family: 'ComputerSaysNo', sans-serif;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .continue-btn:hover {
+      background-color: #00ccaa;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    @media screen and (max-width: 480px) {
+      .loader {
+        padding: 2rem;
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border-width: 6px;
+      }
+
+      p {
+        font-size: 20px;
+        margin-bottom: 1.5rem;
+      }
+
+      .continue-btn {
+        padding: 15px 30px;
+        font-size: 20px;
+      }
+    }
+
+    .fade-out {
+      animation: fadeOut 0.5s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+
+    .page-transition {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    .page-transition.active {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+  <script>
+    window.onload = function () {
+      // After 3 seconds, hide spinner and show button
+      setTimeout(() => {
+        document.querySelector('.spinner').style.display = 'none';
+        document.querySelector('.continue-btn').style.display = 'inline-block';
+        document.querySelector('p').textContent = 'Ready!';
+      }, 3000);
+    };
+
+    function goToMain() {
+      const loader = document.querySelector('.loader');
+      const transition = document.createElement('div');
+      transition.className = 'page-transition';
+      document.body.appendChild(transition);
+
+      // Start the fade out animation
+      loader.classList.add('fade-out');
+      
+      // After a short delay, show the transition overlay
+      setTimeout(() => {
+        transition.classList.add('active');
+      }, 300);
+
+      // After the animations complete, navigate to the new page
+      setTimeout(() => {
+        window.location.href = 'pages/codego_auth.html';
+      }, 800);
+    }
+  </script>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner"></div>
+    <p>Loading, please wait...</p>
+    <button class="continue-btn" onclick="goToMain()">Click this button to continue</button>
+  </div>
+</body>
+</html>

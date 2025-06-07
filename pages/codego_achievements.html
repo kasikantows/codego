@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C0D3G0 Achievements</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      flex: 1;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background-color: transparent;
+      border-bottom: none;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .section-nav button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      width: 250px;
+      height: 75px;
+      position: relative;
+    }
+
+    .section-nav button img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 0.2s;
+    }
+
+    .section-nav button .hover-img {
+      opacity: 0;
+    }
+
+    .section-nav button:hover .default-img {
+      opacity: 0;
+    }
+
+    .section-nav button:hover .hover-img {
+      opacity: 1;
+    }
+
+    .section-nav button:active {
+      transform: scale(0.95);
+    }
+
+    .section-content {
+      display: none;
+      padding: 20px;
+      flex: 1;
+    }
+
+    .section-content.active {
+      display: block;
+    }
+
+    .section-title {
+      color: #1700d1;
+      font-size: 24px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #1700d1;
+      padding-bottom: 10px;
+    }
+
+    .achievement-sections {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      padding: 10px;
+      justify-content: space-between;
+    }
+
+    .achievement-section {
+      flex: 1;
+      min-width: 0;
+      background-color: rgba(192, 192, 192, 0.3);
+      padding: 12px;
+      border: 2px outset #c0c0c0;
+      height: fit-content;
+    }
+
+    .achievement-section h3 {
+      color: #1700d1;
+      margin-bottom: 15px;
+      text-align: center;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 8px;
+    }
+
+    .achievement-card {
+      padding: 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .achievement-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #1700d1;
+      border-radius: 50%;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .achievement-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      color: #1700d1;
+    }
+
+    .achievement-description {
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .achievement-progress {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+      margin-top: auto;
+    }
+
+    .achievement-progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .achievement-locked {
+      filter: grayscale(100%);
+      opacity: 0.7;
+    }
+
+    .achievement-locked .achievement-icon {
+      background-color: #666;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+    }
+
+    @media screen and (max-width: 1200px) {
+      .achievement-sections {
+        flex-wrap: wrap;
+      }
+      
+      .achievement-section {
+        min-width: calc(50% - 15px);
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .section-nav button {
+        padding: 8px 15px;
+        font-size: 13px;
+      }
+
+      .achievement-section {
+        min-width: 100%;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-container {
+        margin: 5px;
+        height: calc(100vh - 10px);
+      }
+
+      .section-nav button {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../music/background_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">C0D3G0 Achievements</div>
+      <div class="window-buttons">
+        <button class="window-button" onclick="playClickAndGo('codego_homepage.html')">✕</button>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="section-nav">
+        <button onclick="playClickAndShowSection('learning-hub')" class="active">
+          <img src="../images/menu_buttons/6.png" alt="Learning Hub" class="default-img">
+          <img src="../images/menu_buttons/7.png" alt="Learning Hub Hover" class="hover-img">
+        </button>
+        <button onclick="playClickAndShowSection('gaming-spot')">
+          <img src="../images/menu_buttons/8.png" alt="Gaming Spot" class="default-img">
+          <img src="../images/menu_buttons/9.png" alt="Gaming Spot Hover" class="hover-img">
+        </button>
+      </div>
+
+      <!-- Learning Hub Section -->
+      <div id="learning-hub" class="section-content active">
+        <h2 class="section-title">Learning Hub Achievements</h2>
+        <div class="achievement-sections">
+          <!-- Java Section -->
+          <div class="achievement-section">
+            <h3>Java Achievements</h3>
+            <div class="achievements-grid">
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Lesson 1</div>
+                <div class="achievement-description">Complete Java Lesson 1</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-lesson1-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Lesson 2</div>
+                <div class="achievement-description">Complete Java Lesson 2</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-lesson2-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Lesson 3</div>
+                <div class="achievement-description">Complete Java Lesson 3</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-lesson3-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Lesson 4</div>
+                <div class="achievement-description">Complete Java Lesson 4</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-lesson4-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Lesson 5</div>
+                <div class="achievement-description">Complete Java Lesson 5</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-lesson5-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Lesson 6</div>
+                <div class="achievement-description">Complete Java Lesson 6</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-lesson6-progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- C++ Section -->
+          <div class="achievement-section">
+            <h3>C++ Achievements</h3>
+            <div class="achievements-grid">
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Lesson 1</div>
+                <div class="achievement-description">Complete C++ Lesson 1</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-lesson1-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Lesson 2</div>
+                <div class="achievement-description">Complete C++ Lesson 2</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-lesson2-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Lesson 3</div>
+                <div class="achievement-description">Complete C++ Lesson 3</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-lesson3-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Lesson 4</div>
+                <div class="achievement-description">Complete C++ Lesson 4</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-lesson4-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Lesson 5</div>
+                <div class="achievement-description">Complete C++ Lesson 5</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-lesson5-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Lesson 6</div>
+                <div class="achievement-description">Complete C++ Lesson 6</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-lesson6-progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Python Section -->
+          <div class="achievement-section">
+            <h3>Python Achievements</h3>
+            <div class="achievements-grid">
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Lesson 1</div>
+                <div class="achievement-description">Complete Python Lesson 1</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-lesson1-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Lesson 2</div>
+                <div class="achievement-description">Complete Python Lesson 2</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-lesson2-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Lesson 3</div>
+                <div class="achievement-description">Complete Python Lesson 3</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-lesson3-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Lesson 4</div>
+                <div class="achievement-description">Complete Python Lesson 4</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-lesson4-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Lesson 5</div>
+                <div class="achievement-description">Complete Python Lesson 5</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-lesson5-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Lesson 6</div>
+                <div class="achievement-description">Complete Python Lesson 6</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-lesson6-progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Overall Section -->
+          <div class="achievement-section">
+            <h3>Overall Achievements</h3>
+            <div class="achievements-grid">
+              <div class="achievement-card">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-title">Java Master</div>
+                <div class="achievement-description">Complete all Java lessons</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-complete-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-title">C++ Master</div>
+                <div class="achievement-description">Complete all C++ lessons</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-complete-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🏆</div>
+                <div class="achievement-title">Python Master</div>
+                <div class="achievement-description">Complete all Python lessons</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-complete-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">👑</div>
+                <div class="achievement-title">Programming Champion</div>
+                <div class="achievement-description">Complete all programming lessons</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="all-complete-progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gaming Spot Section -->
+      <div id="gaming-spot" class="section-content">
+        <h2 class="section-title">Gaming Spot Achievements</h2>
+        <div class="achievement-sections">
+          <!-- Java Gaming Section -->
+          <div class="achievement-section">
+            <h3>Java Gaming</h3>
+            <div class="achievements-grid">
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Easy Master</div>
+                <div class="achievement-description">Score 100+ points in Java Easy Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-easy-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Average Master</div>
+                <div class="achievement-description">Score 100+ points in Java Average Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-average-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">☕</div>
+                <div class="achievement-title">Java Difficult Master</div>
+                <div class="achievement-description">Score 100+ points in Java Difficult Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="java-difficult-progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- C++ Gaming Section -->
+          <div class="achievement-section">
+            <h3>C++ Gaming</h3>
+            <div class="achievements-grid">
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Easy Master</div>
+                <div class="achievement-description">Score 100+ points in C++ Easy Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-easy-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Average Master</div>
+                <div class="achievement-description">Score 100+ points in C++ Average Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-average-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-title">C++ Difficult Master</div>
+                <div class="achievement-description">Score 100+ points in C++ Difficult Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="cpp-difficult-progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Python Gaming Section -->
+          <div class="achievement-section">
+            <h3>Python Gaming</h3>
+            <div class="achievements-grid">
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Easy Master</div>
+                <div class="achievement-description">Score 100+ points in Python Easy Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-easy-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Average Master</div>
+                <div class="achievement-description">Score 100+ points in Python Average Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-average-progress"></div>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">🐍</div>
+                <div class="achievement-title">Python Difficult Master</div>
+                <div class="achievement-description">Score 100+ points in Python Difficult Mode</div>
+                <div class="achievement-progress">
+                  <div class="achievement-progress-fill" id="python-difficult-progress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <script>
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    function playClickAndShowSection(sectionId) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+
+      // Update button states
+      document.querySelectorAll('.section-nav button').forEach(button => {
+        button.classList.remove('active');
+      });
+      const activeButton = document.querySelector(`.section-nav button[onclick*="${sectionId}"]`);
+      if (activeButton) {
+        activeButton.classList.add('active');
+      }
+
+      // Update section visibility with a slight delay for the sound
+      setTimeout(() => {
+        document.querySelectorAll('.section-content').forEach(section => {
+          section.classList.remove('active');
+        });
+        const activeSection = document.getElementById(sectionId);
+        if (activeSection) {
+          activeSection.classList.add('active');
+        }
+      }, 100);
+    }
+
+    // Load achievements progress from localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      // Helper function to get total sections for each lesson
+      function getLessonTotalSections(language, lessonNumber) {
+        const totals = {
+          java: {
+            1: 17, // Total sections in Java lesson 1
+            2: 5,  // Total sections in Java lesson 2
+            3: 16, // Total sections in Java lesson 3
+            4: 8,  // Total sections in Java lesson 4
+            5: 5,  // Total sections in Java lesson 5
+            6: 4   // Total sections in Java lesson 6
+          },
+          cpp: {
+            1: 11, // Total sections in C++ lesson 1
+            2: 11,  // Total sections in C++ lesson 2
+            3: 6, // Total sections in C++ lesson 3
+            4: 11,  // Total sections in C++ lesson 4
+            5: 4, // Total sections in C++ lesson 5
+            6: 10   // Total sections in C++ lesson 6
+          },
+          python: {
+            1: 12, // Total sections in Python lesson 1
+            2: 12, // Total sections in Python lesson 2
+            3: 12, // Total sections in Python lesson 3
+            4: 4,  // Total sections in Python lesson 4
+            5: 13, // Total sections in Python lesson 5
+            6: 10  // Total sections in Python lesson 6
+          }
+        };
+        return totals[language]?.[lessonNumber] || 0;
+      }
+
+      // Get the highest score for a specific language and difficulty
+      function getHighestScore(language, difficulty) {
+        const currentUser = localStorage.getItem('username');
+        const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        const userData = allUsers[currentUser] || {};
+        const userScores = userData.scores || [];
+        
+        // Filter scores for this language and get the highest
+        const relevantScores = userScores.filter(score => 
+          score.language.toLowerCase() === language.toLowerCase() &&
+          score.difficulty === difficulty
+        );
+        
+        if (relevantScores.length === 0) return 0;
+        return Math.max(...relevantScores.map(s => s.score));
+      }
+
+      // Update Gaming Spot progress bars for each language and difficulty
+      const languages = ['java', 'cpp', 'python'];
+      const difficulties = ['easy', 'average', 'difficult'];
+      languages.forEach(lang => {
+        difficulties.forEach(diff => {
+          const highestScore = getHighestScore(lang, diff);
+          const progressBar = document.getElementById(`${lang}-${diff}-progress`);
+          if (progressBar) {
+            // Calculate progress percentage (100% if score >= 100)
+            const percentage = Math.min((highestScore / 100) * 100, 100);
+            progressBar.style.width = percentage + '%';
+            
+            // Update achievement card locked/unlocked state
+            const card = progressBar.closest('.achievement-card');
+            if (card) {
+              if (percentage === 100) {
+                card.classList.remove('achievement-locked');
+              } else {
+                card.classList.add('achievement-locked');
+              }
+            }
+          }
+        });
+      });
+
+      // Load lesson progress
+      function getLessonProgress(language, lessonNumber) {
+        const username = localStorage.getItem('username');
+        if (!username) return new Set();
+
+        // First check user-specific storage
+        const userData = JSON.parse(localStorage.getItem(`userData_${username}`) || '{}');
+        if (userData?.totalProgress?.[language]?.[`lesson${lessonNumber}`] === 100) {
+          return new Set(['completed']);
+        }
+
+        // Then check legacy storage in users object
+        const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        const userLegacyData = allUsers[username] || {};
+        const lessonProgress = userLegacyData[`${language}_lesson${lessonNumber}_progress`] || '[]';
+        return new Set(JSON.parse(lessonProgress));
+      }
+
+      // Calculate overall progress for a language
+      function calculateLanguageProgress(language) {
+        let completedLessons = 0;
+        let totalLessons = 6; // Each language has 6 lessons
+
+        for (let i = 1; i <= totalLessons; i++) {
+          const visitedSections = getLessonProgress(language, i);
+          const totalSections = getLessonTotalSections(language, i);
+          
+          // A lesson is complete if:
+          // 1. It has all sections visited in legacy format
+          // 2. OR it has a 'completed' marker from new format
+          if (visitedSections.has('completed') || visitedSections.size === totalSections) {
+            completedLessons++;
+          }
+        }
+
+        return (completedLessons / totalLessons) * 100;
+      }
+
+      // Update overall achievement cards based on language progress
+      function updateOverallAchievementCards(javaProgress, cppProgress, pythonProgress, totalProgress) {
+        // Java Master achievement (all Java lessons completed)
+        const javaMasterCard = document.querySelector('.achievement-card[data-achievement="java-master"]');
+        if (javaProgress === 100) {
+          javaMasterCard.classList.remove('achievement-locked');
+        } else {
+          javaMasterCard.classList.add('achievement-locked');
+        }
+
+        // C++ Master achievement (all C++ lessons completed)
+        const cppMasterCard = document.querySelector('.achievement-card[data-achievement="cpp-master"]');
+        if (cppProgress === 100) {
+          cppMasterCard.classList.remove('achievement-locked');
+        } else {
+          cppMasterCard.classList.add('achievement-locked');
+        }
+
+        // Python Master achievement (all Python lessons completed)
+        const pythonMasterCard = document.querySelector('.achievement-card[data-achievement="python-master"]');
+        if (pythonProgress === 100) {
+          pythonMasterCard.classList.remove('achievement-locked');
+        } else {
+          pythonMasterCard.classList.add('achievement-locked');
+        }
+
+        // Programming Master achievement (all languages completed)
+        const programmingMasterCard = document.querySelector('.achievement-card[data-achievement="programming-master"]');
+        if (totalProgress === 100) {
+          programmingMasterCard.classList.remove('achievement-locked');
+        } else {
+          programmingMasterCard.classList.add('achievement-locked');
+        }
+      }
+
+      // Load individual lesson progress
+      function updateLessonProgress() {
+        const username = localStorage.getItem('username');
+        if (!username) return; // Don't update if no user is logged in
+
+        for (let i = 1; i <= 6; i++) {
+          // Java lessons progress
+          const javaVisitedSections = getLessonProgress('java', i);
+          const javaTotalSections = getLessonTotalSections('java', i);
+          const javaPercentage = (javaVisitedSections.has('completed') || javaVisitedSections.size === javaTotalSections) ? 100 : (javaVisitedSections.size / javaTotalSections) * 100;
+          const javaProgressBar = document.getElementById(`java-lesson${i}-progress`);
+          if (javaProgressBar) {
+            javaProgressBar.style.width = javaPercentage + '%';
+            const card = javaProgressBar.closest('.achievement-card');
+            if (card) {
+              if (javaPercentage === 100) {
+                card.classList.remove('achievement-locked');
+              } else {
+                card.classList.add('achievement-locked');
+              }
+            }
+          }
+          
+          // C++ lessons progress
+          const cppVisitedSections = getLessonProgress('cpp', i);
+          const cppTotalSections = getLessonTotalSections('cpp', i);
+          const cppPercentage = (cppVisitedSections.has('completed') || cppVisitedSections.size === cppTotalSections) ? 100 : (cppVisitedSections.size / cppTotalSections) * 100;
+          const cppProgressBar = document.getElementById(`cpp-lesson${i}-progress`);
+          if (cppProgressBar) {
+            cppProgressBar.style.width = cppPercentage + '%';
+            const card = cppProgressBar.closest('.achievement-card');
+            if (card) {
+              if (cppPercentage === 100) {
+                card.classList.remove('achievement-locked');
+              } else {
+                card.classList.add('achievement-locked');
+              }
+            }
+          }
+          
+          // Python lessons progress
+          const pythonVisitedSections = getLessonProgress('python', i);
+          const pythonTotalSections = getLessonTotalSections('python', i);
+          const pythonPercentage = (pythonVisitedSections.has('completed') || pythonVisitedSections.size === pythonTotalSections) ? 100 : (pythonVisitedSections.size / pythonTotalSections) * 100;
+          const pythonProgressBar = document.getElementById(`python-lesson${i}-progress`);
+          if (pythonProgressBar) {
+            pythonProgressBar.style.width = pythonPercentage + '%';
+            const card = pythonProgressBar.closest('.achievement-card');
+            if (card) {
+              if (pythonPercentage === 100) {
+                card.classList.remove('achievement-locked');
+              } else {
+                card.classList.add('achievement-locked');
+              }
+            }
+          }
+        }
+
+        // Calculate and update overall progress for each language
+        const javaOverall = calculateLanguageProgress('java');
+        const cppOverall = calculateLanguageProgress('cpp');
+        const pythonOverall = calculateLanguageProgress('python');
+
+        // Update progress bars
+        document.getElementById('java-complete-progress').style.width = javaOverall + '%';
+        document.getElementById('cpp-complete-progress').style.width = cppOverall + '%';
+        document.getElementById('python-complete-progress').style.width = pythonOverall + '%';
+
+        // Calculate total programming progress (average of all languages)
+        const totalProgress = (javaOverall + cppOverall + pythonOverall) / 3;
+        document.getElementById('all-complete-progress').style.width = totalProgress + '%';
+
+        // Update achievement cards
+        updateOverallAchievementCards(javaOverall, cppOverall, pythonOverall, totalProgress);
+      }
+
+      // Initialize progress when page loads
+      window.addEventListener('DOMContentLoaded', () => {
+        updateLessonProgress();
+      });
+    });
+  </script>
+</body>
+</html> 

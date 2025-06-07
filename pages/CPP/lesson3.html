@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Functions - C0D3G0</title>
+  <style>
+    /* Copy the same styles from lesson1/2 */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .main-content section {
+      margin-bottom: 30px;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block !important;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+      flex: 0 1 auto;
+      min-width: max-content;
+    }
+
+    .subsection-nav button.active {
+      border: 2px inset #c0c0c0;
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .next-lesson-btn, .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn {
+      right: 20px;
+    }
+
+    .prev-lesson-btn {
+      left: 20px;
+    }
+
+    .next-lesson-btn:active, .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      .subsection-nav {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding: 5px;
+        gap: 2px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        bottom: 60px;
+        padding: 8px 16px;
+      }
+
+      .next-lesson-btn {
+        right: 10px;
+      }
+
+      .prev-lesson-btn {
+        left: 10px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .subsection-nav button {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        bottom: 50px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .next-lesson-btn {
+        right: 5px;
+      }
+
+      .prev-lesson-btn {
+        left: 5px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .subsection-nav button,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        padding: 8px 12px;
+        min-height: 44px;
+      }
+    }
+
+    @media screen and (max-height: 600px) {
+      .sidebar {
+        max-height: 100px;
+      }
+
+      .main-content {
+        padding-bottom: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">C++ Functions - C0D3G0</div>
+      <div class="window-buttons">
+        <button class="window-button" onclick="window.location.href='../codego_learningpage.html'">✕</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#function-basics" class="sidebar-item" onclick="showSection('function-basics')">C++ Functions</a>
+        <a href="#parameters" class="sidebar-item" onclick="showSection('parameters')">C++ Function Parameters</a>
+        <a href="#overloading" class="sidebar-item" onclick="showSection('overloading')">C++ Function Overloading</a>
+        <a href="#scope" class="sidebar-item" onclick="showSection('scope')">C++ Scope</a>
+        <a href="#recursion" class="sidebar-item" onclick="showSection('recursion')">C++ Recursion</a>
+        <a href="#lambda" class="sidebar-item" onclick="showSection('lambda')">C++ Lambda</a>
+      </div>
+      <div class="main-content">
+        <section id="function-basics">
+          <h1>C++ Functions</h1>
+          <p>Functions are blocks of code that perform specific tasks. They help organize code, promote reusability, and make programs easier to understand.</p>
+          
+          <code>// Basic function syntax
+void functionName(parameters) {
+    // code to be executed
+}
+
+// Function with return value
+int add(int a, int b) {
+    return a + b;
+}
+
+// Function declaration
+void greet(string name);
+
+// Function definition
+void greet(string name) {
+    cout << "Hello, " << name << "!" << endl;
+}
+
+int main() {
+    greet("John");    // Function call
+    int sum = add(5, 3);
+    cout << sum << endl;
+    return 0;
+}</code>
+
+          <div class="example-box">
+            <h3>Real-World Examples</h3>
+            <code>// Temperature converter
+double celsiusToFahrenheit(double celsius) {
+    return (celsius * 9/5) + 32;
+}
+
+// Password validator
+bool isValidPassword(string password) {
+    return password.length() >= 8 && 
+           password.find_first_of("0123456789") != string::npos &&
+           password.find_first_of("ABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos;
+}
+
+// Array processor
+void processArray(vector<int>& numbers) {
+    for(int& num : numbers) {
+        num *= 2;
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="parameters">
+          <h1>C++ Function Parameters</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('parameters', 'params-args')">Parameters/Arguments</button>
+            <button onclick="showSubsection('parameters', 'default')">Default Parameter</button>
+            <button onclick="showSubsection('parameters', 'multiple')">Multiple Parameters</button>
+            <button onclick="showSubsection('parameters', 'return')">Return Values</button>
+            <button onclick="showSubsection('parameters', 'pass-ref')">Pass By Reference</button>
+            <button onclick="showSubsection('parameters', 'pass-arrays')">Pass Arrays</button>
+            <button onclick="showSubsection('parameters', 'pass-struct')">Pass Structures</button>
+            <button onclick="showSubsection('parameters', 'examples')">Real-Life Example</button>
+          </div>
+
+          <div class="subsection" data-id="params-args">
+            <h2>Parameters and Arguments</h2>
+            <p>Parameters are variables in a function declaration, while arguments are the values passed to the function.</p>
+            <code>// Basic parameter example
+void greet(string name) {  // name is a parameter
+    cout << "Hello, " << name << "!" << endl;
+}
+
+int main() {
+    greet("John");  // "John" is an argument
+    return 0;
+}</code>
+          </div>
+
+          <div class="subsection" data-id="default">
+            <h2>Default Parameter</h2>
+            <p>Functions can have default values for parameters.</p>
+            <code>// Function with default parameters
+void printMessage(string msg = "Hello", int times = 1) {
+    for(int i = 0; i < times; i++) {
+        cout << msg << endl;
+    }
+}
+
+int main() {
+    printMessage();           // Uses both defaults
+    printMessage("Hi");       // Uses default times
+    printMessage("Hey", 3);   // Uses no defaults
+    return 0;
+}</code>
+          </div>
+
+          <div class="subsection" data-id="multiple">
+            <h2>Multiple Parameters</h2>
+            <p>Functions can accept multiple parameters of different types.</p>
+            <code>// Function with multiple parameters
+void displayInfo(string name, int age, double height) {
+    cout << "Name: " << name << endl;
+    cout << "Age: " << age << endl;
+    cout << "Height: " << height << " meters" << endl;
+}
+
+// Function with mixed parameter types
+bool isValidRange(int start, int end, string rangeType = "inclusive") {
+    if (rangeType == "inclusive")
+        return start <= end;
+    return start < end;
+}</code>
+          </div>
+
+          <div class="subsection" data-id="return">
+            <h2>Return Values</h2>
+            <p>Functions can return values of different types.</p>
+            <code>// Basic return types
+int add(int a, int b) {
+    return a + b;
+}
+
+string getFullName(string first, string last) {
+    return first + " " + last;
+}
+
+// Multiple return values using tuple
+tuple<int, string, bool> getData() {
+    return make_tuple(42, "Hello", true);
+}
+
+// Multiple returns using struct
+struct Result {
+    int value;
+    bool success;
+    string message;
+};</code>
+          </div>
+
+          <div class="subsection" data-id="pass-ref">
+            <h2>Pass By Reference</h2>
+            <p>Parameters can be passed by reference to modify the original values.</p>
+            <code>// Pass by reference example
+void swapNumbers(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+// Const reference for large objects
+void printPerson(const Person& person) {
+    cout << person.name << ", " << person.age << endl;
+}
+
+// Reference with pointers
+void modifyValue(int* ptr) {
+    if (ptr != nullptr) {
+        *ptr = 100;
+    }
+}</code>
+          </div>
+
+          <div class="subsection" data-id="pass-arrays">
+            <h2>Pass Arrays</h2>
+            <p>Arrays can be passed to functions in several ways.</p>
+            <code>// Pass array by pointer
+void processArray(int* arr, int size) {
+    for(int i = 0; i < size; i++) {
+        arr[i] *= 2;
+    }
+}
+
+// Pass array by reference
+void processArray(int (&arr)[5]) {
+    for(int& num : arr) {
+        num *= 2;
+    }
+}
+
+// Using vectors (modern C++)
+void processVector(vector<int>& numbers) {
+    for(int& num : numbers) {
+        num *= 2;
+    }
+}</code>
+          </div>
+
+          <div class="subsection" data-id="pass-struct">
+            <h2>Pass Structures</h2>
+            <p>Structures can be passed by value or reference.</p>
+            <code>struct Student {
+    string name;
+    int age;
+    vector<double> grades;
+};
+
+// Pass by value
+void printStudent(Student student) {
+    cout << student.name << ", " << student.age << endl;
+}
+
+// Pass by reference (more efficient)
+void updateGrades(Student& student, double newGrade) {
+    student.grades.push_back(newGrade);
+}
+
+// Pass by const reference (read-only)
+void displayGrades(const Student& student) {
+    for(const double& grade : student.grades) {
+        cout << grade << " ";
+    }
+    cout << endl;
+}</code>
+          </div>
+
+          <div class="subsection" data-id="examples">
+            <h2>Real-Life Example</h2>
+            <div class="example-box">
+              <h3>Banking System</h3>
+              <code>struct BankAccount {
+    string accountNumber;
+    string holderName;
+    double balance;
+};
+
+class BankTransaction {
+public:
+    // Pass by reference to modify account
+    static bool transfer(BankAccount& from, BankAccount& to, double amount) {
+        if (from.balance >= amount) {
+            from.balance -= amount;
+            to.balance += amount;
+            return true;
+        }
+        return false;
+    }
+    
+    // Pass by const reference (read-only)
+    static void printStatement(const BankAccount& account) {
+        cout << "Account: " << account.accountNumber << endl;
+        cout << "Holder: " << account.holderName << endl;
+        cout << "Balance: $" << fixed << setprecision(2) << account.balance << endl;
+    }
+};</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="overloading">
+          <h1>C++ Function Overloading</h1>
+          <p>Function overloading allows you to have multiple functions with the same name but different parameters.</p>
+
+          <code>// Basic overloading with different parameter types
+void print(int x) {
+    cout << "Integer: " << x << endl;
+}
+
+void print(double x) {
+    cout << "Double: " << x << endl;
+}
+
+void print(string x) {
+    cout << "String: " << x << endl;
+}
+
+// Overloading with different number of parameters
+int add(int a, int b) {
+    return a + b;
+}
+
+int add(int a, int b, int c) {
+    return a + b + c;
+}
+
+// Overloading with different parameter order
+string combine(string str, int num) {
+    return str + to_string(num);
+}
+
+string combine(int num, string str) {
+    return to_string(num) + str;
+}</code>
+
+          <div class="example-box">
+            <h3>Real-World Example</h3>
+            <code>class MessageFormatter {
+public:
+    // Basic message
+    string format(string message) {
+        return "[INFO] " + message;
+    }
+    
+    // Message with timestamp
+    string format(string message, string timestamp) {
+        return "[" + timestamp + "] " + message;
+    }
+    
+    // Message with level and timestamp
+    string format(string message, string level, string timestamp) {
+        return "[" + level + "][" + timestamp + "] " + message;
+    }
+};</code>
+          </div>
+        </section>
+
+        <section id="scope">
+          <h1>C++ Scope</h1>
+          <p>Scope determines where variables and functions can be accessed in your program.</p>
+
+          <code>// Global scope
+int globalVar = 10;
+
+// Function scope
+void function1() {
+    int localVar = 20;  // Local scope
+    cout << globalVar << endl;  // Can access global
+    cout << localVar << endl;   // Can access local
+}
+
+// Block scope
+void function2() {
+    int x = 1;
+    {
+        int y = 2;
+        cout << x << endl;  // Can access outer scope
+        cout << y << endl;  // Can access same scope
+    }
+    // y is not accessible here
+}
+
+// Class scope
+class MyClass {
+private:
+    int privateVar;    // Class scope
+public:
+    static int count;  // Class scope, shared
+    void method() {
+        int methodVar; // Method scope
+    }
+};</code>
+
+          <div class="example-box">
+            <h3>Scope Rules Example</h3>
+            <code>int x = 0;  // Global
+
+class Counter {
+private:
+    int count;  // Class scope
+    
+public:
+    void increment() {
+        int oldCount = count;  // Local scope
+        count++;
+        cout << "Old: " << oldCount << endl;
+        cout << "New: " << count << endl;
+        cout << "Global x: " << x << endl;
+    }
+};</code>
+          </div>
+        </section>
+
+        <section id="recursion">
+          <h1>C++ Recursion</h1>
+          <p>Recursion is when a function calls itself to solve a problem by breaking it down into smaller subproblems.</p>
+
+          <code>// Basic recursion - Factorial
+int factorial(int n) {
+    if (n <= 1) return 1;  // Base case
+    return n * factorial(n - 1);  // Recursive case
+}
+
+// Fibonacci sequence
+int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n-1) + fibonacci(n-2);
+}
+
+// Sum of array using recursion
+int arraySum(int arr[], int size) {
+    if (size <= 0) return 0;
+    return arr[size-1] + arraySum(arr, size-1);
+}</code>
+
+          <div class="example-box">
+            <h3>Real-World Examples</h3>
+            <code>// Directory traversal
+void listFiles(const string& path, int level = 0) {
+    for (const auto& entry : filesystem::directory_iterator(path)) {
+        cout << string(level * 2, ' ') << entry.path().filename() << endl;
+        if (entry.is_directory()) {
+            listFiles(entry.path().string(), level + 1);
+        }
+    }
+}
+
+// Binary tree traversal
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+
+void inorderTraversal(Node* root) {
+    if (root == nullptr) return;
+    inorderTraversal(root->left);
+    cout << root->data << " ";
+    inorderTraversal(root->right);
+}</code>
+          </div>
+        </section>
+
+        <section id="lambda">
+          <h1>C++ Lambda</h1>
+          <p>Lambda functions are anonymous functions that can be defined inline.</p>
+
+          <code>// Basic lambda syntax
+auto greet = []() {
+    cout << "Hello, World!" << endl;
+};
+
+// Lambda with parameters
+auto add = [](int a, int b) {
+    return a + b;
+};
+
+// Lambda with capture clause
+int multiplier = 10;
+auto multiply = [multiplier](int x) {
+    return x * multiplier;
+};
+
+// Lambda with mutable keyword
+auto counter = [count = 0]() mutable {
+    return ++count;
+};</code>
+
+          <div class="example-box">
+            <h3>Real-World Examples</h3>
+            <code>// Custom sort with lambda
+vector<string> names = {"John", "Alice", "Bob"};
+sort(names.begin(), names.end(),
+    [](const string& a, const string& b) {
+        return a.length() < b.length();
+    });
+
+// Event handler
+class Button {
+public:
+    void onClick(function<void()> handler) {
+        clickHandler = handler;
+    }
+    
+    void click() {
+        if (clickHandler) clickHandler();
+    }
+    
+private:
+    function<void()> clickHandler;
+};
+
+Button btn;
+int clickCount = 0;
+
+btn.onClick([&clickCount]() {
+    clickCount++;
+    cout << "Clicked " << clickCount << " times" << endl;
+});</code>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+    <div class="progress-text" id="progressText">Progress: 0%</div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson2.html')">← Previous Lesson</button>
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson4.html')">Next Lesson →</button>
+
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 6;  // Total number of main sections
+
+    // Load progress from localStorage
+    function loadProgress() {
+        const currentUser = localStorage.getItem('username');
+        const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        const userData = allUsers[currentUser] || {};
+        const savedProgress = userData['cpp_lesson3_progress'];
+        if (savedProgress) {
+            visitedSections = new Set(JSON.parse(savedProgress));
+            updateProgress();
+        }
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        if (!allUsers[currentUser]) {
+            allUsers[currentUser] = {};
+        }
+        allUsers[currentUser]['cpp_lesson3_progress'] = JSON.stringify([...visitedSections]);
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+
+    function updateProgress() {
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        document.querySelector('.progress-fill').style.width = progressPercent + '%';
+        document.querySelector('.progress-text').textContent = 
+            `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        saveProgress(); // Save progress after each update
+    }
+
+    // Load progress when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProgress();
+      showSection('function-basics');  // Show the first section
+      
+      // Add click handlers to sidebar items
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sectionId = item.getAttribute('href').substring(1);
+          showSection(sectionId);
+        });
+      });
+    });
+
+    function showSection(sectionId) {
+      // Hide all sections
+      document.querySelectorAll('.main-content section').forEach(section => {
+        section.style.display = 'none';
+      });
+      
+      // Show selected section
+      const targetSection = document.getElementById(sectionId);
+      if (targetSection) {
+        targetSection.style.display = 'block';
+      
+      // Update sidebar active state
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+      });
+        document.querySelector(`.sidebar-item[onclick*="${sectionId}"]`).classList.add('active');
+      
+      // Show first subsection of the selected section by default
+      const firstSubsection = document.querySelector(`#${sectionId} .subsection`);
+      if (firstSubsection) {
+        document.querySelectorAll(`#${sectionId} .subsection`).forEach(subsection => {
+          subsection.classList.remove('active');
+            subsection.style.display = 'none';
+        });
+        firstSubsection.classList.add('active');
+          firstSubsection.style.display = 'block';
+          
+          // Update button states
+          const buttons = document.querySelectorAll(`#${sectionId} .subsection-nav button`);
+          buttons.forEach(button => button.classList.remove('active'));
+          if (buttons.length > 0) buttons[0].classList.add('active');
+      }
+      
+        visitedSections.add(sectionId);
+      updateProgress();
+      }
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+      // Hide all subsections in the section
+      document.querySelectorAll(`#${sectionId} .subsection`).forEach(subsection => {
+        subsection.classList.remove('active');
+        subsection.style.display = 'none';
+      });
+      
+      // Show selected subsection
+      const subsection = document.querySelector(`#${sectionId} .subsection[data-id="${subsectionId}"]`);
+      if (subsection) {
+        subsection.classList.add('active');
+        subsection.style.display = 'block';
+      }
+
+      // Update button states
+      document.querySelectorAll(`#${sectionId} .subsection-nav button`).forEach(button => {
+        button.classList.remove('active');
+      });
+      const activeButton = document.querySelector(`button[onclick="showSubsection('${sectionId}', '${subsectionId}')"]`);
+      if (activeButton) {
+        activeButton.classList.add('active');
+      }
+    }
+
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+        setTimeout(() => {
+          window.location.href = destination;
+        }, 300); // Wait for 300ms to let the sound play
+      } else {
+        window.location.href = destination;
+      }
+    }
+  </script>
+</body>
+</html> 

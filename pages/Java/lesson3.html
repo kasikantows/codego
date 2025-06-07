@@ -1,0 +1,2627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java Classes - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      height: calc(100vh - 160px);
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      display: none;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+
+    th, td {
+      border: 1px solid #1700d1;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+      height: 50px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn, .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+      display: block;
+    }
+
+    .next-lesson-btn {
+      right: 20px;
+    }
+
+    .prev-lesson-btn {
+      left: 20px;
+    }
+
+    .next-lesson-btn:active,
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    .example-box h3 {
+      color: #1700d1;
+      margin-top: 0;
+    }
+
+    .practice-exercise {
+      background-color: #e6e6ff;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    /* Add horizontal scrolling for long lines in code blocks */
+    .code-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 40px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, black);
+      pointer-events: none;
+      opacity: 0.8;
+      display: none;
+    }
+
+    .code-container.has-scroll::after {
+      display: block;
+    }
+
+    @media screen and (max-width: 768px) {
+      code {
+        font-size: 12px;
+        padding: 10px;
+        line-height: 1.4;
+      }
+
+      .window-content {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        max-height: 200px;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      th, td {
+        padding: 6px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+        margin: 8px 0;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .window-title {
+        font-size: 14px;
+      }
+
+      .sidebar-item {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .progress-container {
+        height: 40px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        font-size: 12px;
+        padding: 8px 16px;
+        bottom: 50px;
+      }
+    }
+
+    /* Add popup styles */
+    
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+  
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Java Classes - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#java-oop" class="sidebar-item active" onclick="showSection('java-oop')">Java OOP</a>
+        <a href="#classes-objects" class="sidebar-item" onclick="showSection('classes-objects')">Java Classes/Objects</a>
+        <a href="#class-attributes" class="sidebar-item" onclick="showSection('class-attributes')">Java Class Attributes</a>
+        <a href="#class-methods" class="sidebar-item" onclick="showSection('class-methods')">Java Class Methods</a>
+        <a href="#constructors" class="sidebar-item" onclick="showSection('constructors')">Java Constructors</a>
+        <a href="#modifiers" class="sidebar-item" onclick="showSection('modifiers')">Java Modifiers</a>
+        <a href="#encapsulation" class="sidebar-item" onclick="showSection('encapsulation')">Java Encapsulation</a>
+        <a href="#packages" class="sidebar-item" onclick="showSection('packages')">Java Packages/API</a>
+        <a href="#inheritance" class="sidebar-item" onclick="showSection('inheritance')">Java Inheritance</a>
+        <a href="#polymorphism" class="sidebar-item" onclick="showSection('polymorphism')">Java Polymorphism</a>
+        <a href="#inner-classes" class="sidebar-item" onclick="showSection('inner-classes')">Java Inner Classes</a>
+        <a href="#abstraction" class="sidebar-item" onclick="showSection('abstraction')">Java Abstraction</a>
+        <a href="#interface" class="sidebar-item" onclick="showSection('interface')">Java Interface</a>
+        <a href="#enums" class="sidebar-item" onclick="showSection('enums')">Java Enums</a>
+        <a href="#user-input" class="sidebar-item" onclick="showSection('user-input')">Java User Input</a>
+        <a href="#date" class="sidebar-item" onclick="showSection('date')">Java Date</a>
+      </div>
+
+      <div class="main-content">
+        <section id="java-oop" class="active">
+          <h1>Java Object-Oriented Programming (OOP)</h1>
+          <p>OOP is a programming paradigm that organizes software design around data, or objects, rather than functions and logic.</p>
+
+          <h2>Core OOP Concepts</h2>
+          <div class="example-box">
+            <h3>The Four Pillars of OOP</h3>
+            <table>
+              <tr>
+                <th>Concept</th>
+                <th>Description</th>
+                <th>Example</th>
+              </tr>
+              <tr>
+                <td>Encapsulation</td>
+                <td>Bundling data and methods that work on that data within one unit</td>
+                <td>Private variables with public getters/setters</td>
+              </tr>
+              <tr>
+                <td>Inheritance</td>
+                <td>Creating new classes that are built upon existing classes</td>
+                <td>Student class inheriting from Person class</td>
+              </tr>
+              <tr>
+                <td>Polymorphism</td>
+                <td>Objects can take on more than one form depending on the context</td>
+                <td>Method overloading and overriding</td>
+              </tr>
+              <tr>
+                <td>Abstraction</td>
+                <td>Hiding complex implementation details and showing only necessary features</td>
+                <td>Abstract classes and interfaces</td>
+              </tr>
+            </table>
+          </div>
+
+          <h2>Benefits of OOP</h2>
+          <ul>
+            <li>Better code organization and modularity</li>
+            <li>Code reusability through inheritance</li>
+            <li>Flexibility through polymorphism</li>
+            <li>Better security through encapsulation</li>
+            <li>Easier maintenance and modification</li>
+          </ul>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Understanding OOP Concepts</h3>
+            <code>
+// Example demonstrating OOP concepts
+// Encapsulation
+public class BankAccount {
+    private double balance;  // Private data
+    
+    // Public methods to access private data
+    public double getBalance() {
+        return balance;
+    }
+    
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+}
+
+// Inheritance
+public class SavingsAccount extends BankAccount {
+    private double interestRate;
+    
+    public void addInterest() {
+        double interest = getBalance() * interestRate;
+        deposit(interest);
+    }
+}
+
+// Polymorphism
+public class AccountManager {
+    public void processAccount(BankAccount account) {
+        // Can handle any type of BankAccount
+        System.out.println("Balance: " + account.getBalance());
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="classes-objects">
+          <h1>Java Classes and Objects</h1>
+          <p>A class is a template or blueprint for creating objects. An object is an instance of a class.</p>
+
+          <h2>Creating a Class</h2>
+          <code>
+public class Car {
+    // Attributes (instance variables)
+    String brand;
+    String model;
+    int year;
+    
+    // Method
+    public void startEngine() {
+        System.out.println("The " + brand + " " + model + " is starting...");
+    }
+}
+
+// Creating objects (instances) of the class
+public class Main {
+    public static void main(String[] args) {
+        // Create first car object
+        Car car1 = new Car();
+        car1.brand = "Toyota";
+        car1.model = "Camry";
+        car1.year = 2022;
+        
+        // Create second car object
+        Car car2 = new Car();
+        car2.brand = "Honda";
+        car2.model = "Civic";
+        car2.year = 2023;
+        
+        // Using the objects
+        car1.startEngine();  // Outputs: The Toyota Camry is starting...
+        car2.startEngine();  // Outputs: The Honda Civic is starting...
+    }
+}</code>
+
+          <h2>Class Members</h2>
+          <div class="example-box">
+            <h3>Components of a Class</h3>
+            <ul>
+              <li>Fields (Attributes/Properties)</li>
+              <li>Methods (Functions/Behaviors)</li>
+              <li>Constructors</li>
+              <li>Nested Classes and Interfaces</li>
+            </ul>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Creating a Student Class</h3>
+            <code>
+public class Student {
+    // Attributes
+    String name;
+    int age;
+    String[] courses;
+    double gpa;
+    
+    // Method to enroll in a course
+    public void enrollCourse(String course) {
+        System.out.println(name + " has enrolled in " + course);
+    }
+    
+    // Method to calculate GPA
+    public void calculateGPA(double[] grades) {
+        double sum = 0;
+        for (double grade : grades) {
+            sum += grade;
+        }
+        gpa = sum / grades.length;
+    }
+    
+    // Method to display student info
+    public void displayInfo() {
+        System.out.println("Student: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("GPA: " + gpa);
+    }
+}
+
+// Using the Student class
+public class Main {
+    public static void main(String[] args) {
+        Student student1 = new Student();
+        student1.name = "John Smith";
+        student1.age = 20;
+        
+        student1.enrollCourse("Java Programming");
+        double[] grades = {3.5, 4.0, 3.8};
+        student1.calculateGPA(grades);
+        student1.displayInfo();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="class-attributes">
+          <h1>Java Class Attributes</h1>
+          <p>Class attributes are variables within a class that describe the characteristics of objects.</p>
+
+          <h2>Types of Attributes</h2>
+          <div class="example-box">
+            <h3>Access Modifiers</h3>
+            <table>
+              <tr>
+                <th>Modifier</th>
+                <th>Description</th>
+                <th>Accessibility</th>
+              </tr>
+              <tr>
+                <td>private</td>
+                <td>Only accessible within the class</td>
+                <td>Class only</td>
+              </tr>
+              <tr>
+                <td>public</td>
+                <td>Accessible from any other class</td>
+                <td>Any class</td>
+              </tr>
+              <tr>
+                <td>protected</td>
+                <td>Accessible in same package and subclasses</td>
+                <td>Package + Subclasses</td>
+              </tr>
+              <tr>
+                <td>(default)</td>
+                <td>Only accessible in same package</td>
+                <td>Package only</td>
+              </tr>
+            </table>
+          </div>
+
+          <h2>Working with Attributes</h2>
+          <code>
+public class Person {
+    // Private attributes with different data types
+    private String name;
+    private int age;
+    private double height;
+    private boolean isStudent;
+    
+    // Static attribute (shared by all instances)
+    public static int personCount = 0;
+    
+    // Final attribute (constant)
+    public final String SPECIES = "Homo Sapiens";
+    
+    // Getter methods
+    public String getName() {
+        return name;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+    
+    // Setter methods
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public void setAge(int age) {
+        if (age > 0) {
+            this.age = age;
+        }
+    }
+}</code>
+
+          <h2>Best Practices</h2>
+          <ul>
+            <li>Use private attributes to implement encapsulation</li>
+            <li>Provide public getter and setter methods</li>
+            <li>Validate data in setter methods</li>
+            <li>Use meaningful names for attributes</li>
+            <li>Initialize attributes with default values when appropriate</li>
+          </ul>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Employee Class with Attributes</h3>
+            <code>
+public class Employee {
+    // Private attributes
+    private String employeeId;
+    private String name;
+    private double salary;
+    private String department;
+    
+    // Static counter for employee IDs
+    private static int idCounter = 1000;
+    
+    // Constructor
+    public Employee(String name, double salary, String department) {
+        this.employeeId = "EMP" + (++idCounter);
+        this.name = name;
+        this.salary = salary;
+        this.department = department;
+    }
+    
+    // Getter and Setter methods
+    public String getEmployeeId() {
+        return employeeId;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name;
+        }
+    }
+    
+    public double getSalary() {
+        return salary;
+    }
+    
+    public void setSalary(double salary) {
+        if (salary > 0) {
+            this.salary = salary;
+        }
+    }
+    
+    // Method to give raise
+    public void giveRaise(double percentage) {
+        if (percentage > 0) {
+            this.salary += this.salary * (percentage / 100);
+        }
+    }
+    
+    // Method to display employee info
+    public void displayInfo() {
+        System.out.println("Employee ID: " + employeeId);
+        System.out.println("Name: " + name);
+        System.out.println("Salary: $" + salary);
+        System.out.println("Department: " + department);
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="class-methods">
+          <h1>Java Class Methods</h1>
+          <p>Methods are functions that belong to a class and define the behaviors of objects.</p>
+
+          <h2>Types of Methods</h2>
+          <div class="example-box">
+            <h3>Method Categories</h3>
+            <ul>
+              <li>Instance Methods (Non-static methods)</li>
+              <li>Static Methods (Class methods)</li>
+              <li>Accessor Methods (Getters)</li>
+              <li>Mutator Methods (Setters)</li>
+              <li>Helper Methods (Private methods)</li>
+            </ul>
+          </div>
+
+          <h2>Method Declaration and Implementation</h2>
+          <code>
+public class Calculator {
+    // Instance method
+    public double add(double a, double b) {
+        return a + b;
+    }
+    
+    // Static method
+    public static double multiply(double a, double b) {
+        return a * b;
+    }
+    
+    // Method with multiple parameters
+    public double average(double... numbers) {
+        double sum = 0;
+        for (double num : numbers) {
+            sum += num;
+        }
+        return numbers.length > 0 ? sum / numbers.length : 0;
+    }
+    
+    // Method overloading
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}</code>
+
+          <h2>Method Overloading</h2>
+          <code>
+public class Shape {
+    // Method overloading example
+    public double calculateArea(double radius) {
+        // Circle area
+        return Math.PI * radius * radius;
+    }
+    
+    public double calculateArea(double length, double width) {
+        // Rectangle area
+        return length * width;
+    }
+    
+    public double calculateArea(double a, double b, double c) {
+        // Triangle area using Heron's formula
+        double s = (a + b + c) / 2;
+        return Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    }
+}</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Banking System Methods</h3>
+            <code>
+public class BankAccount {
+    private String accountNumber;
+    private double balance;
+    private String accountHolder;
+    private static double interestRate = 0.05;
+    
+    // Constructor
+    public BankAccount(String accountHolder) {
+        this.accountHolder = accountHolder;
+        this.accountNumber = generateAccountNumber();
+        this.balance = 0.0;
+    }
+    
+    // Private helper method
+    private String generateAccountNumber() {
+        return "ACC" + System.currentTimeMillis();
+    }
+    
+    // Instance methods
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            displayTransaction("Deposit", amount);
+        }
+    }
+    
+    public boolean withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            displayTransaction("Withdrawal", amount);
+            return true;
+        }
+        return false;
+    }
+    
+    // Private helper method
+    private void displayTransaction(String type, double amount) {
+        System.out.printf("%s: $%.2f%n", type, amount);
+        System.out.printf("New Balance: $%.2f%n", balance);
+    }
+    
+    // Static method
+    public static void setInterestRate(double rate) {
+        if (rate >= 0 && rate <= 0.1) {
+            interestRate = rate;
+        }
+    }
+    
+    // Method that uses static variable
+    public void addInterest() {
+        double interest = balance * interestRate;
+        balance += interest;
+        System.out.printf("Added interest: $%.2f%n", interest);
+    }
+    
+    // Overloaded methods
+    public void transfer(BankAccount recipient, double amount) {
+        if (withdraw(amount)) {
+            recipient.deposit(amount);
+            System.out.println("Transfer successful");
+        } else {
+            System.out.println("Transfer failed: Insufficient funds");
+        }
+    }
+    
+    public void transfer(String recipientNumber, double amount) {
+        // Different implementation for external transfers
+        System.out.println("External transfer processing...");
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="constructors">
+          <h1>Java Constructors</h1>
+          <p>A constructor is a special method used to initialize objects. It is called when an object is created using the new keyword.</p>
+
+          <h2>Types of Constructors</h2>
+          <div class="example-box">
+            <h3>Constructor Categories</h3>
+            <ul>
+              <li>Default Constructor (No parameters)</li>
+              <li>Parameterized Constructor</li>
+              <li>Copy Constructor</li>
+              <li>Chained Constructors (Constructor Overloading)</li>
+            </ul>
+          </div>
+
+          <h2>Constructor Implementation</h2>
+          <code>
+public class Student {
+    private String name;
+    private int age;
+    private double gpa;
+    
+    // Default constructor
+    public Student() {
+        this.name = "Unknown";
+        this.age = 0;
+        this.gpa = 0.0;
+    }
+    
+    // Parameterized constructor
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+        this.gpa = 0.0;
+    }
+    
+    // Constructor with all parameters
+    public Student(String name, int age, double gpa) {
+        this.name = name;
+        this.age = age;
+        this.gpa = gpa;
+    }
+    
+    // Copy constructor
+    public Student(Student other) {
+        this.name = other.name;
+        this.age = other.age;
+        this.gpa = other.gpa;
+    }
+}</code>
+
+          <h2>Constructor Chaining</h2>
+          <code>
+public class Person {
+    private String name;
+    private int age;
+    private String address;
+    private String phone;
+    
+    // Constructor with all parameters
+    public Person(String name, int age, String address, String phone) {
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.phone = phone;
+    }
+    
+    // Constructor with three parameters
+    public Person(String name, int age, String address) {
+        this(name, age, address, "Unknown");  // Calls four-parameter constructor
+    }
+    
+    // Constructor with two parameters
+    public Person(String name, int age) {
+        this(name, age, "Unknown");  // Calls three-parameter constructor
+    }
+    
+    // Constructor with one parameter
+    public Person(String name) {
+        this(name, 0);  // Calls two-parameter constructor
+    }
+    
+    // Default constructor
+    public Person() {
+        this("Unknown");  // Calls one-parameter constructor
+    }
+}</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Product Class with Constructors</h3>
+            <code>
+public class Product {
+    private String id;
+    private String name;
+    private double price;
+    private int quantity;
+    private String category;
+    private static int productCount = 0;
+    
+    // Default constructor
+    public Product() {
+        this("Unknown Product");
+    }
+    
+    // Constructor with name
+    public Product(String name) {
+        this(name, 0.0);
+    }
+    
+    // Constructor with name and price
+    public Product(String name, double price) {
+        this(name, price, 0);
+    }
+    
+    // Constructor with name, price, and quantity
+    public Product(String name, double price, int quantity) {
+        this(name, price, quantity, "Uncategorized");
+    }
+    
+    // Main constructor
+    public Product(String name, double price, int quantity, String category) {
+        this.id = generateId();
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.category = category;
+    }
+    
+    // Copy constructor
+    public Product(Product other) {
+        this(other.name, other.price, other.quantity, other.category);
+    }
+    
+    // Private helper method to generate unique ID
+    private String generateId() {
+        return "PROD" + (++productCount);
+    }
+    
+    // Method to display product info
+    public void displayInfo() {
+        System.out.println("Product ID: " + id);
+        System.out.println("Name: " + name);
+        System.out.println("Price: $" + price);
+        System.out.println("Quantity: " + quantity);
+        System.out.println("Category: " + category);
+    }
+    
+    // Example usage
+    public static void main(String[] args) {
+        // Using different constructors
+        Product p1 = new Product();  // Default constructor
+        Product p2 = new Product("Laptop");  // Name only
+        Product p3 = new Product("Phone", 999.99);  // Name and price
+        Product p4 = new Product("Tablet", 499.99, 10);  // Name, price, quantity
+        Product p5 = new Product("Camera", 799.99, 5, "Electronics");  // All parameters
+        
+        // Using copy constructor
+        Product p6 = new Product(p5);  // Creates a copy of p5
+        
+        // Display information
+        System.out.println("Product 1:");
+        p1.displayInfo();
+        System.out.println("\nProduct 5:");
+        p5.displayInfo();
+        System.out.println("\nCopied Product:");
+        p6.displayInfo();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="modifiers">
+          <h1>Java Modifiers</h1>
+          <p>Modifiers are keywords that you add to declarations to change their meanings. Java has two categories of modifiers: access modifiers and non-access modifiers.</p>
+
+          <h2>Access Modifiers</h2>
+          <div class="example-box">
+            <h3>Types of Access Modifiers</h3>
+            <table>
+              <tr>
+                <th>Modifier</th>
+                <th>Class</th>
+                <th>Package</th>
+                <th>Subclass</th>
+                <th>World</th>
+              </tr>
+              <tr>
+                <td>public</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>✓</td>
+              </tr>
+              <tr>
+                <td>protected</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>✗</td>
+              </tr>
+              <tr>
+                <td>default</td>
+                <td>✓</td>
+                <td>✓</td>
+                <td>✗</td>
+                <td>✗</td>
+              </tr>
+              <tr>
+                <td>private</td>
+                <td>✓</td>
+                <td>✗</td>
+                <td>✗</td>
+                <td>✗</td>
+              </tr>
+            </table>
+          </div>
+
+          <h2>Non-Access Modifiers</h2>
+          <code>
+// Example of non-access modifiers
+public class ModifierExample {
+    // final: Cannot be changed
+    final double PI = 3.14159;
+    
+    // static: Belongs to class, not instance
+    static int counter = 0;
+    
+    // abstract: Must be implemented by subclass
+    abstract class Shape {
+        abstract void draw();
+    }
+    
+    // synchronized: Thread-safe method
+    synchronized void increment() {
+        counter++;
+    }
+    
+    // transient: Skip serialization
+    transient String tempData;
+    
+    // volatile: Thread-safe variable
+    volatile boolean flag;
+}</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Using Modifiers</h3>
+            <code>
+public class ModifierPractice {
+    // Private instance variables
+    private String name;
+    private static int instanceCount = 0;
+    
+    // Public constructor
+    public ModifierPractice(String name) {
+        this.name = name;
+        instanceCount++;
+    }
+    
+    // Protected method
+    protected void display() {
+        System.out.println("Name: " + name);
+    }
+    
+    // Static method
+    public static int getInstanceCount() {
+        return instanceCount;
+    }
+    
+    // Final method
+    public final void printInfo() {
+        System.out.println("This method cannot be overridden");
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="encapsulation">
+          <h1>Java Encapsulation</h1>
+          <p>Encapsulation is the mechanism of wrapping data and code together as a single unit and hiding internal details from the outside world.</p>
+
+          <h2>Benefits of Encapsulation</h2>
+          <ul>
+            <li>Better control of class attributes and methods</li>
+            <li>Class attributes can be made read-only or write-only</li>
+            <li>Increased security of data</li>
+            <li>Flexibility to change code implementation</li>
+          </ul>
+
+          <div class="example-box">
+            <h3>Implementing Encapsulation</h3>
+            <code>
+public class BankAccount {
+    // Private attributes
+    private String accountNumber;
+    private double balance;
+    private String accountHolder;
+    
+    // Constructor
+    public BankAccount(String accountHolder) {
+        this.accountHolder = accountHolder;
+        this.accountNumber = generateAccountNumber();
+        this.balance = 0.0;
+    }
+    
+    // Private method
+    private String generateAccountNumber() {
+        return "ACC" + System.currentTimeMillis();
+    }
+    
+    // Public getter methods
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+    
+    public String getAccountHolder() {
+        return accountHolder;
+    }
+    
+    // Public setter method with validation
+    public void setAccountHolder(String accountHolder) {
+        if (accountHolder != null && !accountHolder.trim().isEmpty()) {
+            this.accountHolder = accountHolder;
+        }
+    }
+    
+    // Public methods for transactions
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+    
+    public boolean withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            return true;
+        }
+        return false;
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Create an Encapsulated Student Class</h3>
+            <code>
+public class Student {
+    // Private fields
+    private String studentId;
+    private String name;
+    private int age;
+    private double[] grades;
+    
+    // Constructor
+    public Student(String name, int age) {
+        this.studentId = generateId();
+        this.name = name;
+        this.age = age;
+        this.grades = new double[0];
+    }
+    
+    // Private helper method
+    private String generateId() {
+        return "STU" + System.currentTimeMillis();
+    }
+    
+    // Getter methods
+    public String getStudentId() {
+        return studentId;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+    
+    public double[] getGrades() {
+        return grades.clone(); // Return copy to maintain encapsulation
+    }
+    
+    // Setter methods with validation
+    public void setName(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name;
+        }
+    }
+    
+    public void setAge(int age) {
+        if (age > 0 && age < 120) {
+            this.age = age;
+        }
+    }
+    
+    // Method to add grade
+    public void addGrade(double grade) {
+        if (grade >= 0 && grade <= 100) {
+            double[] newGrades = new double[grades.length + 1];
+            System.arraycopy(grades, 0, newGrades, 0, grades.length);
+            newGrades[grades.length] = grade;
+            grades = newGrades;
+        }
+    }
+    
+    // Method to calculate average
+    public double calculateAverage() {
+        if (grades.length == 0) return 0;
+        double sum = 0;
+        for (double grade : grades) {
+            sum += grade;
+        }
+        return sum / grades.length;
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="packages">
+          <h1>Java Packages and API</h1>
+          <p>Packages are used to group related classes, interfaces, and sub-packages. The Java API provides a large collection of packages that you can use in your applications.</p>
+
+          <h2>Common Java Packages</h2>
+          <div class="example-box">
+            <h3>Frequently Used Packages</h3>
+            <table>
+              <tr>
+                <th>Package</th>
+                <th>Description</th>
+                <th>Common Classes</th>
+              </tr>
+              <tr>
+                <td>java.lang</td>
+                <td>Fundamental classes</td>
+                <td>String, Math, System</td>
+              </tr>
+              <tr>
+                <td>java.util</td>
+                <td>Collections framework</td>
+                <td>ArrayList, HashMap, Scanner</td>
+              </tr>
+              <tr>
+                <td>java.io</td>
+                <td>Input/Output operations</td>
+                <td>File, FileReader, PrintWriter</td>
+              </tr>
+              <tr>
+                <td>java.net</td>
+                <td>Networking operations</td>
+                <td>URL, Socket, InetAddress</td>
+              </tr>
+            </table>
+          </div>
+
+          <h2>Creating and Using Packages</h2>
+          <code>
+// File: com/example/banking/Account.java
+package com.example.banking;
+
+public class Account {
+    private double balance;
+    
+    public Account(double initialBalance) {
+        this.balance = initialBalance;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+}
+
+// File: com/example/banking/Transaction.java
+package com.example.banking;
+
+import java.util.Date;
+
+public class Transaction {
+    private Date date;
+    private double amount;
+    private String type;
+    
+    public Transaction(double amount, String type) {
+        this.date = new Date();
+        this.amount = amount;
+        this.type = type;
+    }
+}
+
+// File: com/example/main/BankingApp.java
+package com.example.main;
+
+import com.example.banking.Account;
+import com.example.banking.Transaction;
+
+public class BankingApp {
+    public static void main(String[] args) {
+        Account account = new Account(1000.0);
+        Transaction deposit = new Transaction(500.0, "deposit");
+    }
+}</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Creating a Custom Package</h3>
+            <code>
+// File: com/example/school/Course.java
+package com.example.school;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Course {
+    private String courseId;
+    private String name;
+    private List<Student> students;
+    
+    public Course(String name) {
+        this.courseId = "CRS" + System.currentTimeMillis();
+        this.name = name;
+        this.students = new ArrayList<>();
+    }
+    
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+    
+    public List<Student> getStudents() {
+        return new ArrayList<>(students);
+    }
+}
+
+// File: com/example/school/Student.java
+package com.example.school;
+
+public class Student {
+    private String studentId;
+    private String name;
+    
+    public Student(String name) {
+        this.studentId = "STU" + System.currentTimeMillis();
+        this.name = name;
+    }
+    
+    public String getStudentId() {
+        return studentId;
+    }
+    
+    public String getName() {
+        return name;
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="inheritance">
+          <h1>Java Inheritance</h1>
+          <p>Inheritance is a mechanism that allows a class to inherit attributes and methods from another class. It provides code reusability and establishes a relationship between parent and child classes.</p>
+
+          <h2>Types of Inheritance</h2>
+          <div class="example-box">
+            <h3>Inheritance Relationships</h3>
+            <ul>
+              <li>Single Inheritance</li>
+              <li>Multilevel Inheritance</li>
+              <li>Hierarchical Inheritance</li>
+              <li>Multiple Inheritance (through interfaces)</li>
+            </ul>
+          </div>
+
+          <h2>Implementing Inheritance</h2>
+          <code>
+// Parent class
+public class Animal {
+    protected String name;
+    protected String species;
+    
+    public Animal(String name, String species) {
+        this.name = name;
+        this.species = species;
+    }
+    
+    public void eat() {
+        System.out.println(name + " is eating");
+    }
+    
+    public void sleep() {
+        System.out.println(name + " is sleeping");
+    }
+}
+
+// Child class
+public class Dog extends Animal {
+    private String breed;
+    
+    public Dog(String name, String breed) {
+        super(name, "Canis lupus familiaris");
+        this.breed = breed;
+    }
+    
+    public void bark() {
+        System.out.println(name + " is barking");
+    }
+    
+    // Method overriding
+    @Override
+    public void eat() {
+        System.out.println(name + " the " + breed + " is eating dog food");
+    }
+}
+
+// Another child class
+public class Cat extends Animal {
+    private boolean isIndoor;
+    
+    public Cat(String name, boolean isIndoor) {
+        super(name, "Felis catus");
+        this.isIndoor = isIndoor;
+    }
+    
+    public void meow() {
+        System.out.println(name + " is meowing");
+    }
+    
+    @Override
+    public void sleep() {
+        if (isIndoor) {
+            System.out.println(name + " is sleeping on the couch");
+        } else {
+            System.out.println(name + " is sleeping outside");
+        }
+    }
+}</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Vehicle Inheritance Hierarchy</h3>
+            <code>
+// Base class
+public class Vehicle {
+    protected String brand;
+    protected String model;
+    protected int year;
+    protected double price;
+    
+    public Vehicle(String brand, String model, int year, double price) {
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+        this.price = price;
+    }
+    
+    public void start() {
+        System.out.println("The vehicle is starting");
+    }
+    
+    public void stop() {
+        System.out.println("The vehicle is stopping");
+    }
+    
+    public double calculateValue() {
+        int age = 2024 - year;
+        return price * Math.pow(0.85, age); // 15% depreciation per year
+    }
+}
+
+// Car class
+public class Car extends Vehicle {
+    private int numDoors;
+    private String fuelType;
+    
+    public Car(String brand, String model, int year, double price, 
+               int numDoors, String fuelType) {
+        super(brand, model, year, price);
+        this.numDoors = numDoors;
+        this.fuelType = fuelType;
+    }
+    
+    @Override
+    public void start() {
+        System.out.println("The " + brand + " " + model + " car is starting");
+        System.out.println("Fuel type: " + fuelType);
+    }
+    
+    public void honk() {
+        System.out.println("Beep beep!");
+    }
+}
+
+// Motorcycle class
+public class Motorcycle extends Vehicle {
+    private String type; // Sport, Cruiser, etc.
+    private boolean hasSidecar;
+    
+    public Motorcycle(String brand, String model, int year, double price,
+                     String type, boolean hasSidecar) {
+        super(brand, model, year, price);
+        this.type = type;
+        this.hasSidecar = hasSidecar;
+    }
+    
+    @Override
+    public void start() {
+        System.out.println("The " + brand + " " + model + " motorcycle is starting");
+        System.out.println("Type: " + type);
+    }
+    
+    public void wheelie() {
+        System.out.println("Performing a wheelie!");
+    }
+    
+    @Override
+    public double calculateValue() {
+        // Motorcycles depreciate slower
+        int age = 2024 - year;
+        return price * Math.pow(0.90, age); // 10% depreciation per year
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="polymorphism">
+          <h1>Java Polymorphism</h1>
+          <p>Polymorphism means "many forms", and it occurs when we have many classes that are related to each other by inheritance.</p>
+
+          <h2>Types of Polymorphism</h2>
+          <div class="example-box">
+            <h3>1. Method Overriding (Runtime Polymorphism)</h3>
+            <code>
+// Parent class
+class Animal {
+    public void makeSound() {
+        System.out.println("Some sound");
+    }
+}
+
+// Child classes
+class Dog extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Woof!");
+    }
+}
+
+class Cat extends Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Meow!");
+    }
+}
+
+// Using polymorphism
+public class Main {
+    public static void main(String[] args) {
+        Animal myDog = new Dog();  // Animal reference, Dog object
+        Animal myCat = new Cat();  // Animal reference, Cat object
+        
+        myDog.makeSound();  // Outputs: Woof!
+        myCat.makeSound();  // Outputs: Meow!
+    }
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>2. Method Overloading (Compile-time Polymorphism)</h3>
+            <code>
+class Calculator {
+    // Method overloading
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    public double add(double a, double b) {
+        return a + b;
+    }
+    
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+        
+        System.out.println(calc.add(5, 3));       // calls first method
+        System.out.println(calc.add(4.5, 3.2));   // calls second method
+        System.out.println(calc.add(2, 3, 4));    // calls third method
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Shape Calculator</h3>
+            <code>
+abstract class Shape {
+    abstract double getArea();
+}
+
+class Circle extends Shape {
+    private double radius;
+    
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+    
+    @Override
+    double getArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class Rectangle extends Shape {
+    private double width;
+    private double height;
+    
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    @Override
+    double getArea() {
+        return width * height;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Shape circle = new Circle(5);
+        Shape rectangle = new Rectangle(4, 6);
+        
+        System.out.println("Circle area: " + circle.getArea());
+        System.out.println("Rectangle area: " + rectangle.getArea());
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="inner-classes">
+          <h1>Java Inner Classes</h1>
+          <p>In Java, it is possible to nest classes (a class within a class). The purpose of nested classes is to group classes that belong together and to achieve encapsulation.</p>
+
+          <h2>Types of Inner Classes</h2>
+          <div class="example-box">
+            <h3>1. Non-Static Inner Class</h3>
+            <code>
+class OuterClass {
+    private int x = 10;
+    
+    class InnerClass {
+        public void display() {
+            System.out.println("Value of x: " + x);  // Can access outer class members
+        }
+    }
+    
+    public void createInner() {
+        InnerClass inner = new InnerClass();
+        inner.display();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        OuterClass outer = new OuterClass();
+        OuterClass.InnerClass inner = outer.new InnerClass();
+        inner.display();
+    }
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>2. Static Inner Class</h3>
+            <code>
+class OuterClass {
+    private static int x = 10;
+    
+    static class StaticInnerClass {
+        public void display() {
+            System.out.println("Static x: " + x);  // Can only access static members
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        OuterClass.StaticInnerClass inner = new OuterClass.StaticInnerClass();
+        inner.display();
+    }
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>3. Local Inner Class</h3>
+            <code>
+public class OuterClass {
+    public void method() {
+        class LocalInnerClass {
+            public void print() {
+                System.out.println("Local inner class method");
+            }
+        }
+        
+        LocalInnerClass local = new LocalInnerClass();
+        local.print();
+    }
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>4. Anonymous Inner Class</h3>
+            <code>
+interface Message {
+    void display();
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Message message = new Message() {
+            @Override
+            public void display() {
+                System.out.println("Anonymous inner class");
+            }
+        };
+        
+        message.display();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="abstraction">
+          <h1>Java Abstraction</h1>
+          <p>Abstraction is a process of hiding implementation details and showing only functionality to the user. It can be achieved with abstract classes and interfaces.</p>
+
+          <h2>Abstract Classes</h2>
+          <div class="example-box">
+            <h3>Abstract Class Example</h3>
+            <code>
+abstract class Animal {
+    protected String name;
+    
+    public Animal(String name) {
+        this.name = name;
+    }
+    
+    // Abstract method - must be implemented by subclasses
+    abstract void makeSound();
+    
+    // Concrete method
+    public void sleep() {
+        System.out.println(name + " is sleeping");
+    }
+}
+
+class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+    
+    @Override
+    void makeSound() {
+        System.out.println(name + " says: Woof!");
+    }
+}
+
+class Cat extends Animal {
+    public Cat(String name) {
+        super(name);
+    }
+    
+    @Override
+    void makeSound() {
+        System.out.println(name + " says: Meow!");
+    }
+}</code>
+          </div>
+
+          <h2>Interfaces</h2>
+          <div class="example-box">
+            <h3>Interface Example</h3>
+            <code>
+interface Vehicle {
+    void start();
+    void stop();
+    default void horn() {  // Default method
+        System.out.println("Beep!");
+    }
+}
+
+class Car implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Car is starting");
+    }
+    
+    @Override
+    public void stop() {
+        System.out.println("Car is stopping");
+    }
+}
+
+class Motorcycle implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Motorcycle is starting");
+    }
+    
+    @Override
+    public void stop() {
+        System.out.println("Motorcycle is stopping");
+    }
+    
+    @Override
+    public void horn() {
+        System.out.println("Motorcycle horn!");
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Banking System</h3>
+            <code>
+interface Account {
+    void deposit(double amount);
+    void withdraw(double amount);
+    double getBalance();
+}
+
+abstract class BankAccount implements Account {
+    protected double balance;
+    protected String accountNumber;
+    
+    public BankAccount(String accountNumber) {
+        this.accountNumber = accountNumber;
+        this.balance = 0.0;
+    }
+    
+    @Override
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("Deposited: $" + amount);
+        }
+    }
+    
+    @Override
+    public double getBalance() {
+        return balance;
+    }
+    
+    abstract void calculateInterest();
+}
+
+class SavingsAccount extends BankAccount {
+    private double interestRate;
+    
+    public SavingsAccount(String accountNumber, double interestRate) {
+        super(accountNumber);
+        this.interestRate = interestRate;
+    }
+    
+    @Override
+    public void withdraw(double amount) {
+        if (amount > 0 && balance >= amount) {
+            balance -= amount;
+            System.out.println("Withdrawn: $" + amount);
+        } else {
+            System.out.println("Insufficient funds");
+        }
+    }
+    
+    @Override
+    void calculateInterest() {
+        double interest = balance * interestRate;
+        deposit(interest);
+        System.out.println("Interest added: $" + interest);
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="interface">
+          <h1>Java Interface</h1>
+          <p>An interface is a completely abstract class that contains only abstract methods. It can be used to achieve abstraction and multiple inheritance in Java.</p>
+
+          <h2>Interface Basics</h2>
+          <div class="example-box">
+            <h3>Basic Interface Example</h3>
+            <code>
+interface Animal {
+    void makeSound();  // abstract by default
+    void eat();        // abstract by default
+}
+
+class Cat implements Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Meow!");
+    }
+    
+    @Override
+    public void eat() {
+        System.out.println("Cat is eating fish");
+    }
+}
+
+class Dog implements Animal {
+    @Override
+    public void makeSound() {
+        System.out.println("Woof!");
+    }
+    
+    @Override
+    public void eat() {
+        System.out.println("Dog is eating bone");
+    }
+}</code>
+          </div>
+
+          <h2>Multiple Interfaces</h2>
+          <div class="example-box">
+            <h3>Implementing Multiple Interfaces</h3>
+            <code>
+interface Flyable {
+    void fly();
+}
+
+interface Swimmable {
+    void swim();
+}
+
+class Duck implements Animal, Flyable, Swimmable {
+    @Override
+    public void makeSound() {
+        System.out.println("Quack!");
+    }
+    
+    @Override
+    public void eat() {
+        System.out.println("Duck is eating seeds");
+    }
+    
+    @Override
+    public void fly() {
+        System.out.println("Duck is flying");
+    }
+    
+    @Override
+    public void swim() {
+        System.out.println("Duck is swimming");
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Media Player Interface</h3>
+            <code>
+interface MediaPlayer {
+    void play();
+    void pause();
+    void stop();
+    void next();
+    void previous();
+}
+
+interface VolumeControl {
+    void setVolume(int level);
+    int getVolume();
+}
+
+class MusicPlayer implements MediaPlayer, VolumeControl {
+    private int volume = 50;
+    private boolean isPlaying = false;
+    
+    @Override
+    public void play() {
+        isPlaying = true;
+        System.out.println("Music is playing");
+    }
+    
+    @Override
+    public void pause() {
+        isPlaying = false;
+        System.out.println("Music is paused");
+    }
+    
+    @Override
+    public void stop() {
+        isPlaying = false;
+        System.out.println("Music is stopped");
+    }
+    
+    @Override
+    public void next() {
+        System.out.println("Playing next track");
+    }
+    
+    @Override
+    public void previous() {
+        System.out.println("Playing previous track");
+    }
+    
+    @Override
+    public void setVolume(int level) {
+        if (level >= 0 && level <= 100) {
+            this.volume = level;
+            System.out.println("Volume set to: " + level);
+        }
+    }
+    
+    @Override
+    public int getVolume() {
+        return volume;
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="enums">
+          <h1>Java Enums</h1>
+          <p>An enum is a special class that represents a group of constants (unchangeable variables). Enums are useful when you have a fixed set of values.</p>
+
+          <h2>Basic Enum</h2>
+          <div class="example-box">
+            <h3>Simple Enum Example</h3>
+            <code>
+enum Level {
+    LOW,
+    MEDIUM,
+    HIGH
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Level myLevel = Level.MEDIUM;
+        
+        switch(myLevel) {
+            case LOW:
+                System.out.println("Low level");
+                break;
+            case MEDIUM:
+                System.out.println("Medium level");
+                break;
+            case HIGH:
+                System.out.println("High level");
+                break;
+        }
+    }
+}</code>
+          </div>
+
+          <h2>Enum with Properties</h2>
+          <div class="example-box">
+            <h3>Advanced Enum Example</h3>
+            <code>
+enum Planet {
+    MERCURY(3.303e+23, 2.4397e6),
+    VENUS(4.869e+24, 6.0518e6),
+    EARTH(5.976e+24, 6.37814e6),
+    MARS(6.421e+23, 3.3972e6);
+    
+    private final double mass;   // in kilograms
+    private final double radius; // in meters
+    
+    Planet(double mass, double radius) {
+        this.mass = mass;
+        this.radius = radius;
+    }
+    
+    public double getMass() {
+        return mass;
+    }
+    
+    public double getRadius() {
+        return radius;
+    }
+    
+    // Universal gravitational constant
+    public static final double G = 6.67300E-11;
+    
+    public double surfaceGravity() {
+        return G * mass / (radius * radius);
+    }
+    
+    public double surfaceWeight(double otherMass) {
+        return otherMass * surfaceGravity();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        double earthWeight = 75.0;  // kg
+        double mass = earthWeight/Planet.EARTH.surfaceGravity();
+        
+        for (Planet p : Planet.values()) {
+            System.out.printf("Your weight on %s is %f%n",
+                p, p.surfaceWeight(mass));
+        }
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Card Game Enum</h3>
+            <code>
+enum Suit {
+    HEARTS("♥"),
+    DIAMONDS("♦"),
+    CLUBS("♣"),
+    SPADES("♠");
+    
+    private final String symbol;
+    
+    Suit(String symbol) {
+        this.symbol = symbol;
+    }
+    
+    public String getSymbol() {
+        return symbol;
+    }
+}
+
+enum Rank {
+    ACE(1, "A"),
+    TWO(2, "2"),
+    THREE(3, "3"),
+    FOUR(4, "4"),
+    FIVE(5, "5"),
+    SIX(6, "6"),
+    SEVEN(7, "7"),
+    EIGHT(8, "8"),
+    NINE(9, "9"),
+    TEN(10, "10"),
+    JACK(11, "J"),
+    QUEEN(12, "Q"),
+    KING(13, "K");
+    
+    private final int value;
+    private final String symbol;
+    
+    Rank(int value, String symbol) {
+        this.value = value;
+        this.symbol = symbol;
+    }
+    
+    public int getValue() {
+        return value;
+    }
+    
+    public String getSymbol() {
+        return symbol;
+    }
+}
+
+class Card {
+    private final Suit suit;
+    private final Rank rank;
+    
+    public Card(Suit suit, Rank rank) {
+        this.suit = suit;
+        this.rank = rank;
+    }
+    
+    @Override
+    public String toString() {
+        return rank.getSymbol() + suit.getSymbol();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="user-input">
+          <h1>Java User Input</h1>
+          <p>Java provides several ways to get user input. The most common way is to use the Scanner class from the java.util package.</p>
+
+          <h2>Scanner Class</h2>
+          <div class="example-box">
+            <h3>Basic Input Example</h3>
+            <code>
+import java.util.Scanner;
+
+public class UserInputDemo {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Reading a string
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine();
+        
+        // Reading an integer
+        System.out.print("Enter your age: ");
+        int age = scanner.nextInt();
+        
+        // Reading a double
+        System.out.print("Enter your height (in meters): ");
+        double height = scanner.nextDouble();
+        
+        System.out.println("\nYour Information:");
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("Height: " + height + "m");
+        
+        scanner.close();  // Don't forget to close the scanner
+    }
+}</code>
+          </div>
+
+          <h2>Input Validation</h2>
+          <div class="example-box">
+            <h3>Handling Invalid Input</h3>
+            <code>
+import java.util.Scanner;
+
+public class InputValidation {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int number = 0;
+        boolean validInput = false;
+        
+        while (!validInput) {
+            System.out.print("Enter a number between 1 and 10: ");
+            try {
+                number = Integer.parseInt(scanner.nextLine());
+                if (number >= 1 && number <= 10) {
+                    validInput = true;
+                } else {
+                    System.out.println("Number must be between 1 and 10!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a number.");
+            }
+        }
+        
+        System.out.println("You entered: " + number);
+        scanner.close();
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Simple Calculator</h3>
+            <code>
+import java.util.Scanner;
+
+public class Calculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        while (true) {
+            System.out.println("\nSimple Calculator");
+            System.out.println("1. Add");
+            System.out.println("2. Subtract");
+            System.out.println("3. Multiply");
+            System.out.println("4. Divide");
+            System.out.println("5. Exit");
+            
+            System.out.print("\nEnter your choice (1-5): ");
+            int choice = scanner.nextInt();
+            
+            if (choice == 5) {
+                System.out.println("Goodbye!");
+                break;
+            }
+            
+            System.out.print("Enter first number: ");
+            double num1 = scanner.nextDouble();
+            System.out.print("Enter second number: ");
+            double num2 = scanner.nextDouble();
+            
+            switch (choice) {
+                case 1:
+                    System.out.printf("%.2f + %.2f = %.2f%n", 
+                        num1, num2, num1 + num2);
+                    break;
+                case 2:
+                    System.out.printf("%.2f - %.2f = %.2f%n", 
+                        num1, num2, num1 - num2);
+                    break;
+                case 3:
+                    System.out.printf("%.2f * %.2f = %.2f%n", 
+                        num1, num2, num1 * num2);
+                    break;
+                case 4:
+                    if (num2 != 0) {
+                        System.out.printf("%.2f / %.2f = %.2f%n", 
+                            num1, num2, num1 / num2);
+                    } else {
+                        System.out.println("Cannot divide by zero!");
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+        
+        scanner.close();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="date">
+          <h1>Java Date</h1>
+          <p>Java provides several classes to work with dates and times. The modern way to handle dates is using the java.time package (introduced in Java 8).</p>
+
+          <h2>LocalDate, LocalTime, and LocalDateTime</h2>
+          <div class="example-box">
+            <h3>Basic Date/Time Operations</h3>
+            <code>
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+
+public class DateTimeDemo {
+    public static void main(String[] args) {
+        // Current date
+        LocalDate currentDate = LocalDate.now();
+        System.out.println("Current date: " + currentDate);
+        
+        // Current time
+        LocalTime currentTime = LocalTime.now();
+        System.out.println("Current time: " + currentTime);
+        
+        // Current date and time
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        System.out.println("Current date and time: " + currentDateTime);
+        
+        // Creating specific date
+        LocalDate specificDate = LocalDate.of(2024, 3, 20);
+        System.out.println("Specific date: " + specificDate);
+        
+        // Date formatting
+        DateTimeFormatter formatter = 
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = currentDate.format(formatter);
+        System.out.println("Formatted date: " + formattedDate);
+    }
+}</code>
+          </div>
+
+          <h2>Date Manipulations</h2>
+          <div class="example-box">
+            <h3>Working with Dates</h3>
+            <code>
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+
+public class DateManipulation {
+    public static void main(String[] args) {
+        LocalDate today = LocalDate.now();
+        
+        // Adding days
+        LocalDate nextWeek = today.plusDays(7);
+        System.out.println("Next week: " + nextWeek);
+        
+        // Adding months
+        LocalDate nextMonth = today.plusMonths(1);
+        System.out.println("Next month: " + nextMonth);
+        
+        // Subtracting years
+        LocalDate previousYear = today.minusYears(1);
+        System.out.println("Previous year: " + previousYear);
+        
+        // Calculate period between dates
+        Period period = Period.between(previousYear, today);
+        System.out.printf("Period: %d years, %d months, %d days%n",
+            period.getYears(), period.getMonths(), period.getDays());
+        
+        // Calculate days between dates
+        long daysBetween = ChronoUnit.DAYS.between(previousYear, today);
+        System.out.println("Days between: " + daysBetween);
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Age Calculator</h3>
+            <code>
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+public class AgeCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        DateTimeFormatter formatter = 
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        
+        System.out.print("Enter your birthdate (dd/MM/yyyy): ");
+        String input = scanner.nextLine();
+        
+        try {
+            LocalDate birthDate = LocalDate.parse(input, formatter);
+            LocalDate currentDate = LocalDate.now();
+            
+            Period age = Period.between(birthDate, currentDate);
+            
+            System.out.printf("You are %d years, %d months, and %d days old%n",
+                age.getYears(), age.getMonths(), age.getDays());
+            
+            long totalDays = ChronoUnit.DAYS.between(birthDate, currentDate);
+            System.out.println("Total days lived: " + totalDays);
+            
+            LocalDate nextBirthday = birthDate
+                .withYear(currentDate.getYear());
+            
+            // If birthday has occurred this year, add 1 year
+            if (nextBirthday.isBefore(currentDate) || 
+                nextBirthday.isEqual(currentDate)) {
+                nextBirthday = nextBirthday.plusYears(1);
+            }
+            
+            Period untilNextBirthday = 
+                Period.between(currentDate, nextBirthday);
+            System.out.printf("Time until next birthday: %d months, %d days%n",
+                untilNextBirthday.getMonths(), untilNextBirthday.getDays());
+            
+        } catch (Exception e) {
+            System.out.println("Invalid date format!");
+        }
+        
+        scanner.close();
+    }
+}</code>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text">Progress: 0% (0/16 sections)</div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson2.html')">
+    ← Previous Lesson
+  </button>
+
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson4.html')">
+    Next Lesson →
+  </button>
+
+</body>
+
+<script>
+  function playClickAndGo(destination) {
+    const clickSound = document.getElementById('clickSound');
+    clickSound.currentTime = 0;
+    clickSound.play();
+    setTimeout(() => {
+      window.location.href = destination;
+    }, 300);
+  }
+
+  let visitedSections = new Set();
+  const totalSections = 16;
+
+  // Load progress from localStorage
+  function loadProgress() {
+      const currentUser = localStorage.getItem('username');
+      const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      const userData = allUsers[currentUser] || {};
+      const savedProgress = userData['java_lesson3_progress'];
+      if (savedProgress) {
+          visitedSections = new Set(JSON.parse(savedProgress));
+          updateProgress();
+      }
+  }
+
+  // Save progress to localStorage
+  function saveProgress() {
+      const currentUser = localStorage.getItem('username');
+      let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!allUsers[currentUser]) {
+          allUsers[currentUser] = {};
+      }
+      allUsers[currentUser]['java_lesson3_progress'] = JSON.stringify([...visitedSections]);
+      localStorage.setItem('users', JSON.stringify(allUsers));
+  }
+
+  function updateProgress() {
+    const progressPercent = (visitedSections.size / totalSections) * 100;
+    document.querySelector('.progress-fill').style.width = progressPercent + '%';
+    document.querySelector('.progress-text').textContent = 
+        `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+    saveProgress(); // Save progress after each update
+
+    // Check if lesson was just completed (100%) and show popup
+    if (progressPercent === 100 && visitedSections.size === totalSections) {
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        const lastProgress = allUsers[currentUser]?.['java_lesson3_last_progress'] || '0';
+        if (parseFloat(lastProgress) < 100) {
+            showCompletionPopup();
+        }
+        allUsers[currentUser]['java_lesson3_last_progress'] = '100';
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+  }
+
+  function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('section').forEach(section => {
+      section.style.display = 'none';
+      section.classList.remove('active');
+    });
+
+    // Show selected section
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.style.display = 'block';
+      section.classList.add('active');
+      visitedSections.add(sectionId);
+      updateProgress();
+    }
+
+    // Update sidebar items
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+      item.classList.remove('active');
+      if (item.getAttribute('href') === '#' + sectionId) {
+        item.classList.add('active');
+      }
+    });
+  }
+
+  // Load progress when page loads
+  document.addEventListener('DOMContentLoaded', loadProgress);
+
+  // Function to check if code blocks need scrolling
+  function checkCodeScroll() {
+    document.querySelectorAll('code').forEach(codeBlock => {
+      const container = codeBlock.parentElement;
+      if (codeBlock.scrollWidth > codeBlock.clientWidth) {
+        container.classList.add('has-scroll');
+      } else {
+        container.classList.remove('has-scroll');
+      }
+    });
+  }
+
+  // Wrap all code blocks in a container
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('code').forEach(codeBlock => {
+      const container = document.createElement('div');
+      container.className = 'code-container';
+      codeBlock.parentNode.insertBefore(container, codeBlock);
+      container.appendChild(codeBlock);
+    });
+
+    // Show first section by default
+    showSection('java-oop');
+  });
+
+  // Check for scroll on load and resize
+  window.addEventListener('load', checkCodeScroll);
+  window.addEventListener('resize', checkCodeScroll);
+
+
+</script>
+</html> 

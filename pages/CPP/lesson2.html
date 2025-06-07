@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Tutorial Part 2 - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .main-content section {
+      margin-bottom: 30px;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block !important;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+      flex: 0 1 auto;
+      min-width: max-content;
+    }
+
+    .subsection-nav button.active {
+      border: 2px inset #c0c0c0;
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box, .practice-exercise {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn, .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn {
+      right: 20px;
+    }
+
+    .prev-lesson-btn {
+      left: 20px;
+    }
+
+    .next-lesson-btn:active, .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      .subsection-nav {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding: 5px;
+        gap: 2px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        bottom: 60px;
+        padding: 8px 16px;
+      }
+
+      .next-lesson-btn {
+        right: 10px;
+      }
+
+      .prev-lesson-btn {
+        left: 10px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .subsection-nav button {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        bottom: 50px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .next-lesson-btn {
+        right: 5px;
+      }
+
+      .prev-lesson-btn {
+        left: 5px;
+      }
+
+      .progress-container {
+        padding: 5px;
+      }
+    }
+
+    @media screen and (max-height: 600px) {
+      .sidebar {
+        max-height: 100px;
+      }
+
+      .main-content {
+        padding-bottom: 80px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .subsection-nav button,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        padding: 8px 12px;
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+  
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">C++ Tutorial Part 2 - C0D3G0</div>
+      <div class="window-buttons">
+        <button class="window-button" onclick="window.location.href='../codego_learningpage.html'">✕</button>
+      </div>
+    </div>
+    <div class="window-content">
+      <div class="sidebar">
+        <a class="sidebar-item" onclick="showSection('if-else')">C++ If...Else</a>
+        <a class="sidebar-item" onclick="showSection('switch')">C++ Switch</a>
+        <a class="sidebar-item" onclick="showSection('while-loop')">C++ While Loop</a>
+        <a class="sidebar-item" onclick="showSection('for-loop')">C++ For Loop</a>
+        <a class="sidebar-item" onclick="showSection('break-continue')">C++ Break/Continue</a>
+        <a class="sidebar-item" onclick="showSection('arrays')">C++ Arrays</a>
+        <a class="sidebar-item" onclick="showSection('structures')">C++ Structures</a>
+        <a class="sidebar-item" onclick="showSection('enums')">C++ Enums</a>
+        <a class="sidebar-item" onclick="showSection('references')">C++ References</a>
+        <a class="sidebar-item" onclick="showSection('pointers')">C++ Pointers</a>
+        <a class="sidebar-item" onclick="showSection('memory')">C++ Memory Management</a>
+      </div>
+      <div class="main-content">
+        <section id="if-else">
+          <h1>C++ If...Else Statements</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('if-else', 'if')" class="active">If</button>
+            <button onclick="showSubsection('if-else', 'else')">Else</button>
+            <button onclick="showSubsection('if-else', 'else-if')">Else If</button>
+            <button onclick="showSubsection('if-else', 'shorthand')">Shorthand If Else</button>
+            <button onclick="showSubsection('if-else', 'examples')">Real-Life Examples</button>
+          </div>
+
+          <div class="subsection" data-id="if">
+            <h2>The If Statement</h2>
+            <p>The if statement is used to execute a block of code only if a specified condition is true.</p>
+            <code>if (condition) {
+    // code to be executed if condition is true
+}</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>int age = 18;
+if (age >= 18) {
+    cout << "You are old enough to vote!";
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="else">
+            <h2>The Else Statement</h2>
+            <p>The else statement is used to execute a block of code when the if condition is false.</p>
+            <code>if (condition) {
+    // code to be executed if condition is true
+} else {
+    // code to be executed if condition is false
+}</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>int age = 15;
+if (age >= 18) {
+    cout << "You can vote!";
+} else {
+    cout << "You cannot vote yet.";
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="else-if">
+            <h2>The Else If Statement</h2>
+            <p>Use else if to specify a new condition if the first condition is false.</p>
+            <code>if (condition1) {
+    // code to be executed if condition1 is true
+} else if (condition2) {
+    // code to be executed if condition1 is false and condition2 is true
+} else {
+    // code to be executed if both conditions are false
+}</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>int score = 75;
+if (score >= 90) {
+    cout << "Grade: A";
+} else if (score >= 80) {
+    cout << "Grade: B";
+} else if (score >= 70) {
+    cout << "Grade: C";
+} else {
+    cout << "Grade: F";
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="shorthand">
+            <h2>Shorthand If...Else (Ternary Operator)</h2>
+            <p>A shorthand way to write if...else statements using the ternary operator (?:).</p>
+            <code>variable = (condition) ? expressionIfTrue : expressionIfFalse;</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>int age = 20;
+string result = (age >= 18) ? "Can vote" : "Cannot vote";
+cout << result;</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="examples">
+            <h2>Real-Life Examples</h2>
+            <div class="example-box">
+              <h3>1. Login System</h3>
+              <code>string username = "user123";
+string password = "pass123";
+
+if (username == "user123" && password == "pass123") {
+    cout << "Login successful!";
+} else {
+    cout << "Invalid credentials!";
+}</code>
+            </div>
+            <div class="example-box">
+              <h3>2. Temperature Control System</h3>
+              <code>int temperature = 25;
+
+if (temperature > 30) {
+    cout << "Turn on AC";
+} else if (temperature < 20) {
+    cout << "Turn on heater";
+} else {
+    cout << "Temperature is optimal";
+}</code>
+            </div>
+            <div class="example-box">
+              <h3>3. Shopping Discount Calculator</h3>
+              <code>double totalPurchase = 120.00;
+double discount;
+
+if (totalPurchase >= 200) {
+    discount = 0.2;  // 20% discount
+} else if (totalPurchase >= 100) {
+    discount = 0.1;  // 10% discount
+} else {
+    discount = 0;    // no discount
+}
+
+double finalPrice = totalPurchase * (1 - discount);
+cout << "Final price: $" << finalPrice;</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="switch">
+          <h1>C++ Switch Statement</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('switch', 'switch-basic')" class="active">Basic Switch</button>
+            <button onclick="showSubsection('switch', 'switch-rules')">Rules & Tips</button>
+            <button onclick="showSubsection('switch', 'switch-examples')">Examples</button>
+          </div>
+          
+          <div class="subsection" data-id="switch-basic">
+            <h2>Basic Switch Syntax</h2>
+            <p>The switch statement evaluates an expression and matches its value against case labels.</p>
+            <code>switch(expression) {
+    case x:
+        // code block
+        break;
+    case y:
+        // code block
+        break;
+    default:
+        // code block
+}</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>int day = 4;
+switch (day) {
+    case 1:
+        cout << "Monday";
+        break;
+    case 2:
+        cout << "Tuesday";
+        break;
+    case 3:
+        cout << "Wednesday";
+        break;
+    case 4:
+        cout << "Thursday";
+        break;
+    case 5:
+        cout << "Friday";
+        break;
+    default:
+        cout << "Weekend";
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="switch-rules">
+            <h2>Switch Rules and Tips</h2>
+            <ul>
+              <li>The switch expression must be an integer or an enumeration type</li>
+              <li>Case values must be constants or literals</li>
+              <li>Break statements prevent fall-through to the next case</li>
+              <li>The default case is optional and handles all unmatched values</li>
+            </ul>
+            <div class="example-box">
+              <h3>Example with Multiple Cases:</h3>
+              <code>char grade = 'B';
+switch (grade) {
+    case 'A':
+    case 'B':
+        cout << "Excellent performance!";
+        break;
+    case 'C':
+        cout << "Good performance";
+        break;
+    case 'D':
+    case 'F':
+        cout << "Need improvement";
+        break;
+    default:
+        cout << "Invalid grade";
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="switch-examples">
+            <h2>Real-Life Examples</h2>
+            <div class="example-box">
+              <h3>1. Simple Calculator</h3>
+              <code>char operation = '+';
+int num1 = 10, num2 = 5;
+
+switch(operation) {
+    case '+':
+        cout << "Result: " << num1 + num2;
+        break;
+    case '-':
+        cout << "Result: " << num1 - num2;
+        break;
+    case '*':
+        cout << "Result: " << num1 * num2;
+        break;
+    case '/':
+        if(num2 != 0)
+            cout << "Result: " << num1 / num2;
+        else
+            cout << "Cannot divide by zero";
+        break;
+    default:
+        cout << "Invalid operation";
+}</code>
+            </div>
+
+            <div class="example-box">
+              <h3>2. Month Days Calculator</h3>
+              <code>int month = 2;
+int year = 2024;
+int days;
+
+switch(month) {
+    case 4:
+    case 6:
+    case 9:
+    case 11:
+        days = 30;
+        break;
+    case 2:
+        // Check for leap year
+        if((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+            days = 29;
+        else
+            days = 28;
+        break;
+    default:
+        days = 31;
+}
+
+cout << "Number of days: " << days;</code>
+            </div>
+
+            <div class="example-box">
+              <h3>3. Menu System</h3>
+              <code>int choice = 2;
+switch(choice) {
+    case 1:
+        cout << "Starting new game...";
+        break;
+    case 2:
+        cout << "Loading saved game...";
+        break;
+    case 3:
+        cout << "Showing settings...";
+        break;
+    case 4:
+        cout << "Showing high scores...";
+        break;
+    case 5:
+        cout << "Exiting game...";
+        break;
+    default:
+        cout << "Invalid choice";
+}</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="while-loop">
+          <h1>C++ While Loops</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('while-loop', 'while')">While Loop</button>
+            <button onclick="showSubsection('while-loop', 'do-while')">Do/While Loop</button>
+            <button onclick="showSubsection('while-loop', 'examples')">Real-Life Examples</button>
+          </div>
+
+          <div class="subsection" data-id="while">
+            <h2>While Loop</h2>
+            <p>The while loop executes a block of code as long as a specified condition is true.</p>
+            <code>while (condition) {
+    // code to be executed
+}</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>int i = 1;
+while (i <= 5) {
+    cout << i << "\n";
+    i++;
+}</code>
+              <p>Output:</p>
+              <code>1
+2
+3
+4
+5</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="do-while">
+            <h2>Do/While Loop</h2>
+            <p>The do/while loop is a variant of the while loop. This loop will execute the code block once, before checking if the condition is true, then it will repeat the loop as long as the condition is true.</p>
+            <code>do {
+    // code to be executed
+} while (condition);</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>int i = 1;
+do {
+    cout << i << "\n";
+    i++;
+} while (i <= 5);</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="examples">
+            <h2>Real-Life Examples</h2>
+            <div class="example-box">
+              <h3>1. Game Menu</h3>
+              <code>int choice;
+do {
+    cout << "1. Start Game\n";
+    cout << "2. Settings\n";
+    cout << "3. Exit\n";
+    cout << "Enter your choice: ";
+    cin >> choice;
+} while (choice != 3);</code>
+            </div>
+            <div class="example-box">
+              <h3>2. Password Validation</h3>
+              <code>string password;
+bool isValid = false;
+
+while (!isValid) {
+    cout << "Enter password: ";
+    cin >> password;
+    
+    if (password.length() >= 8) {
+        isValid = true;
+        cout << "Password accepted!\n";
+    } else {
+        cout << "Password too short!\n";
+    }
+}</code>
+            </div>
+            <div class="example-box">
+              <h3>3. File Processing</h3>
+              <code>while (file.good()) {
+    string line;
+    getline(file, line);
+    // process the line
+}</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="for-loop">
+          <h1>C++ For Loops</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('for-loop', 'for')">For Loop</button>
+            <button onclick="showSubsection('for-loop', 'nested')">Nested Loops</button>
+            <button onclick="showSubsection('for-loop', 'foreach')">The Foreach Loop</button>
+            <button onclick="showSubsection('for-loop', 'examples')">Real-Life Examples</button>
+          </div>
+
+          <div class="subsection" data-id="for">
+            <h2>For Loop</h2>
+            <p>The for loop is used when you know exactly how many times you want to loop through a block of code.</p>
+            <code>for (initialization; condition; increment/decrement) {
+    // code to be executed
+}</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>for (int i = 0; i < 5; i++) {
+    cout << i << "\n";
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="nested">
+            <h2>Nested Loops</h2>
+            <p>A nested loop is a loop inside another loop. The inner loop will be executed one time for each iteration of the outer loop.</p>
+            <div class="example-box">
+              <h3>Example: Multiplication Table</h3>
+              <code>for (int i = 1; i <= 3; i++) {
+    for (int j = 1; j <= 3; j++) {
+        cout << i * j << "\t";
+    }
+    cout << "\n";
+}</code>
+              <p>Output:</p>
+              <code>1    2    3
+2    4    6
+3    6    9</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="foreach">
+            <h2>The Foreach Loop (Range-based For Loop)</h2>
+            <p>The foreach loop (introduced in C++11) is used to loop through elements in an array or other collection.</p>
+            <code>for (type variableName : arrayName) {
+    // code to be executed
+}</code>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>array<int, 5> numbers = {1, 2, 3, 4, 5};
+for (int num : numbers) {
+    cout << num << " ";
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="examples">
+            <h2>Real-Life Examples</h2>
+            <div class="example-box">
+              <h3>1. Processing Student Grades</h3>
+              <code>vector<int> grades = {85, 92, 78, 95, 88};
+int sum = 0;
+
+for (int grade : grades) {
+    sum += grade;
+}
+
+double average = sum / grades.size();
+cout << "Class average: " << average;</code>
+            </div>
+            <div class="example-box">
+              <h3>2. Pattern Printing</h3>
+              <code>for (int i = 1; i <= 5; i++) {
+    for (int j = 1; j <= i; j++) {
+        cout << "*";
+    }
+    cout << "\n";
+}
+
+/* Output:
+*
+**
+***
+****
+***** */</code>
+            </div>
+            <div class="example-box">
+              <h3>3. Shopping Cart Total</h3>
+              <code>vector<double> prices = {29.99, 19.99, 15.99, 49.99};
+double total = 0;
+
+for (double price : prices) {
+    total += price;
+}
+
+cout << "Total: $" << total;</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="break-continue">
+          <h1>C++ Break and Continue</h1>
+          <p>Break and continue statements are used to control the flow of loops.</p>
+
+          <div class="example-box">
+            <h3>Break Statement</h3>
+            <p>The break statement terminates the loop or switch statement and transfers execution to the statement immediately following the loop or switch.</p>
+            <code>for (int i = 0; i < 10; i++) {
+    if (i == 5) {
+        break;  // Exit loop when i equals 5
+    }
+    cout << i << " ";
+}  // Output: 0 1 2 3 4</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Continue Statement</h3>
+            <p>The continue statement skips the rest of the current iteration and continues with the next iteration of the loop.</p>
+            <code>for (int i = 0; i < 5; i++) {
+    if (i == 2) {
+        continue;  // Skip printing 2
+    }
+    cout << i << " ";
+}  // Output: 0 1 3 4</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Real-Life Examples</h3>
+            <code>// Search in array
+int numbers[] = {1, 3, 5, 7, 9, 2, 4, 6, 8};
+int searchFor = 5;
+
+for (int num : numbers) {
+    if (num == searchFor) {
+        cout << "Found " << searchFor << "!";
+        break;  // Stop searching once found
+    }
+}
+
+// Skip processing invalid data
+vector<int> data = {10, -5, 8, -3, 12};
+for (int value : data) {
+    if (value < 0) {
+        continue;  // Skip negative numbers
+    }
+    cout << "Processing: " << value << endl;
+}</code>
+          </div>
+        </section>
+
+        <section id="arrays">
+          <h1>C++ Arrays</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('arrays', 'arrays-loops')">Arrays and Loops</button>
+            <button onclick="showSubsection('arrays', 'omit-size')">Omit Array Size</button>
+            <button onclick="showSubsection('arrays', 'get-size')">Get Array Size</button>
+            <button onclick="showSubsection('arrays', 'multidimensional')">Multidimensional Arrays</button>
+            <button onclick="showSubsection('arrays', 'array-examples')">Real-Life Examples</button>
+          </div>
+
+          <div class="subsection" data-id="arrays-loops">
+            <h2>Arrays and Loops</h2>
+            <p>Arrays are commonly used with loops for iteration and manipulation.</p>
+            <code>// Basic array iteration
+int numbers[] = {1, 2, 3, 4, 5};
+
+// Using for loop
+for (int i = 0; i < 5; i++) {
+    cout << numbers[i] << " ";
+}
+
+// Using range-based for loop (C++11)
+for (int num : numbers) {
+    cout << num << " ";
+}
+
+// Modifying array elements
+for (int i = 0; i < 5; i++) {
+    numbers[i] *= 2;  // Double each element
+}</code>
+
+            <div class="example-box">
+              <h3>Common Array Operations</h3>
+              <code>// Sum of array elements
+int sum = 0;
+for (int num : numbers) {
+    sum += num;
+}
+
+// Find maximum element
+int max = numbers[0];
+for (int i = 1; i < 5; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
+    }
+}
+
+// Reverse array
+for (int i = 0; i < 5/2; i++) {
+    int temp = numbers[i];
+    numbers[i] = numbers[4-i];
+    numbers[4-i] = temp;
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="omit-size">
+            <h2>Omit Array Size</h2>
+            <p>C++ allows you to omit the array size when initializing with values.</p>
+            <code>// Size automatically calculated
+int numbers[] = {1, 2, 3, 4, 5};
+
+// With strings
+string fruits[] = {"apple", "banana", "orange"};
+
+// Character arrays
+char name[] = "John";  // Size is 5 (including null terminator)
+
+// Mixed data types with std::array
+array<int, 3> scores = {95, 88, 78};  // Size must be specified for std::array</code>
+
+            <div class="example-box">
+              <h3>When to Omit Size</h3>
+              <ul>
+                <li>When initializing with a list of values</li>
+                <li>When the size can be inferred from the initialization</li>
+                <li>For string literals in character arrays</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="get-size">
+            <h2>Get Array Size</h2>
+            <p>Different ways to determine the size of an array in C++.</p>
+            <code>// Using sizeof operator
+int numbers[] = {1, 2, 3, 4, 5};
+int size = sizeof(numbers) / sizeof(numbers[0]);
+
+// Using std::array
+array<int, 5> scores = {95, 88, 78, 92, 85};
+size_t arraySize = scores.size();
+
+// Using std::vector
+vector<int> dynamicArray = {1, 2, 3, 4, 5};
+size_t vectorSize = dynamicArray.size();</code>
+
+            <div class="example-box">
+              <h3>Size Calculation Tips</h3>
+              <code>// Be careful with pointers
+int* ptr = numbers;
+// sizeof(ptr) won't give array size!
+
+// Function parameters
+void processArray(int arr[], int size) {
+    // Array size must be passed separately
+    for (int i = 0; i < size; i++) {
+        // Process array
+    }
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="multidimensional">
+            <h2>Multidimensional Arrays</h2>
+            <p>Arrays can have multiple dimensions for more complex data structures.</p>
+            <code>// 2D array declaration and initialization
+int matrix[3][3] = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+// Accessing elements
+int element = matrix[1][2];  // Gets 6
+
+// Nested loops for 2D arrays
+for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+        cout << matrix[i][j] << " ";
+    }
+    cout << endl;
+}</code>
+
+            <div class="example-box">
+              <h3>3D Arrays</h3>
+              <code>// 3D array example
+int cube[2][2][2] = {
+    {{1, 2}, {3, 4}},
+    {{5, 6}, {7, 8}}
+};
+
+// Accessing 3D array
+for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+        for (int k = 0; k < 2; k++) {
+            cout << cube[i][j][k] << " ";
+        }
+    }
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="array-examples">
+            <h2>Real-Life Examples</h2>
+            <div class="example-box">
+              <h3>1. Grade Management System</h3>
+              <code>// Student grades for different subjects
+int grades[3][4] = {
+    {85, 90, 78, 88},  // Student 1
+    {92, 85, 95, 89},  // Student 2
+    {88, 92, 85, 91}   // Student 3
+};
+
+// Calculate average for each student
+for (int i = 0; i < 3; i++) {
+    double sum = 0;
+    for (int j = 0; j < 4; j++) {
+        sum += grades[i][j];
+    }
+    double average = sum / 4;
+    cout << "Student " << (i+1) << " average: " << average << endl;
+}</code>
+            </div>
+
+            <div class="example-box">
+              <h3>2. Tic-Tac-Toe Board</h3>
+              <code>char board[3][3] = {
+    {' ', ' ', ' '},
+    {' ', ' ', ' '},
+    {' ', ' ', ' '}
+};
+
+// Make a move
+void makeMove(int row, int col, char player) {
+    if (row >= 0 && row < 3 && col >= 0 && col < 3) {
+        if (board[row][col] == ' ') {
+            board[row][col] = player;
+        }
+    }
+}</code>
+            </div>
+
+            <div class="example-box">
+              <h3>3. Image Processing</h3>
+              <code>// Simple grayscale image (0-255)
+unsigned char image[100][100];
+
+// Invert image colors
+for (int i = 0; i < 100; i++) {
+    for (int j = 0; j < 100; j++) {
+        image[i][j] = 255 - image[i][j];
+    }
+}</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="structures">
+          <h1>C++ Structures</h1>
+          <p>Structures are user-defined data types that group related data elements.</p>
+
+          <div class="example-box">
+            <h3>Basic Structure</h3>
+            <code>// Define a structure
+struct Person {
+    string name;
+    int age;
+    double height;
+};
+
+// Create and use structure variables
+Person person1;
+person1.name = "John";
+person1.age = 25;
+person1.height = 1.75;
+
+// Initialize structure
+Person person2 = {"Alice", 30, 1.65};</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Structures with Functions</h3>
+            <code>struct Rectangle {
+    double width;
+    double height;
+    
+    // Function inside structure
+    double area() {
+        return width * height;
+    }
+    
+    // Function with parameters
+    void resize(double w, double h) {
+        width = w;
+        height = h;
+    }
+};</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Real-Life Examples</h3>
+            <code>// Student Management System
+struct Student {
+    string id;
+    string name;
+    vector<int> grades;
+    
+    double getAverage() {
+        if (grades.empty()) return 0.0;
+        int sum = 0;
+        for (int grade : grades) {
+            sum += grade;
+        }
+        return static_cast<double>(sum) / grades.size();
+    }
+};
+
+// Bank Account System
+struct BankAccount {
+    string accountNumber;
+    string holderName;
+    double balance;
+    
+    void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+        }
+    }
+    
+    bool withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            return true;
+        }
+        return false;
+    }
+};</code>
+          </div>
+        </section>
+
+        <section id="enums">
+          <h1>C++ Enumerations (Enums)</h1>
+          <p>Enumerations are user-defined data types that consist of named constants.</p>
+
+          <div class="example-box">
+            <h3>Basic Enum</h3>
+            <code>// Traditional enum
+enum DayOfWeek {
+    SUNDAY,     // 0
+    MONDAY,     // 1
+    TUESDAY,    // 2
+    WEDNESDAY,  // 3
+    THURSDAY,   // 4
+    FRIDAY,     // 5
+    SATURDAY    // 6
+};
+
+// Using enum
+DayOfWeek today = MONDAY;
+if (today == MONDAY) {
+    cout << "It's Monday!" << endl;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Enum Class (C++11)</h3>
+            <code>// Strongly typed enum
+enum class Color {
+    RED,
+    GREEN,
+    BLUE
+};
+
+// Using enum class
+Color color = Color::RED;
+if (color == Color::RED) {
+    cout << "The color is red!" << endl;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Real-Life Examples</h3>
+            <code>// Game State Management
+enum class GameState {
+    MENU,
+    PLAYING,
+    PAUSED,
+    GAME_OVER
+};
+
+// Direction in a Game
+enum class Direction {
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST
+};
+
+// HTTP Status Codes
+enum class HttpStatus {
+    OK = 200,
+    NOT_FOUND = 404,
+    SERVER_ERROR = 500
+};
+
+// Using enums in a switch statement
+GameState currentState = GameState::MENU;
+switch (currentState) {
+    case GameState::MENU:
+        cout << "In menu" << endl;
+        break;
+    case GameState::PLAYING:
+        cout << "Game is running" << endl;
+        break;
+    case GameState::PAUSED:
+        cout << "Game is paused" << endl;
+        break;
+    case GameState::GAME_OVER:
+        cout << "Game over" << endl;
+        break;
+}</code>
+          </div>
+        </section>
+
+        <section id="references">
+          <h1>C++ References</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('references', 'create-ref')">Create References</button>
+            <button onclick="showSubsection('references', 'memory-address')">Memory Address</button>
+          </div>
+
+          <div class="subsection" data-id="create-ref">
+            <h2>Create References</h2>
+            <p>A reference is an alias for an existing variable. Once a reference is created, it cannot be changed to refer to another variable.</p>
+            <code>// Creating references
+int number = 42;
+int& ref = number;  // ref is a reference to number
+
+// Modifying through reference
+ref = 100;  // This changes the value of number to 100
+
+// References in functions
+void swapNumbers(int& a, int& b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}</code>
+
+            <div class="example-box">
+              <h3>Reference Examples</h3>
+              <code>string original = "Hello";
+string& strRef = original;
+
+strRef += " World";  // original is now "Hello World"
+
+// References in range-based for loops
+vector<int> numbers = {1, 2, 3, 4, 5};
+for (int& num : numbers) {
+    num *= 2;  // Modifies the original values
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="memory-address">
+            <h2>Memory Address</h2>
+            <p>References provide an alternative way to access memory locations without explicit pointer syntax.</p>
+            <code>int value = 42;
+int& ref = value;
+
+// Both print the same memory address
+cout << &value << endl;  // Address of value
+cout << &ref << endl;   // Same address as value
+
+// Function using reference
+void printAddress(int& x) {
+    cout << "Address: " << &x << endl;
+    cout << "Value: " << x << endl;
+}</code>
+
+            <div class="example-box">
+              <h3>Reference vs Value</h3>
+              <code>void modifyValue(int x) {      // Pass by value
+    x = 100;  // Only changes local copy
+}
+
+void modifyReference(int& x) {  // Pass by reference
+    x = 100;  // Changes original variable
+}
+
+int num = 42;
+modifyValue(num);      // num stays 42
+modifyReference(num);  // num becomes 100</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="pointers">
+          <h1>C++ Pointers</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('pointers', 'create-ptr')">Create Pointers</button>
+            <button onclick="showSubsection('pointers', 'dereference')">Dereferencing</button>
+            <button onclick="showSubsection('pointers', 'modify-ptr')">Modify Pointers</button>
+          </div>
+
+          <div class="subsection" data-id="create-ptr">
+            <h2>Create Pointers</h2>
+            <p>Pointers store memory addresses of variables. They can be reassigned to point to different variables of the same type.</p>
+            <code>// Creating pointers
+int number = 42;
+int* ptr = &number;  // ptr holds address of number
+
+// Null pointer
+int* nullPtr = nullptr;
+
+// Array pointer
+int numbers[] = {1, 2, 3, 4, 5};
+int* arrayPtr = numbers;  // Points to first element</code>
+
+            <div class="example-box">
+              <h3>Pointer Types</h3>
+              <code>// Different types of pointers
+int* intPtr;
+double* doublePtr;
+char* charPtr;
+string* stringPtr;
+
+// Pointer to constant
+const int value = 100;
+const int* constPtr = &value;</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="dereference">
+            <h2>Dereferencing</h2>
+            <p>Dereferencing a pointer means accessing the value stored at the memory address it points to.</p>
+            <code>int number = 42;
+int* ptr = &number;
+
+// Dereferencing
+cout << *ptr << endl;  // Prints 42
+
+// Modifying through pointer
+*ptr = 100;  // Changes number to 100
+
+// Array dereferencing
+int arr[] = {1, 2, 3};
+int* arrPtr = arr;
+cout << *arrPtr << endl;     // First element (1)
+cout << *(arrPtr + 1) << endl;  // Second element (2)</code>
+
+            <div class="example-box">
+              <h3>Common Dereferencing Mistakes</h3>
+              <code>// WRONG: Dereferencing null pointer
+int* nullPtr = nullptr;
+// *nullPtr = 42;  // Crashes program!
+
+// WRONG: Dereferencing uninitialized pointer
+int* danglingPtr;
+// *danglingPtr = 42;  // Undefined behavior!</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="modify-ptr">
+            <h2>Modify Pointers</h2>
+            <p>Pointers can be modified to point to different variables or memory locations.</p>
+            <code>int first = 10;
+int second = 20;
+int* ptr = &first;
+
+// Change pointer target
+ptr = &second;  // Now points to second
+
+// Pointer arithmetic
+int numbers[] = {1, 2, 3, 4, 5};
+int* numPtr = numbers;
+
+numPtr++;      // Points to second element
+numPtr += 2;   // Points to fourth element
+numPtr--;      // Points to third element</code>
+
+            <div class="example-box">
+              <h3>Pointer Operations</h3>
+              <code>void swapPointers(int** ptr1, int** ptr2) {
+    int* temp = *ptr1;
+    *ptr1 = *ptr2;
+    *ptr2 = temp;
+}
+
+int a = 5, b = 10;
+int* p1 = &a;
+int* p2 = &b;
+swapPointers(&p1, &p2);  // Swaps what p1 and p2 point to</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="memory">
+          <h1>C++ Memory Management</h1>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('memory', 'memory-mgmt')">Memory Management</button>
+            <button onclick="showSubsection('memory', 'new-delete')">New and Delete</button>
+          </div>
+
+          <div class="subsection" data-id="memory-mgmt">
+            <h2>Memory Management</h2>
+            <p>C++ provides manual memory management, allowing developers to control when memory is allocated and deallocated.</p>
+            <code>// Stack memory (automatic)
+int stackVar = 42;  // Automatically managed
+
+// Heap memory (dynamic)
+int* heapVar = new int;  // Manual management required
+*heapVar = 42;
+
+// Remember to free heap memory
+delete heapVar;
+heapVar = nullptr;  // Good practice</code>
+
+            <div class="example-box">
+              <h3>Memory Management Best Practices</h3>
+              <code>// Using smart pointers (modern C++)
+#include <memory>
+
+// Unique pointer
+std::unique_ptr<int> uniquePtr(new int(42));
+
+// Shared pointer
+std::shared_ptr<int> sharedPtr = std::make_shared<int>(42);
+
+// No manual deletion needed for smart pointers!</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="new-delete">
+            <h2>New and Delete</h2>
+            <p>The new and delete operators are used for dynamic memory allocation and deallocation.</p>
+            <code>// Single element allocation
+int* number = new int;
+*number = 42;
+delete number;
+
+// Array allocation
+int* numbers = new int[5];
+numbers[0] = 1;
+numbers[1] = 2;
+delete[] numbers;  // Array deletion
+
+// Object allocation
+class MyClass {
+    // Class definition
+};
+MyClass* obj = new MyClass();
+delete obj;</code>
+
+            <div class="example-box">
+              <h3>Dynamic Array Example</h3>
+              <code>// Create dynamic 2D array
+int rows = 3;
+int cols = 4;
+
+int** matrix = new int*[rows];
+for (int i = 0; i < rows; i++) {
+    matrix[i] = new int[cols];
+}
+
+// Delete 2D array
+for (int i = 0; i < rows; i++) {
+    delete[] matrix[i];
+}
+delete[] matrix;</code>
+
+              <h3>Memory Leak Prevention</h3>
+              <code>// WRONG: Memory leak
+int* ptr = new int;
+ptr = new int;  // First allocation lost!
+
+// RIGHT: Clean up before reassignment
+int* ptr = new int;
+delete ptr;
+ptr = new int;
+
+// BEST: Use smart pointers
+std::unique_ptr<int> smartPtr(new int);
+// No manual deletion needed!</code>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson1.html')">← Previous Lesson</button>
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson3.html')">Next Lesson →</button>
+
+  <script>
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+        setTimeout(() => {
+          window.location.href = destination;
+        }, 300);
+      }
+    }
+
+    let visitedSections = new Set();
+    const totalSections = 11;
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['cpp_lesson2_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        if (!visitedSections || !(visitedSections instanceof Set)) {
+            console.error('Invalid visitedSections in updateProgress:', visitedSections);
+            return;
+        }
+
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        document.getElementById('progressBar').style.width = progressPercent + '%';
+        document.getElementById('progressText').textContent = 
+            `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        
+        // Save to user's data
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {};
+            }
+            allUsers[currentUser]['cpp_lesson2_progress'] = JSON.stringify([...visitedSections]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('section').forEach(section => {
+            section.style.display = 'none';
+            section.classList.remove('active');
+        });
+        
+        // Show the target section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            targetSection.classList.add('active');
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick').includes(sectionId)) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Show first subsection if exists
+            const firstSubsection = targetSection.querySelector('.subsection');
+            if (firstSubsection) {
+                showSubsection(sectionId, firstSubsection.getAttribute('data-id'));
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+      const clickSound = document.getElementById('clickound');
+      if (clickSound) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+      }
+
+      const section = document.getElementById(sectionId);
+      if (section) {
+        // Hide all subsections in this section
+        section.querySelectorAll('.subsection').forEach(sub => {
+          sub.style.display = 'none';
+          sub.classList.remove('active');
+        });
+      
+        // Show the selected subsection
+        const subsection = section.querySelector(`.subsection[data-id="${subsectionId}"]`);
+        if (subsection) {
+          subsection.style.display = 'block';
+          subsection.classList.add('active');
+        }
+
+        // Update button states
+        section.querySelectorAll('.subsection-nav button').forEach(button => {
+          button.classList.remove('active');
+        });
+        const activeButton = section.querySelector(`button[onclick="showSubsection('${sectionId}', '${subsectionId}')"]`);
+        if (activeButton) {
+          activeButton.classList.add('active');
+        }
+
+        // Update progress when subsection is shown
+        visitedSections.add(sectionId);
+        updateProgress();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+        
+        // Hide all sections initially
+        document.querySelectorAll('section').forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Show first section and mark it as visited
+        const firstSection = document.querySelector('section');
+        if (firstSection) {
+            showSection(firstSection.id);
+            visitedSections.add(firstSection.id);
+            updateProgress();
+        }
+
+        // Add click sound element if it doesn't exist
+        if (!document.getElementById('clickSound')) {
+            const audio = document.createElement('audio');
+            audio.id = 'clickSound';
+            audio.src = '../../music/click_sound.mp3';
+            audio.preload = 'auto';
+            document.body.appendChild(audio);
+        }
+    });
+  </script>
+</body>
+</html> 

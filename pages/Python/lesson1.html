@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Tutorial Part 1 - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    section {
+      display: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 60px;
+        right: 10px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .example-box {
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 50px;
+        right: 5px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .progress-container {
+        padding: 5px;
+      }
+    }
+
+    @media screen and (max-height: 600px) {
+      .sidebar {
+        max-height: 100px;
+      }
+
+      .main-content {
+        padding-bottom: 80px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .window-button,
+      .next-lesson-btn {
+        padding: 8px 12px;
+        min-height: 44px;
+      }
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: #1700d1 #c0c0c0;
+    }
+
+    .subsection-nav::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .subsection-nav::-webkit-scrollbar-track {
+      background: #c0c0c0;
+    }
+
+    .subsection-nav::-webkit-scrollbar-thumb {
+      background-color: #1700d1;
+      border-radius: 0;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 8px 15px;
+      margin: 0 2px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+      min-width: auto;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .subsection-nav button.active {
+      background-color: #1700d1;
+      color: white;
+      border: 2px inset #1700d1;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+      overflow-x: auto;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection code {
+      max-width: 100%;
+      overflow-x: auto;
+      white-space: pre;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @media screen and (max-width: 768px) {
+      .subsection-nav {
+        margin: 10px -5px;
+        padding: 5px;
+        border-width: 1px 0;
+      }
+
+      .subsection-nav button {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-height: 35px;
+      }
+
+      .subsection {
+        padding: 10px;
+        margin: 5px 0;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 8px;
+        line-height: 1.4;
+      }
+
+      .example-box {
+        padding: 10px;
+        margin: 5px 0;
+        font-size: 13px;
+      }
+
+      h2, h3 {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .subsection-nav button {
+        padding: 5px 10px;
+        font-size: 12px;
+        min-height: 32px;
+      }
+
+      .subsection {
+        padding: 8px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 6px;
+        line-height: 1.3;
+      }
+
+      .example-box {
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      h2, h3 {
+        font-size: 16px;
+      }
+
+      p, li {
+        font-size: 13px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .subsection-nav button {
+        min-height: 44px;
+        padding: 8px 15px;
+      }
+    }
+
+    .section-title {
+      color: #0000ff;
+      font-size: 24px;
+      margin-bottom: 15px;
+      border: none;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Python Tutorial Part 1 - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#intro" class="sidebar-item active" onclick="showSection('intro')">Python Intro</a>
+        <a href="#syntax" class="sidebar-item" onclick="showSection('syntax')">Python Syntax</a>
+        <a href="#comments" class="sidebar-item" onclick="showSection('comments')">Python Comments</a>
+        <a href="#variables" class="sidebar-item" onclick="showSection('variables')">Python Variables</a>
+        <a href="#datatypes" class="sidebar-item" onclick="showSection('datatypes')">Python Data Types</a>
+        <a href="#numbers" class="sidebar-item" onclick="showSection('numbers')">Python Numbers</a>
+        <a href="#casting" class="sidebar-item" onclick="showSection('casting')">Python Casting</a>
+        <a href="#strings" class="sidebar-item" onclick="showSection('strings')">Python Strings</a>
+        <a href="#booleans" class="sidebar-item" onclick="showSection('booleans')">Python Booleans</a>
+        <a href="#operators" class="sidebar-item" onclick="showSection('operators')">Python Operators</a>
+        <a href="#lists" class="sidebar-item" onclick="showSection('lists')">Python Lists</a>
+        <a href="#tuples" class="sidebar-item" onclick="showSection('tuples')">Python Tuples</a>
+      </div>
+
+      <div class="main-content">
+        <section id="intro">
+          <h2>Python Introduction</h2>
+          <p>Python is a popular programming language created by Guido van Rossum and released in 1991. It is:</p>
+          <div class="example-box">
+            <ul>
+              <li>Easy to learn and read</li>
+              <li>Used for web development, software development, mathematics, and system scripting</li>
+              <li>Works on different platforms (Windows, Mac, Linux, Raspberry Pi, etc.)</li>
+              <li>Has a simple syntax similar to the English language</li>
+              <li>Runs on an interpreter system, meaning code can be executed as soon as it is written</li>
+            </ul>
+          </div>
+          <code>print("Hello, World!")  # Your first Python program</code>
+        </section>
+
+        <section id="syntax">
+          <h2>Python Syntax</h2>
+          <p>Python syntax is designed to be readable and clean. Here are the main syntax rules:</p>
+          <div class="example-box">
+            <h3>Python Indentation</h3>
+            <p>Indentation indicates a block of code. It's not just for readability - it's required!</p>
+          </div>
+          <code>if 5 > 2:
+    print("Five is greater than two!")
+    if True:
+        print("Nested indentation")</code>
+          
+          <div class="example-box">
+            <h3>Variables</h3>
+            <p>Python has no command for declaring variables. They are created when you first assign a value.</p>
+          </div>
+          <code>x = 5
+y = "Hello"
+print(x)
+print(y)</code>
+        </section>
+
+        <section id="comments">
+          <h2>Python Comments</h2>
+          <p>Comments are used to explain code and make it more readable. Python has single-line and multi-line comments:</p>
+          <div class="example-box">
+            <h3>Single-line Comments</h3>
+            <p>Begin with a # and extend to the end of the line</p>
+          </div>
+          <code># This is a comment
+print("Hello")  # This is also a comment</code>
+
+          <div class="example-box">
+            <h3>Multi-line Comments</h3>
+            <p>Use triple quotes for multi-line comments</p>
+          </div>
+          <code>"""
+This is a multi-line
+comment that can span
+multiple lines
+"""
+print("Hello")</code>
+        </section>
+
+        <section id="variables">
+          <h2 class="section-title">Python Variables</h2>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('variables', 'var-names')" class="active">Variable Names</button>
+            <button onclick="showSubsection('variables', 'assign-multiple')">Assign Multiple Values</button>
+            <button onclick="showSubsection('variables', 'output-vars')">Output Variables</button>
+            <button onclick="showSubsection('variables', 'global-vars')">Global Variables</button>
+            <button onclick="showSubsection('variables', 'var-exercises')">Variable Exercises</button>
+          </div>
+
+          <div id="var-names" class="subsection active">
+            <h3>Variable Names</h3>
+            <p>Variable naming in Python follows these rules:</p>
+            <div class="example-box">
+              <ul>
+                <li>Must start with a letter or underscore</li>
+                <li>Can only contain alpha-numeric characters and underscores (A-z, 0-9, and _)</li>
+                <li>Are case-sensitive (age, Age and AGE are different variables)</li>
+                <li>Cannot use Python keywords (like if, for, class, etc.)</li>
+              </ul>
+            </div>
+            <code># Legal variable names
+myvar = "John"
+my_var = "John"
+_my_var = "John"
+myVar = "John"
+MYVAR = "John"
+myvar2 = "John"
+
+# Illegal variable names
+# 2myvar = "John"    # Cannot start with number
+# my-var = "John"    # Cannot use hyphen
+# my var = "John"    # Cannot use space</code>
+          </div>
+
+          <div id="assign-multiple" class="subsection">
+            <h3>Assign Multiple Values</h3>
+            <p>Python allows you to assign values to multiple variables in one line:</p>
+            <div class="example-box">
+              <h3>Multiple Assignment Methods</h3>
+              <ul>
+                <li>Many values to many variables</li>
+                <li>One value to multiple variables</li>
+                <li>Unpack a collection</li>
+              </ul>
+            </div>
+            <code># Many values to many variables
+x, y, z = "Orange", "Banana", "Cherry"
+print(x)  # Orange
+print(y)  # Banana
+print(z)  # Cherry
+
+# One value to multiple variables
+x = y = z = "Orange"
+print(x)  # Orange
+print(y)  # Orange
+print(z)  # Orange
+
+# Unpack a collection
+fruits = ["apple", "banana", "cherry"]
+x, y, z = fruits
+print(x)  # apple
+print(y)  # banana
+print(z)  # cherry</code>
+          </div>
+
+          <div id="output-vars" class="subsection">
+            <h3>Output Variables</h3>
+            <p>The Python print statement can be used to output variables. You can combine both text and variables using the + operator:</p>
+            <div class="example-box">
+              <h3>Output Methods</h3>
+              <ul>
+                <li>Print single variable</li>
+                <li>Print multiple variables with +</li>
+                <li>Print multiple variables with comma</li>
+                <li>Print with f-strings (formatted strings)</li>
+              </ul>
+            </div>
+            <code># Single variable
+x = "Python"
+print(x)
+
+# Multiple variables with +
+x = "Python "
+y = "is "
+z = "awesome"
+print(x + y + z)
+
+# Multiple variables with comma
+x = "Python"
+y = "is"
+z = "awesome"
+print(x, y, z)
+
+# Using f-strings (Python 3.6+)
+name = "John"
+age = 25
+print(f"My name is {name} and I am {age} years old")</code>
+          </div>
+
+          <div id="global-vars" class="subsection">
+            <h3>Global Variables</h3>
+            <p>Variables created outside of a function are global variables. Global variables can be used by everyone, both inside and outside of functions:</p>
+            <div class="example-box">
+              <h3>Global Variable Rules</h3>
+              <ul>
+                <li>Variables created outside functions are global</li>
+                <li>Use 'global' keyword to modify global variable inside function</li>
+                <li>Global variables can be used by all functions</li>
+              </ul>
+            </div>
+            <code># Global variable
+x = "awesome"
+
+def myfunc():
+    print("Python is " + x)
+
+myfunc()
+
+# Using global keyword
+def change_global():
+    global x
+    x = "fantastic"
+
+change_global()
+print("Python is " + x)  # Python is fantastic</code>
+          </div>
+
+          <div id="var-exercises" class="subsection">
+            <h3>Variable Exercises</h3>
+            <div class="example-box">
+              <p>Try these exercises to practice working with variables:</p>
+              <ol>
+                <li>Create a variable called 'carname' and assign the value "Volvo" to it</li>
+                <li>Create a variable called 'x' and assign the value 50 to it</li>
+                <li>Display the sum of 5 + 10, using two variables: x and y</li>
+                <li>Create a variable called z, assign x + y to it, and display the result</li>
+                <li>Remove the illegal characters in the variable name: 2my-first_name = "John"</li>
+              </ol>
+            </div>
+            <code># Exercise solutions
+carname = "Volvo"
+x = 50
+x = 5
+y = 10
+print(x + y)
+z = x + y
+print(z)
+my_first_name = "John"  # Corrected variable name</code>
+          </div>
+        </section>
+
+        <section id="datatypes">
+          <h2>Python Data Types</h2>
+          <p>Python has several built-in data types:</p>
+          <div class="example-box">
+            <h3>Basic Data Types</h3>
+            <ul>
+              <li>Text Type: str</li>
+              <li>Numeric Types: int, float, complex</li>
+              <li>Sequence Types: list, tuple, range</li>
+              <li>Mapping Type: dict</li>
+              <li>Set Types: set, frozenset</li>
+              <li>Boolean Type: bool</li>
+              <li>None Type: NoneType</li>
+            </ul>
+          </div>
+          <code>x = "Hello World"     # str
+x = 20              # int
+x = 20.5            # float
+x = 1j              # complex
+x = ["apple", "banana"]  # list
+x = ("apple", "banana")  # tuple
+x = range(6)        # range
+x = {"name": "John"}     # dict
+x = {"apple", "banana"}  # set
+x = True            # bool
+x = None            # NoneType</code>
+        </section>
+
+        <section id="numbers">
+          <h2>Python Numbers</h2>
+          <p>Python has three numeric types:</p>
+          <div class="example-box">
+            <ul>
+              <li>int (whole numbers)</li>
+              <li>float (decimal numbers)</li>
+              <li>complex (complex numbers)</li>
+            </ul>
+          </div>
+          <code># Integer numbers
+x = 1
+y = 35656222554887711
+z = -3255522
+
+# Float numbers
+x = 1.10
+y = 1.0
+z = -35.59
+f = 35e3  # Scientific notation
+
+# Complex numbers
+x = 3+5j
+y = 5j
+z = -5j</code>
+        </section>
+
+        <section id="casting">
+          <h2>Python Casting</h2>
+          <p>Python casting is used to specify a type for a variable. These functions are used:</p>
+          <div class="example-box">
+            <ul>
+              <li>int() - constructs an integer number</li>
+              <li>float() - constructs a float number</li>
+              <li>str() - constructs a string</li>
+            </ul>
+          </div>
+          <code># Integer casting
+x = int(1)     # x will be 1
+y = int(2.8)   # y will be 2
+z = int("3")   # z will be 3
+
+# Float casting
+x = float(1)     # x will be 1.0
+y = float(2.8)   # y will be 2.8
+z = float("3")   # z will be 3.0
+
+# String casting
+x = str("s1")    # x will be 's1'
+y = str(2)       # y will be '2'
+z = str(3.0)     # z will be '3.0'</code>
+        </section>
+
+        <section id="strings">
+          <h2 class="section-title">Python Strings</h2>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('strings', 'string-basics')" class="active">String Basics</button>
+            <button onclick="showSubsection('strings', 'slicing-strings')">Slicing Strings</button>
+            <button onclick="showSubsection('strings', 'modify-strings')">Modify Strings</button>
+            <button onclick="showSubsection('strings', 'concatenate-strings')">Concatenate Strings</button>
+            <button onclick="showSubsection('strings', 'format-strings')">Format Strings</button>
+            <button onclick="showSubsection('strings', 'escape-characters')">Escape Characters</button>
+            <button onclick="showSubsection('strings', 'string-methods')">String Methods</button>
+          </div>
+
+          <div id="string-basics" class="subsection active">
+            <h3>String Basics</h3>
+            <p>Strings in Python are surrounded by either single or double quotation marks:</p>
+            <div class="example-box">
+              <h3>Creating Strings</h3>
+              <ul>
+                <li>Single quotes: 'Hello'</li>
+                <li>Double quotes: "Hello"</li>
+                <li>Triple quotes for multiline: '''Hello''' or """Hello"""</li>
+              </ul>
+            </div>
+            <code># Creating strings
+text1 = "Hello"
+text2 = 'Hello'
+text3 = """This is a
+multiline string"""
+
+# Get string length
+print(len(text1))  # 5
+
+# Access characters
+first_char = text1[0]  # H
+last_char = text1[-1]  # o</code>
+          </div>
+
+          <div id="slicing-strings" class="subsection">
+            <h3>Slicing Strings</h3>
+            <p>You can return a range of characters by using the slice syntax:</p>
+            <div class="example-box">
+              <h3>Slicing Syntax</h3>
+              <ul>
+                <li>[start:end] - from start to end-1</li>
+                <li>[start:] - from start to end</li>
+                <li>[:end] - from beginning to end-1</li>
+                <li>[-5:-2] - negative indexing</li>
+              </ul>
+            </div>
+            <code># String slicing
+text = "Hello, World!"
+
+# Get specific portions
+print(text[2:5])    # "llo"
+print(text[:5])     # "Hello"
+print(text[7:])     # "World!"
+print(text[-5:-2])  # "orl"
+
+# Step slicing
+print(text[::2])    # "Hlo ol!"
+print(text[::-1])   # "!dlroW ,olleH" (reverse)</code>
+          </div>
+
+          <div id="modify-strings" class="subsection">
+            <h3>Modify Strings</h3>
+            <p>Python strings are immutable, but we can create new strings with modifications:</p>
+            <div class="example-box">
+              <h3>String Modifications</h3>
+              <ul>
+                <li>Upper and lower case</li>
+                <li>Remove whitespace</li>
+                <li>Replace text</li>
+                <li>Split and join</li>
+              </ul>
+            </div>
+            <code># String modifications
+text = "  Hello, World!  "
+
+# Case modifications
+print(text.upper())      # "  HELLO, WORLD!  "
+print(text.lower())      # "  hello, world!  "
+print(text.title())      # "  Hello, World!  "
+
+# Remove whitespace
+print(text.strip())      # "Hello, World!"
+print(text.lstrip())     # "Hello, World!  "
+print(text.rstrip())     # "  Hello, World!"
+
+# Replace content
+print(text.replace("Hello", "Hi"))  # "  Hi, World!  "
+
+# Split and join
+words = text.split(",")  # ["  Hello", " World!  "]
+print(",".join(words))   # "  Hello, World!  "</code>
+          </div>
+
+          <div id="concatenate-strings" class="subsection">
+            <h3>Concatenate Strings</h3>
+            <p>There are several ways to combine strings in Python:</p>
+            <div class="example-box">
+              <h3>Concatenation Methods</h3>
+              <ul>
+                <li>Using + operator</li>
+                <li>Using join() method</li>
+                <li>Using string multiplication</li>
+              </ul>
+            </div>
+            <code># String concatenation
+str1 = "Hello"
+str2 = "World"
+
+# Using + operator
+result1 = str1 + " " + str2  # "Hello World"
+
+# Using join()
+result2 = " ".join([str1, str2])  # "Hello World"
+
+# String multiplication
+repeated = str1 * 3  # "HelloHelloHello"
+
+# Combining different types
+age = 25
+message = str1 + " I am " + str(age)  # "Hello I am 25"</code>
+          </div>
+
+          <div id="format-strings" class="subsection">
+            <h3>Format Strings</h3>
+            <p>Python offers several ways to format strings:</p>
+            <div class="example-box">
+              <h3>String Formatting Methods</h3>
+              <ul>
+                <li>f-strings (Python 3.6+)</li>
+                <li>format() method</li>
+                <li>% operator (old style)</li>
+              </ul>
+            </div>
+            <code># String formatting
+name = "John"
+age = 25
+price = 49.95
+
+# f-strings (Python 3.6+)
+print(f"Name: {name}, Age: {age}")
+
+# format() method
+print("Name: {}, Age: {}".format(name, age))
+print("Name: {n}, Age: {a}".format(n=name, a=age))
+
+# % operator
+print("Name: %s, Age: %d" % (name, age))
+
+# Formatting numbers
+print(f"Price: ${price:.2f}")  # "Price: $49.95"
+print("Price: ${:.2f}".format(price))  # "Price: $49.95"</code>
+          </div>
+
+          <div id="escape-characters" class="subsection">
+            <h3>Escape Characters</h3>
+            <p>Escape characters are used to insert special characters in strings:</p>
+            <div class="example-box">
+              <h3>Common Escape Characters</h3>
+              <ul>
+                <li>\' - Single quote</li>
+                <li>\" - Double quote</li>
+                <li>\n - Newline</li>
+                <li>\t - Tab</li>
+                <li>\\ - Backslash</li>
+              </ul>
+            </div>
+            <code># Escape characters
+print("This is a \"quote\"")  # This is a "quote"
+print('It\'s a beautiful day')  # It's a beautiful day
+print("First line\nSecond line")  # Two lines
+print("Name:\tJohn")  # Name:    John
+print("Path: C:\\Users\\John")  # Path: C:\Users\John
+
+# Raw strings (ignore escapes)
+print(r"Path: C:\Users\John")  # Path: C:\Users\John</code>
+          </div>
+
+          <div id="string-methods" class="subsection">
+            <h3>String Methods</h3>
+            <p>Python has a set of built-in methods for string manipulation:</p>
+            <div class="example-box">
+              <h3>Common String Methods</h3>
+              <ul>
+                <li>Case methods: upper(), lower(), title(), capitalize()</li>
+                <li>Search methods: find(), index(), count()</li>
+                <li>Validation methods: isalpha(), isdigit(), isspace()</li>
+                <li>Transformation methods: strip(), replace(), split()</li>
+              </ul>
+            </div>
+            <code># String methods
+text = "Hello, Python!"
+
+# Case methods
+print(text.upper())       # "HELLO, PYTHON!"
+print(text.lower())       # "hello, python!"
+print(text.title())       # "Hello, Python!"
+print(text.capitalize())  # "Hello, python!"
+
+# Search methods
+print(text.find("Python"))    # 7
+print(text.count("o"))        # 2
+print(text.startswith("H"))   # True
+print(text.endswith("!"))     # True
+
+# Validation methods
+print("Hello123".isalnum())   # True
+print("Hello".isalpha())      # True
+print("123".isdigit())        # True
+print("  ".isspace())         # True
+
+# Transformation methods
+text = "  python,java,cpp  "
+print(text.strip())           # "python,java,cpp"
+print(text.replace(",", ";")) # "  python;java;cpp  "
+print(text.split(","))        # ["  python", "java", "cpp  "]</code>
+          </div>
+        </section>
+
+        <section id="booleans">
+          <h2>Python Booleans</h2>
+          <p>Booleans represent one of two values: True or False</p>
+          <div class="example-box">
+            <h3>Boolean Operations</h3>
+            <ul>
+              <li>Comparison operators</li>
+              <li>Logical operators</li>
+              <li>bool() function</li>
+            </ul>
+          </div>
+          <code># Boolean values
+print(10 > 9)    # True
+print(10 == 9)   # False
+print(10 < 9)    # False
+
+# bool() function
+print(bool("Hello"))  # True
+print(bool(""))      # False
+print(bool(15))      # True
+print(bool(0))       # False
+
+# Logical operators
+x = True
+y = False
+print(x and y)   # False
+print(x or y)    # True
+print(not x)     # False</code>
+        </section>
+
+        <section id="operators">
+          <h2>Python Operators</h2>
+          <p>Python has several types of operators:</p>
+          <div class="example-box">
+            <ul>
+              <li>Arithmetic operators (+, -, *, /, %, **, //)</li>
+              <li>Assignment operators (=, +=, -=, etc.)</li>
+              <li>Comparison operators (==, !=, >, <, >=, <=)</li>
+              <li>Logical operators (and, or, not)</li>
+              <li>Identity operators (is, is not)</li>
+              <li>Membership operators (in, not in)</li>
+            </ul>
+          </div>
+          <code># Arithmetic Operators
+print(10 + 5)    # Addition
+print(10 - 5)    # Subtraction
+print(10 * 5)    # Multiplication
+print(10 / 5)    # Division
+print(10 % 3)    # Modulus
+print(10 ** 2)   # Exponentiation
+print(10 // 3)   # Floor division
+
+# Assignment Operators
+x = 5
+x += 3    # x = x + 3
+x -= 3    # x = x - 3
+x *= 3    # x = x * 3
+
+# Comparison Operators
+x = 5
+y = 3
+print(x == y)    # Equal to
+print(x != y)    # Not equal to
+print(x > y)     # Greater than
+print(x < y)     # Less than</code>
+        </section>
+
+        <section id="lists">
+          <h2 class="section-title">Python Lists</h2>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('lists', 'list-basics')" class="active">List Basics</button>
+            <button onclick="showSubsection('lists', 'access-items')">Access Items</button>
+            <button onclick="showSubsection('lists', 'change-items')">Change Items</button>
+            <button onclick="showSubsection('lists', 'add-items')">Add Items</button>
+            <button onclick="showSubsection('lists', 'remove-items')">Remove Items</button>
+            <button onclick="showSubsection('lists', 'loop-lists')">Loop Lists</button>
+            <button onclick="showSubsection('lists', 'list-comprehension')">List Comprehension</button>
+            <button onclick="showSubsection('lists', 'sort-lists')">Sort Lists</button>
+            <button onclick="showSubsection('lists', 'copy-lists')">Copy Lists</button>
+            <button onclick="showSubsection('lists', 'join-lists')">Join Lists</button>
+            <button onclick="showSubsection('lists', 'list-methods')">List Methods</button>
+          </div>
+
+          <div id="list-basics" class="subsection active">
+            <h3>List Basics</h3>
+            <p>Lists are used to store multiple items in a single variable. Lists are:</p>
+            <div class="example-box">
+              <h3>List Characteristics</h3>
+              <ul>
+                <li>Ordered - items have a defined order that will not change</li>
+                <li>Changeable - items can be added, removed, or changed</li>
+                <li>Allow duplicates - can contain duplicate values</li>
+                <li>Can contain different data types</li>
+              </ul>
+            </div>
+            <code># Creating lists
+fruits = ["apple", "banana", "cherry"]
+mixed_list = ["abc", 34, True, 40.5, "male"]
+
+# List length
+print(len(fruits))  # 3
+
+# List data type
+print(type(fruits))  # <class 'list'>
+
+# List constructor
+numbers = list((1, 2, 3))  # Note the double round brackets</code>
+          </div>
+
+          <div id="access-items" class="subsection">
+            <h3>Access List Items</h3>
+            <p>List items are indexed and you can access them by referring to the index number:</p>
+            <div class="example-box">
+              <h3>List Indexing</h3>
+              <ul>
+                <li>Positive indexing (0 to length-1)</li>
+                <li>Negative indexing (-1 to -length)</li>
+                <li>Range of indexes [start:end]</li>
+                <li>Range with steps [start:end:step]</li>
+              </ul>
+            </div>
+            <code># List indexing
+fruits = ["apple", "banana", "cherry", "orange", "kiwi"]
+
+# Positive indexing
+print(fruits[0])    # "apple"
+print(fruits[2])    # "cherry"
+
+# Negative indexing
+print(fruits[-1])   # "kiwi"
+print(fruits[-2])   # "orange"
+
+# Range of indexes
+print(fruits[1:3])  # ["banana", "cherry"]
+print(fruits[:3])   # ["apple", "banana", "cherry"]
+print(fruits[2:])   # ["cherry", "orange", "kiwi"]
+
+# Range with steps
+print(fruits[::2])  # ["apple", "cherry", "kiwi"]</code>
+          </div>
+
+          <div id="change-items" class="subsection">
+            <h3>Change List Items</h3>
+            <p>Lists are mutable, which means their items can be changed:</p>
+            <div class="example-box">
+              <h3>Changing Items</h3>
+              <ul>
+                <li>Change a single item</li>
+                <li>Change a range of items</li>
+                <li>Insert items at specific position</li>
+              </ul>
+            </div>
+            <code># Change list items
+fruits = ["apple", "banana", "cherry"]
+
+# Change single item
+fruits[1] = "blackcurrant"
+print(fruits)  # ["apple", "blackcurrant", "cherry"]
+
+# Change range of items
+fruits[1:3] = ["blueberry", "watermelon"]
+print(fruits)  # ["apple", "blueberry", "watermelon"]
+
+# Insert without deleting
+fruits[1:1] = ["orange"]
+print(fruits)  # ["apple", "orange", "blueberry", "watermelon"]</code>
+          </div>
+
+          <div id="add-items" class="subsection">
+            <h3>Add List Items</h3>
+            <p>There are several methods to add items to a list:</p>
+            <div class="example-box">
+              <h3>Adding Methods</h3>
+              <ul>
+                <li>append() - adds item to the end</li>
+                <li>insert() - adds item at specific position</li>
+                <li>extend() - adds elements from another list</li>
+              </ul>
+            </div>
+            <code># Adding items to list
+fruits = ["apple", "banana", "cherry"]
+
+# Append item
+fruits.append("orange")
+print(fruits)  # ["apple", "banana", "cherry", "orange"]
+
+# Insert item
+fruits.insert(1, "mango")
+print(fruits)  # ["apple", "mango", "banana", "cherry", "orange"]
+
+# Extend list
+more_fruits = ["kiwi", "grape"]
+fruits.extend(more_fruits)
+print(fruits)  # ["apple", "mango", "banana", "cherry", "orange", "kiwi", "grape"]</code>
+          </div>
+
+          <div id="remove-items" class="subsection">
+            <h3>Remove List Items</h3>
+            <p>There are several methods to remove items from a list:</p>
+            <div class="example-box">
+              <h3>Removal Methods</h3>
+              <ul>
+                <li>remove() - removes specified item</li>
+                <li>pop() - removes specified index</li>
+                <li>del - removes specified index or entire list</li>
+                <li>clear() - removes all items</li>
+              </ul>
+            </div>
+            <code># Removing items from list
+fruits = ["apple", "banana", "cherry", "orange", "kiwi"]
+
+# Remove specified item
+fruits.remove("banana")
+print(fruits)  # ["apple", "cherry", "orange", "kiwi"]
+
+# Pop specified index
+popped = fruits.pop(1)  # removes and returns "cherry"
+print(fruits)  # ["apple", "orange", "kiwi"]
+
+# Delete specified index
+del fruits[0]
+print(fruits)  # ["orange", "kiwi"]
+
+# Clear the list
+fruits.clear()
+print(fruits)  # []
+
+# Delete entire list
+del fruits  # list no longer exists</code>
+          </div>
+
+          <div id="loop-lists" class="subsection">
+            <h3>Loop Lists</h3>
+            <p>You can loop through lists using different methods:</p>
+            <div class="example-box">
+              <h3>Loop Methods</h3>
+              <ul>
+                <li>for loop with items</li>
+                <li>for loop with range and len()</li>
+                <li>while loop</li>
+                <li>List comprehension</li>
+              </ul>
+            </div>
+            <code># Loop through lists
+fruits = ["apple", "banana", "cherry"]
+
+# For loop with items
+for fruit in fruits:
+    print(fruit)
+
+# For loop with range
+for i in range(len(fruits)):
+    print(f"Index {i}: {fruits[i]}")
+
+# While loop
+i = 0
+while i < len(fruits):
+    print(fruits[i])
+    i += 1
+
+# Enumerate for both index and value
+for i, fruit in enumerate(fruits):
+    print(f"Index {i}: {fruit}")</code>
+          </div>
+
+          <div id="list-comprehension" class="subsection">
+            <h3>List Comprehension</h3>
+            <p>List comprehension offers a shorter syntax to create lists based on existing lists:</p>
+            <div class="example-box">
+              <h3>Comprehension Features</h3>
+              <ul>
+                <li>Basic list comprehension</li>
+                <li>With conditions</li>
+                <li>With if-else</li>
+                <li>Nested comprehensions</li>
+              </ul>
+            </div>
+            <code># List comprehension examples
+numbers = [1, 2, 3, 4, 5]
+
+# Basic comprehension
+squares = [x**2 for x in numbers]
+print(squares)  # [1, 4, 9, 16, 25]
+
+# With condition
+even_squares = [x**2 for x in numbers if x % 2 == 0]
+print(even_squares)  # [4, 16]
+
+# With if-else
+result = ["even" if x % 2 == 0 else "odd" for x in numbers]
+print(result)  # ["odd", "even", "odd", "even", "odd"]
+
+# Nested comprehension
+matrix = [[j for j in range(3)] for i in range(3)]
+print(matrix)  # [[0, 1, 2], [0, 1, 2], [0, 1, 2]]</code>
+          </div>
+
+          <div id="sort-lists" class="subsection">
+            <h3>Sort Lists</h3>
+            <p>Python has built-in methods for sorting lists:</p>
+            <div class="example-box">
+              <h3>Sorting Methods</h3>
+              <ul>
+                <li>sort() - sorts the list in-place</li>
+                <li>sorted() - returns new sorted list</li>
+                <li>Reverse sorting</li>
+                <li>Custom sorting with key function</li>
+              </ul>
+            </div>
+            <code># Sorting lists
+fruits = ["orange", "mango", "kiwi", "pineapple", "banana"]
+
+# Sort alphabetically
+fruits.sort()
+print(fruits)  # ["banana", "kiwi", "mango", "orange", "pineapple"]
+
+# Sort in reverse
+fruits.sort(reverse=True)
+print(fruits)  # ["pineapple", "orange", "mango", "kiwi", "banana"]
+
+# sorted() function (creates new list)
+numbers = [100, 50, 65, 82, 23]
+sorted_numbers = sorted(numbers)
+print(sorted_numbers)  # [23, 50, 65, 82, 100]
+
+# Sort with key function
+def get_len(e):
+    return len(e)
+
+fruits.sort(key=get_len)  # Sort by length
+print(fruits)  # ["kiwi", "mango", "banana", "orange", "pineapple"]</code>
+          </div>
+
+          <div id="copy-lists" class="subsection">
+            <h3>Copy Lists</h3>
+            <p>There are several ways to copy lists in Python:</p>
+            <div class="example-box">
+              <h3>Copy Methods</h3>
+              <ul>
+                <li>copy() method</li>
+                <li>list() constructor</li>
+                <li>Slicing [:]</li>
+                <li>Deep copy for nested lists</li>
+              </ul>
+            </div>
+            <code># Copying lists
+import copy
+
+fruits = ["apple", "banana", "cherry"]
+
+# Method 1: copy()
+list1 = fruits.copy()
+
+# Method 2: list()
+list2 = list(fruits)
+
+# Method 3: slicing
+list3 = fruits[:]
+
+# Deep copy for nested lists
+nested = [["apple", "banana"], [1, 2, 3]]
+shallow_copy = nested.copy()  # Nested lists share references
+deep_copy = copy.deepcopy(nested)  # Completely independent copy
+
+# Modify nested list to see difference
+nested[0][0] = "orange"
+print(shallow_copy[0][0])  # "orange"
+print(deep_copy[0][0])    # "apple"</code>
+          </div>
+
+          <div id="join-lists" class="subsection">
+            <h3>Join Lists</h3>
+            <p>There are several ways to join or concatenate lists:</p>
+            <div class="example-box">
+              <h3>Join Methods</h3>
+              <ul>
+                <li>+ operator</li>
+                <li>extend() method</li>
+                <li>append() for single items</li>
+                <li>List comprehension</li>
+              </ul>
+            </div>
+            <code># Joining lists
+list1 = ["a", "b", "c"]
+list2 = [1, 2, 3]
+
+# Using + operator
+list3 = list1 + list2
+print(list3)  # ["a", "b", "c", 1, 2, 3]
+
+# Using extend()
+list1.extend(list2)
+print(list1)  # ["a", "b", "c", 1, 2, 3]
+
+# Using append() for single items
+for x in list2:
+    list1.append(x)
+
+# List comprehension
+combined = [x for x in list1] + [x for x in list2]</code>
+          </div>
+
+          <div id="list-methods" class="subsection">
+            <h3>List Methods</h3>
+            <p>Python has a set of built-in methods for list manipulation:</p>
+            <div class="example-box">
+              <h3>Common List Methods</h3>
+              <ul>
+                <li>append(), extend(), insert()</li>
+                <li>remove(), pop(), clear()</li>
+                <li>index(), count()</li>
+                <li>sort(), reverse()</li>
+              </ul>
+            </div>
+            <code># List methods demonstration
+fruits = ["apple", "banana", "cherry"]
+
+# Adding elements
+fruits.append("orange")     # Add at end
+fruits.insert(1, "mango")   # Add at index
+fruits.extend(["kiwi"])     # Add multiple items
+
+# Removing elements
+fruits.remove("banana")     # Remove item
+fruits.pop()               # Remove last item
+fruits.pop(0)             # Remove at index
+
+# Information
+index = fruits.index("mango")  # Find index
+count = fruits.count("apple")  # Count occurrences
+
+# Ordering
+fruits.sort()              # Sort ascending
+fruits.reverse()           # Reverse order
+
+# Clear list
+fruits.clear()             # Remove all items</code>
+          </div>
+        </section>
+
+        <section id="tuples">
+          <h2 class="section-title">Python Tuples</h2>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('tuples', 'tuple-basics')" class="active">Tuple Basics</button>
+            <button onclick="showSubsection('tuples', 'access-tuples')">Access Tuples</button>
+            <button onclick="showSubsection('tuples', 'update-tuples')">Update Tuples</button>
+            <button onclick="showSubsection('tuples', 'unpack-tuples')">Unpack Tuples</button>
+            <button onclick="showSubsection('tuples', 'loop-tuples')">Loop Tuples</button>
+            <button onclick="showSubsection('tuples', 'join-tuples')">Join Tuples</button>
+            <button onclick="showSubsection('tuples', 'tuple-methods')">Tuple Methods</button>
+          </div>
+
+          <div id="tuple-basics" class="subsection active">
+            <h3>Tuple Basics</h3>
+            <p>Tuples are used to store multiple items in a single variable. They are:</p>
+            <div class="example-box">
+              <h3>Tuple Characteristics</h3>
+              <ul>
+                <li>Ordered - items have a defined order that will not change</li>
+                <li>Unchangeable - items cannot be modified after creation</li>
+                <li>Allow duplicates - can contain duplicate values</li>
+                <li>Can contain different data types</li>
+              </ul>
+            </div>
+            <code># Creating tuples
+fruits = ("apple", "banana", "cherry")
+mixed_tuple = ("abc", 34, True, 40.5, "male")
+
+# Creating tuple with one item (note the comma)
+single_item = ("apple",)  # This is a tuple
+not_tuple = ("apple")     # This is a string
+
+# Tuple length
+print(len(fruits))  # 3
+
+# Tuple constructor
+numbers = tuple((1, 2, 3))  # Note the double round brackets</code>
+          </div>
+
+          <div id="access-tuples" class="subsection">
+            <h3>Access Tuples</h3>
+            <p>Tuple items are indexed and you can access them by referring to the index number:</p>
+            <div class="example-box">
+              <h3>Tuple Indexing</h3>
+              <ul>
+                <li>Positive indexing (0 to length-1)</li>
+                <li>Negative indexing (-1 to -length)</li>
+                <li>Range of indexes [start:end]</li>
+                <li>Check if item exists</li>
+              </ul>
+            </div>
+            <code># Accessing tuple items
+fruits = ("apple", "banana", "cherry", "orange", "kiwi")
+
+# Positive indexing
+print(fruits[0])    # "apple"
+print(fruits[2])    # "cherry"
+
+# Negative indexing
+print(fruits[-1])   # "kiwi"
+print(fruits[-2])   # "orange"
+
+# Range of indexes
+print(fruits[1:3])  # ("banana", "cherry")
+print(fruits[:3])   # ("apple", "banana", "cherry")
+print(fruits[2:])   # ("cherry", "orange", "kiwi")
+
+# Check if item exists
+if "apple" in fruits:
+    print("Yes, 'apple' is in the fruits tuple")</code>
+          </div>
+
+          <div id="update-tuples" class="subsection">
+            <h3>Update Tuples</h3>
+            <p>Tuples are unchangeable (immutable), but there are workarounds:</p>
+            <div class="example-box">
+              <h3>Update Methods</h3>
+              <ul>
+                <li>Convert to list, modify, convert back</li>
+                <li>Create new tuple by combining</li>
+                <li>Delete entire tuple</li>
+              </ul>
+            </div>
+            <code># Updating tuples
+fruits = ("apple", "banana", "cherry")
+
+# Convert to list to modify
+fruits_list = list(fruits)
+fruits_list[1] = "kiwi"
+fruits = tuple(fruits_list)
+print(fruits)  # ("apple", "kiwi", "cherry")
+
+# Add items by creating new tuple
+fruits = fruits + ("orange",)
+print(fruits)  # ("apple", "kiwi", "cherry", "orange")
+
+# Delete entire tuple
+del fruits  # tuple no longer exists</code>
+          </div>
+
+          <div id="unpack-tuples" class="subsection">
+            <h3>Unpack Tuples</h3>
+            <p>When we create a tuple, we normally assign values to it. This is called "packing" a tuple. We can also extract the values back into variables, called "unpacking":</p>
+            <div class="example-box">
+              <h3>Unpacking Features</h3>
+              <ul>
+                <li>Basic unpacking</li>
+                <li>Using asterisk *</li>
+                <li>Multiple value assignments</li>
+              </ul>
+            </div>
+            <code># Unpacking tuples
+fruits = ("apple", "banana", "cherry")
+
+# Basic unpacking
+(green, yellow, red) = fruits
+print(green)   # "apple"
+print(yellow)  # "banana"
+print(red)     # "cherry"
+
+# Using asterisk
+fruits = ("apple", "banana", "cherry", "strawberry", "raspberry")
+(green, yellow, *red) = fruits
+print(green)   # "apple"
+print(yellow)  # "banana"
+print(red)     # ["cherry", "strawberry", "raspberry"]
+
+# Asterisk in middle
+(green, *tropic, red) = fruits
+print(green)   # "apple"
+print(tropic)  # ["banana", "cherry", "strawberry"]
+print(red)     # "raspberry"</code>
+          </div>
+
+          <div id="loop-tuples" class="subsection">
+            <h3>Loop Tuples</h3>
+            <p>You can loop through tuples using different methods:</p>
+            <div class="example-box">
+              <h3>Loop Methods</h3>
+              <ul>
+                <li>for loop with items</li>
+                <li>for loop with range and len()</li>
+                <li>while loop</li>
+                <li>enumerate for index and value</li>
+              </ul>
+            </div>
+            <code># Loop through tuples
+fruits = ("apple", "banana", "cherry")
+
+# For loop with items
+for fruit in fruits:
+    print(fruit)
+
+# For loop with range
+for i in range(len(fruits)):
+    print(f"Index {i}: {fruits[i]}")
+
+# While loop
+i = 0
+while i < len(fruits):
+    print(fruits[i])
+    i += 1
+
+# Enumerate for both index and value
+for i, fruit in enumerate(fruits):
+    print(f"Index {i}: {fruit}")</code>
+          </div>
+
+          <div id="join-tuples" class="subsection">
+            <h3>Join Tuples</h3>
+            <p>There are several ways to join or concatenate tuples:</p>
+            <div class="example-box">
+              <h3>Join Methods</h3>
+              <ul>
+                <li>+ operator</li>
+                <li>Multiply tuples</li>
+                <li>Convert to list to combine</li>
+              </ul>
+            </div>
+            <code># Joining tuples
+tuple1 = ("a", "b", "c")
+tuple2 = (1, 2, 3)
+
+# Using + operator
+tuple3 = tuple1 + tuple2
+print(tuple3)  # ("a", "b", "c", 1, 2, 3)
+
+# Multiply tuples
+doubled = tuple1 * 2
+print(doubled)  # ("a", "b", "c", "a", "b", "c")
+
+# Convert to list, combine, convert back
+list1 = list(tuple1)
+list2 = list(tuple2)
+list1.extend(list2)
+combined = tuple(list1)
+print(combined)  # ("a", "b", "c", 1, 2, 3)</code>
+          </div>
+
+          <div id="tuple-methods" class="subsection">
+            <h3>Tuple Methods</h3>
+            <p>Python has two built-in methods for tuples:</p>
+            <div class="example-box">
+              <h3>Available Methods</h3>
+              <ul>
+                <li>count() - returns number of specified value</li>
+                <li>index() - finds position of specified value</li>
+              </ul>
+            </div>
+            <code># Tuple methods
+fruits = ("apple", "banana", "cherry", "apple", "cherry")
+
+# count() method
+apple_count = fruits.count("apple")
+print(apple_count)  # 2
+
+# index() method
+banana_pos = fruits.index("banana")
+print(banana_pos)  # 1
+
+# Note: index() returns first occurrence
+cherry_pos = fruits.index("cherry")
+print(cherry_pos)  # 2 (not 4)</code>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson2.html')">Next Lesson →</button>
+
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 12;  // Total sections count
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['python_lesson1_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+        // Save to legacy storage
+        localStorage.setItem('python_lesson1_progress', JSON.stringify([...visitedSections]));
+
+        // Also save to user's data
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        if (!allUsers[currentUser]) {
+            allUsers[currentUser] = {};
+        }
+        allUsers[currentUser]['python_lesson1_progress'] = JSON.stringify([...visitedSections]);
+        
+        // Save completion status if 100%
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            allUsers[currentUser]['python_lesson1_last_progress'] = '100';
+        }
+        
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+
+    function updateProgress() {
+      const progressPercent = (visitedSections.size / totalSections) * 100;
+      document.getElementById('progressBar').style.width = progressPercent + '%';
+      document.getElementById('progressText').textContent = 
+        `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        saveProgress();
+
+        // Check if lesson was just completed (100%) and show popup
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const lastProgress = allUsers[currentUser]?.['python_lesson1_last_progress'] || '0';
+            if (parseFloat(lastProgress) < 100) {
+                showCompletionPopup();
+            }
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('.main-content section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show the selected section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeItem = document.querySelector(`.sidebar-item[href="#${sectionId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+        // Hide all subsections in the current section
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.querySelectorAll('.subsection').forEach(sub => {
+                sub.classList.remove('active');
+                sub.style.display = 'none';  // Explicitly hide subsections
+            });
+            
+            // Show selected subsection
+            const subsection = document.getElementById(subsectionId);
+            if (subsection) {
+                subsection.classList.add('active');
+                subsection.style.display = 'block';  // Explicitly show selected subsection
+            }
+
+            // Update button states
+            section.querySelectorAll('.subsection-nav button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const activeButton = section.querySelector(`button[onclick*="${subsectionId}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
+    }
+
+    // Load progress when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+        showSection('intro');  // Show the first section
+        
+        // Count the intro section as visited since it's the first thing users see
+        visitedSections.add('intro');
+        updateProgress();
+        
+        // Add click handlers to sidebar items
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = item.getAttribute('href').substring(1);
+                showSection(sectionId);
+            });
+        });
+    });
+  </script>
+</body>
+</html> 

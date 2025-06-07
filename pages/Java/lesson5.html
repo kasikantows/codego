@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java Advanced - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      height: calc(100vh - 160px);
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      display: none;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+
+    th, td {
+      border: 1px solid #1700d1;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+      height: 50px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn, .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+      display: block;
+    }
+
+    .next-lesson-btn {
+      right: 20px;
+    }
+
+    .prev-lesson-btn {
+      left: 20px;
+    }
+
+    .next-lesson-btn:active,
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    .example-box h3 {
+      color: #1700d1;
+      margin-top: 0;
+    }
+
+    .practice-exercise {
+      background-color: #e6e6ff;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    /* Add horizontal scrolling for long lines in code blocks */
+    .code-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 40px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, black);
+      pointer-events: none;
+      opacity: 0.8;
+      display: none;
+    }
+
+    .code-container.has-scroll::after {
+      display: block;
+    }
+
+    @media screen and (max-width: 768px) {
+      code {
+        font-size: 12px;
+        padding: 10px;
+        line-height: 1.4;
+      }
+
+      .window-content {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        max-height: 200px;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      th, td {
+        padding: 6px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+        margin: 8px 0;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .window-title {
+        font-size: 14px;
+      }
+
+      .sidebar-item {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .progress-container {
+        height: 40px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        font-size: 12px;
+        padding: 8px 16px;
+        bottom: 50px;
+      }
+    }
+
+    /* Add popup styles */
+    
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+  
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Java Advanced - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#exceptions" class="sidebar-item active" onclick="showSection('exceptions')">Java Exceptions</a>
+        <a href="#regex" class="sidebar-item" onclick="showSection('regex')">Java RegEx</a>
+        <a href="#threads" class="sidebar-item" onclick="showSection('threads')">Java Threads</a>
+        <a href="#lambda" class="sidebar-item" onclick="showSection('lambda')">Java Lambda</a>
+        <a href="#advanced-sorting" class="sidebar-item" onclick="showSection('advanced-sorting')">Java Advanced Sorting</a>
+      </div>
+
+      <div class="main-content">
+        <section id="exceptions" class="active">
+          <h1>Java Exceptions</h1>
+          <p>Exception handling in Java is a mechanism to handle runtime errors. It helps maintain the normal flow of application execution.</p>
+
+          <h2>Types of Exceptions</h2>
+          <div class="example-box">
+            <h3>Exception Hierarchy</h3>
+            <table>
+              <tr>
+                <th>Exception Type</th>
+                <th>Description</th>
+                <th>Example</th>
+              </tr>
+              <tr>
+                <td>Checked Exception</td>
+                <td>Checked at compile-time</td>
+                <td>IOException, SQLException</td>
+              </tr>
+              <tr>
+                <td>Unchecked Exception</td>
+                <td>Runtime exceptions</td>
+                <td>NullPointerException, ArrayIndexOutOfBoundsException</td>
+              </tr>
+              <tr>
+                <td>Error</td>
+                <td>Serious problems</td>
+                <td>OutOfMemoryError, StackOverflowError</td>
+              </tr>
+            </table>
+          </div>
+
+          <h2>Exception Handling</h2>
+          <code>
+public class ExceptionHandlingDemo {
+    public static void main(String[] args) {
+        try {
+            // Code that might throw an exception
+            int[] numbers = {1, 2, 3};
+            System.out.println(numbers[5]);  // This will throw an exception
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Array index error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("General error: " + e.getMessage());
+        } finally {
+            System.out.println("This always executes");
+        }
+        
+        // Try-with-resources example
+        try (Scanner scanner = new Scanner(System.in)) {
+            String input = scanner.nextLine();
+            System.out.println("You entered: " + input);
+        } catch (Exception e) {
+            System.out.println("Error reading input: " + e.getMessage());
+        }
+    }
+}</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Custom Exception</h3>
+            <code>
+// Custom exception class
+class InsufficientFundsException extends Exception {
+    private double amount;
+    
+    public InsufficientFundsException(double amount) {
+        super("Insufficient funds: Deficit: $" + amount);
+        this.amount = amount;
+    }
+    
+    public double getAmount() {
+        return amount;
+    }
+}
+
+class BankAccount {
+    private double balance;
+    private String accountId;
+    
+    public BankAccount(String accountId, double initialBalance) {
+        this.accountId = accountId;
+        this.balance = initialBalance;
+    }
+    
+    public void deposit(double amount) throws IllegalArgumentException {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+        balance += amount;
+    }
+    
+    public void withdraw(double amount) 
+            throws InsufficientFundsException, IllegalArgumentException {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+        
+        if (amount > balance) {
+            double deficit = amount - balance;
+            throw new InsufficientFundsException(deficit);
+        }
+        
+        balance -= amount;
+    }
+    
+    public double getBalance() {
+        return balance;
+    }
+}
+
+public class BankingDemo {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount("ACC001", 1000);
+        
+        try {
+            System.out.println("Initial balance: $" + account.getBalance());
+            
+            account.deposit(500);
+            System.out.println("After deposit: $" + account.getBalance());
+            
+            account.withdraw(2000);  // This will throw an exception
+        } catch (InsufficientFundsException e) {
+            System.out.println("Transaction failed: " + e.getMessage());
+            System.out.println("Deficit amount: $" + e.getAmount());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid amount: " + e.getMessage());
+        }
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="regex">
+          <h1>Java RegEx (Regular Expressions)</h1>
+          <p>Regular expressions are patterns used to match character combinations in strings. Java provides the java.util.regex package for pattern matching with regular expressions.</p>
+
+          <h2>Pattern and Matcher</h2>
+          <div class="example-box">
+            <h3>Basic RegEx Operations</h3>
+            <code>
+import java.util.regex.*;
+
+public class RegExDemo {
+    public static void main(String[] args) {
+        // Simple pattern matching
+        String pattern = "\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b";
+        Pattern emailPattern = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+        
+        String email = "user@example.com";
+        Matcher matcher = emailPattern.matcher(email);
+        
+        System.out.println("Is valid email? " + matcher.matches());
+        
+        // Finding multiple matches
+        String text = "Contact us at: support@example.com or sales@example.com";
+        matcher = emailPattern.matcher(text);
+        
+        while (matcher.find()) {
+            System.out.println("Found email: " + matcher.group());
+        }
+        
+        // String replacement
+        String result = text.replaceAll("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b",
+            "[EMAIL]");
+        System.out.println("After replacement: " + result);
+    }
+}</code>
+          </div>
+
+          <h2>Common RegEx Patterns</h2>
+          <div class="example-box">
+            <h3>Useful Regular Expressions</h3>
+            <table>
+              <tr>
+                <th>Pattern</th>
+                <th>Description</th>
+                <th>Example</th>
+              </tr>
+              <tr>
+                <td>^[a-zA-Z0-9]+$</td>
+                <td>Alphanumeric characters only</td>
+                <td>"abc123"</td>
+              </tr>
+              <tr>
+                <td>\\d{3}-\\d{2}-\\d{4}</td>
+                <td>Social Security Number</td>
+                <td>"123-45-6789"</td>
+              </tr>
+              <tr>
+                <td>^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$</td>
+                <td>Password validation</td>
+                <td>"Password123"</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Text Validator</h3>
+            <code>
+import java.util.regex.*;
+
+public class TextValidator {
+    private static final Pattern PHONE_PATTERN = 
+        Pattern.compile("^\\+?\\d{1,3}[-.\\s]?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}$");
+    
+    private static final Pattern EMAIL_PATTERN = 
+        Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", 
+            Pattern.CASE_INSENSITIVE);
+    
+    private static final Pattern URL_PATTERN = 
+        Pattern.compile("^(https?:\\/\\/)?([\\w\\d.-]+)\\.([a-z.]{2,6})([\\/\\w\\d.-]*)*\\/?$");
+    
+    public static boolean isValidPhone(String phone) {
+        return PHONE_PATTERN.matcher(phone).matches();
+    }
+    
+    public static boolean isValidEmail(String email) {
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
+    
+    public static boolean isValidUrl(String url) {
+        return URL_PATTERN.matcher(url).matches();
+    }
+    
+    public static void main(String[] args) {
+        // Test phone numbers
+        String[] phones = {
+            "+1-555-123-4567",
+            "555-123-4567",
+            "(555) 123-4567",
+            "12345"  // Invalid
+        };
+        
+        System.out.println("Testing phone numbers:");
+        for (String phone : phones) {
+            System.out.printf("%s: %b%n", phone, isValidPhone(phone));
+        }
+        
+        // Test email addresses
+        String[] emails = {
+            "user@example.com",
+            "user.name@example.co.uk",
+            "invalid.email@",  // Invalid
+            "@invalid.com"     // Invalid
+        };
+        
+        System.out.println("\nTesting email addresses:");
+        for (String email : emails) {
+            System.out.printf("%s: %b%n", email, isValidEmail(email));
+        }
+        
+        // Test URLs
+        String[] urls = {
+            "https://www.example.com",
+            "http://example.com/path",
+            "example.com",
+            "invalid url"  // Invalid
+        };
+        
+        System.out.println("\nTesting URLs:");
+        for (String url : urls) {
+            System.out.printf("%s: %b%n", url, isValidUrl(url));
+        }
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="threads">
+          <h1>Java Threads</h1>
+          <p>Threads allow a program to operate more efficiently by doing multiple things at the same time. Java provides built-in support for multithreaded programming.</p>
+
+          <h2>Creating Threads</h2>
+          <div class="example-box">
+            <h3>Different Ways to Create Threads</h3>
+            <code>
+// 1. Extending Thread class
+class MyThread extends Thread {
+    @Override
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + ": " + i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println("Thread interrupted");
+            }
+        }
+    }
+}
+
+// 2. Implementing Runnable interface
+class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println(Thread.currentThread().getName() + ": " + i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                System.out.println("Thread interrupted");
+            }
+        }
+    }
+}
+
+public class ThreadDemo {
+    public static void main(String[] args) {
+        // Using Thread class
+        MyThread thread1 = new MyThread();
+        thread1.start();
+        
+        // Using Runnable interface
+        Thread thread2 = new Thread(new MyRunnable());
+        thread2.start();
+        
+        // Using anonymous Runnable
+        Thread thread3 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                System.out.println(Thread.currentThread().getName() + ": " + i);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println("Thread interrupted");
+                }
+            }
+        });
+        thread3.start();
+    }
+}</code>
+          </div>
+
+          <h2>Thread Synchronization</h2>
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Bank Account with Synchronization</h3>
+            <code>
+class BankAccount {
+    private double balance;
+    private final Object lock = new Object();
+    
+    public BankAccount(double initialBalance) {
+        this.balance = initialBalance;
+    }
+    
+    public void deposit(double amount) {
+        synchronized(lock) {
+            System.out.printf("%s: Depositing %.2f%n", 
+                Thread.currentThread().getName(), amount);
+            double newBalance = balance + amount;
+            try {
+                Thread.sleep(100);  // Simulate processing time
+            } catch (InterruptedException e) {
+                System.out.println("Transaction interrupted");
+            }
+            balance = newBalance;
+            System.out.printf("%s: New balance: %.2f%n", 
+                Thread.currentThread().getName(), balance);
+        }
+    }
+    
+    public void withdraw(double amount) {
+        synchronized(lock) {
+            if (balance >= amount) {
+                System.out.printf("%s: Withdrawing %.2f%n", 
+                    Thread.currentThread().getName(), amount);
+                double newBalance = balance - amount;
+                try {
+                    Thread.sleep(100);  // Simulate processing time
+                } catch (InterruptedException e) {
+                    System.out.println("Transaction interrupted");
+                }
+                balance = newBalance;
+                System.out.printf("%s: New balance: %.2f%n", 
+                    Thread.currentThread().getName(), balance);
+            } else {
+                System.out.printf("%s: Insufficient funds%n", 
+                    Thread.currentThread().getName());
+            }
+        }
+    }
+    
+    public double getBalance() {
+        synchronized(lock) {
+            return balance;
+        }
+    }
+}
+
+public class BankingThreadsDemo {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount(1000);
+        
+        // Create multiple threads for deposits and withdrawals
+        Thread[] depositThreads = new Thread[3];
+        Thread[] withdrawThreads = new Thread[3];
+        
+        for (int i = 0; i < 3; i++) {
+            depositThreads[i] = new Thread(() -> {
+                for (int j = 0; j < 3; j++) {
+                    account.deposit(100);
+                }
+            }, "DepositThread-" + i);
+            
+            withdrawThreads[i] = new Thread(() -> {
+                for (int j = 0; j < 3; j++) {
+                    account.withdraw(100);
+                }
+            }, "WithdrawThread-" + i);
+        }
+        
+        // Start all threads
+        for (int i = 0; i < 3; i++) {
+            depositThreads[i].start();
+            withdrawThreads[i].start();
+        }
+        
+        // Wait for all threads to complete
+        try {
+            for (int i = 0; i < 3; i++) {
+                depositThreads[i].join();
+                withdrawThreads[i].join();
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Main thread interrupted");
+        }
+        
+        System.out.printf("Final balance: %.2f%n", account.getBalance());
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="lambda">
+          <h1>Java Lambda</h1>
+          <p>Lambda expressions provide a clear and concise way to implement a single-method interface using an expression. They enable you to treat functionality as a method argument.</p>
+
+          <h2>Lambda Syntax</h2>
+          <div class="example-box">
+            <h3>Basic Lambda Examples</h3>
+            <code>
+import java.util.*;
+
+public class LambdaDemo {
+    public static void main(String[] args) {
+        // Lambda with no parameters
+        Runnable noParams = () -> System.out.println("No parameters");
+        
+        // Lambda with one parameter
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+        names.forEach(name -> System.out.println("Hello, " + name));
+        
+        // Lambda with multiple parameters
+        Comparator<String> compareLength = 
+            (str1, str2) -> str1.length() - str2.length();
+        
+        // Lambda with block of code
+        names.forEach(name -> {
+            String greeting = "Hello, " + name;
+            System.out.println(greeting);
+        });
+        
+        // Method reference
+        names.forEach(System.out::println);
+    }
+}</code>
+          </div>
+
+          <h2>Functional Interfaces</h2>
+          <div class="example-box">
+            <h3>Common Functional Interfaces</h3>
+            <table>
+              <tr>
+                <th>Interface</th>
+                <th>Method</th>
+                <th>Description</th>
+              </tr>
+              <tr>
+                <td>Predicate&lt;T&gt;</td>
+                <td>boolean test(T t)</td>
+                <td>Returns true/false for the input</td>
+              </tr>
+              <tr>
+                <td>Consumer&lt;T&gt;</td>
+                <td>void accept(T t)</td>
+                <td>Accepts input, returns nothing</td>
+              </tr>
+              <tr>
+                <td>Function&lt;T,R&gt;</td>
+                <td>R apply(T t)</td>
+                <td>Transforms input into output</td>
+              </tr>
+              <tr>
+                <td>Supplier&lt;T&gt;</td>
+                <td>T get()</td>
+                <td>Returns a result</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Student Processing with Lambda</h3>
+            <code>
+import java.util.*;
+import java.util.function.*;
+
+class Student {
+    private String name;
+    private double gpa;
+    private String major;
+    
+    public Student(String name, double gpa, String major) {
+        this.name = name;
+        this.gpa = gpa;
+        this.major = major;
+    }
+    
+    public String getName() { return name; }
+    public double getGpa() { return gpa; }
+    public String getMajor() { return major; }
+    
+    @Override
+    public String toString() {
+        return String.format("Student{name='%s', gpa=%.2f, major='%s'}", 
+            name, gpa, major);
+    }
+}
+
+public class StudentProcessor {
+    private List<Student> students;
+    
+    public StudentProcessor() {
+        students = new ArrayList<>();
+    }
+    
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+    
+    // Filter students based on a condition
+    public List<Student> filterStudents(Predicate<Student> condition) {
+        List<Student> filtered = new ArrayList<>();
+        for (Student student : students) {
+            if (condition.test(student)) {
+                filtered.add(student);
+            }
+        }
+        return filtered;
+    }
+    
+    // Process students and produce a result
+    public <R> List<R> mapStudents(Function<Student, R> mapper) {
+        List<R> result = new ArrayList<>();
+        for (Student student : students) {
+            result.add(mapper.apply(student));
+        }
+        return result;
+    }
+    
+    // Perform an action on each student
+    public void processStudents(Consumer<Student> action) {
+        students.forEach(action);
+    }
+    
+    public static void main(String[] args) {
+        StudentProcessor processor = new StudentProcessor();
+        
+        // Add some students
+        processor.addStudent(new Student("John", 3.8, "Computer Science"));
+        processor.addStudent(new Student("Alice", 3.9, "Mathematics"));
+        processor.addStudent(new Student("Bob", 3.5, "Computer Science"));
+        processor.addStudent(new Student("Carol", 3.7, "Physics"));
+        
+        // Filter CS students with GPA > 3.6
+        List<Student> highPerformingCS = processor.filterStudents(
+            student -> student.getMajor().equals("Computer Science") && 
+                      student.getGpa() > 3.6
+        );
+        
+        System.out.println("High performing CS students:");
+        highPerformingCS.forEach(System.out::println);
+        
+        // Extract all student names
+        List<String> studentNames = processor.mapStudents(Student::getName);
+        System.out.println("\nStudent names: " + studentNames);
+        
+        // Calculate average GPA
+        double totalGpa = 0;
+        int count = 0;
+        
+        Consumer<Student> gpaCalculator = student -> {
+            totalGpa += student.getGpa();
+            count++;
+        };
+        
+        processor.processStudents(gpaCalculator);
+        
+        double averageGpa = totalGpa / count;
+        System.out.printf("\nAverage GPA: %.2f%n", averageGpa);
+        
+        // Sort students by GPA using lambda
+        List<Student> allStudents = processor.filterStudents(s -> true);
+        Collections.sort(allStudents, 
+            (s1, s2) -> Double.compare(s2.getGpa(), s1.getGpa()));
+        
+        System.out.println("\nStudents sorted by GPA (descending):");
+        allStudents.forEach(System.out::println);
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="advanced-sorting">
+          <h1>Java Advanced Sorting</h1>
+          <p>Java provides various ways to sort collections and arrays, including custom comparators and natural ordering.</p>
+
+          <h2>Comparable Interface</h2>
+          <div class="example-box">
+            <h3>Natural Ordering Implementation</h3>
+            <code>
+class Person implements Comparable<Person> {
+    private String name;
+    private int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    
+    @Override
+    public int compareTo(Person other) {
+        return this.name.compareTo(other.name);
+    }
+    
+    @Override
+    public String toString() {
+        return name + " (" + age + ")";
+    }
+}</code>
+          </div>
+
+          <h2>Custom Comparators</h2>
+          <div class="example-box">
+            <h3>Multiple Sorting Criteria</h3>
+            <code>
+import java.util.*;
+
+public class SortingDemo {
+    public static void main(String[] args) {
+        List<Person> people = new ArrayList<>();
+        people.add(new Person("John", 30));
+        people.add(new Person("Alice", 25));
+        people.add(new Person("Bob", 35));
+        people.add(new Person("Alice", 28));
+        
+        // Sort by name (natural ordering)
+        Collections.sort(people);
+        System.out.println("Sorted by name: " + people);
+        
+        // Sort by age
+        Collections.sort(people, 
+            (p1, p2) -> Integer.compare(p1.getAge(), p2.getAge()));
+        System.out.println("Sorted by age: " + people);
+        
+        // Sort by name, then age
+        Collections.sort(people, 
+            Comparator.comparing(Person::getName)
+                     .thenComparing(Person::getAge));
+        System.out.println("Sorted by name, then age: " + people);
+        
+        // Reverse sort
+        Collections.sort(people, 
+            Comparator.comparing(Person::getName).reversed());
+        System.out.println("Reverse sorted by name: " + people);
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Advanced Student Sorting</h3>
+            <code>
+import java.util.*;
+
+class Student implements Comparable<Student> {
+    private String name;
+    private double gpa;
+    private int grade;
+    private List<String> courses;
+    
+    public Student(String name, double gpa, int grade) {
+        this.name = name;
+        this.gpa = gpa;
+        this.grade = grade;
+        this.courses = new ArrayList<>();
+    }
+    
+    public void addCourse(String course) {
+        courses.add(course);
+    }
+    
+    public String getName() { return name; }
+    public double getGpa() { return gpa; }
+    public int getGrade() { return grade; }
+    public List<String> getCourses() { return courses; }
+    
+    @Override
+    public int compareTo(Student other) {
+        return Double.compare(other.gpa, this.gpa);  // Descending GPA
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s (Grade: %d, GPA: %.2f, Courses: %s)",
+            name, grade, gpa, courses);
+    }
+}
+
+public class StudentSorting {
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        
+        // Create and populate students
+        Student s1 = new Student("John", 3.8, 11);
+        s1.addCourse("Math");
+        s1.addCourse("Physics");
+        
+        Student s2 = new Student("Alice", 4.0, 12);
+        s2.addCourse("Biology");
+        s2.addCourse("Chemistry");
+        
+        Student s3 = new Student("Bob", 3.5, 11);
+        s3.addCourse("History");
+        s3.addCourse("English");
+        
+        Student s4 = new Student("Carol", 3.9, 12);
+        s4.addCourse("Math");
+        s4.addCourse("Computer Science");
+        
+        students.add(s1);
+        students.add(s2);
+        students.add(s3);
+        students.add(s4);
+        
+        // Natural ordering (by GPA)
+        Collections.sort(students);
+        System.out.println("Sorted by GPA (natural ordering):");
+        students.forEach(System.out::println);
+        
+        // Sort by grade, then GPA
+        Collections.sort(students, 
+            Comparator.comparingInt(Student::getGrade)
+                     .thenComparingDouble(Student::getGpa).reversed());
+        
+        System.out.println("\nSorted by grade, then GPA (descending):");
+        students.forEach(System.out::println);
+        
+        // Sort by name
+        Collections.sort(students, 
+            Comparator.comparing(Student::getName));
+        
+        System.out.println("\nSorted by name:");
+        students.forEach(System.out::println);
+        
+        // Sort by number of courses, then name
+        Collections.sort(students, 
+            Comparator.comparingInt((Student s) -> s.getCourses().size())
+                     .reversed()
+                     .thenComparing(Student::getName));
+        
+        System.out.println("\nSorted by number of courses (desc), then name:");
+        students.forEach(System.out::println);
+        
+        // Custom complex sorting
+        Collections.sort(students, (s1, s2) -> {
+            // First compare by grade
+            int gradeCompare = Integer.compare(s2.getGrade(), s1.getGrade());
+            if (gradeCompare != 0) return gradeCompare;
+            
+            // Then by GPA
+            int gpaCompare = Double.compare(s2.getGpa(), s1.getGpa());
+            if (gpaCompare != 0) return gpaCompare;
+            
+            // Finally by name
+            return s1.getName().compareTo(s2.getName());
+        });
+        
+        System.out.println("\nComplex sorting (grade desc, GPA desc, name asc):");
+        students.forEach(System.out::println);
+    }
+}</code>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text">Progress: 0% (0/5 sections)</div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson4.html')">
+    ← Previous Lesson
+  </button>
+
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson6.html')">
+    Next Lesson →
+  </button>
+
+</body>
+
+<script>
+  function playClickAndGo(destination) {
+    const clickSound = document.getElementById('clickSound');
+    clickSound.currentTime = 0;
+    clickSound.play();
+    setTimeout(() => {
+      window.location.href = destination;
+    }, 300);
+  }
+
+  let visitedSections = new Set();
+  const totalSections = 5;
+
+  // Load progress from localStorage
+  function loadProgress() {
+      const currentUser = localStorage.getItem('username');
+      const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      const userData = allUsers[currentUser] || {};
+      const savedProgress = userData['java_lesson5_progress'];
+      if (savedProgress) {
+          visitedSections = new Set(JSON.parse(savedProgress));
+          updateProgress();
+      }
+  }
+
+  // Save progress to localStorage
+  function saveProgress() {
+      const currentUser = localStorage.getItem('username');
+      let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!allUsers[currentUser]) {
+          allUsers[currentUser] = {};
+      }
+      allUsers[currentUser]['java_lesson5_progress'] = JSON.stringify([...visitedSections]);
+      localStorage.setItem('users', JSON.stringify(allUsers));
+  }
+
+  function updateProgress() {
+    const progressPercent = (visitedSections.size / totalSections) * 100;
+    document.querySelector('.progress-fill').style.width = progressPercent + '%';
+    document.querySelector('.progress-text').textContent = 
+        `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+    saveProgress(); // Save progress after each update
+
+    // Check if lesson was just completed (100%) and show popup
+    if (progressPercent === 100 && visitedSections.size === totalSections) {
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        const lastProgress = allUsers[currentUser]?.['java_lesson5_last_progress'] || '0';
+        if (parseFloat(lastProgress) < 100) {
+            showCompletionPopup();
+        }
+        allUsers[currentUser]['java_lesson5_last_progress'] = '100';
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+  }
+
+  function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('section').forEach(section => {
+      section.style.display = 'none';
+      section.classList.remove('active');
+    });
+
+    // Show selected section
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.style.display = 'block';
+      section.classList.add('active');
+      visitedSections.add(sectionId);
+      updateProgress();
+
+      // Update sidebar items
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + sectionId) {
+          item.classList.add('active');
+        }
+      });
+    }
+  }
+
+  // Function to check if code blocks need scrolling
+  function checkCodeScroll() {
+    document.querySelectorAll('code').forEach(codeBlock => {
+      const container = codeBlock.parentElement;
+      if (codeBlock.scrollWidth > codeBlock.clientWidth) {
+        container.classList.add('has-scroll');
+      } else {
+        container.classList.remove('has-scroll');
+      }
+    });
+  }
+
+  // Load progress and show first section by default
+  document.addEventListener('DOMContentLoaded', () => {
+    loadProgress();
+    showSection('exceptions');
+  });
+
+  // Check for scroll on load and resize
+  window.addEventListener('load', checkCodeScroll);
+  window.addEventListener('resize', checkCodeScroll);
+
+
+</script>
+</html> 

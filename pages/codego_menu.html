@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>C0D-3-G0</title>
+  <style>
+    @font-face {
+      font-family: 'Computer Says No';
+      src: url('../font/Computer Says No.otf') format('opentype');
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .window {
+      background: #c0c0c0;
+      border: 3px solid;
+      border-color: #dfdfdf #000 #000 #dfdfdf;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+    }
+
+    .title-bar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-bar-icon {
+      width: 32px;
+      height: 32px;
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    .title-bar-icon::before,
+    .title-bar-icon::after,
+    .title-bar-icon span {
+      content: '';
+      height: 3px;
+      background: #000080;
+      margin: 2px 0;
+      border-radius: 1px;
+    }
+
+    .title-bar-icon span {
+      display: block;
+    }
+
+    .title-bar-text {
+      color: white;
+      font-weight: bold;
+      font-size: 32px;
+    }
+
+    .title-bar-controls {
+      display: flex;
+      gap: 2px;
+    }
+
+    .title-bar-controls button {
+      width: 24px;
+      height: 22px;
+      border: 1px solid white;
+      background: #c0c0c0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .title-bar-controls button:active {
+      border: 1px solid #808080;
+      padding: 1px;
+    }
+
+    .window-body {
+      margin: 8px;
+      padding: 30px;
+      border: 2px solid;
+      border-color: #808080 #fff #fff #808080;
+      background: #c0c0c0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-text {
+      color: #000;
+      font-size: 52px;
+      text-align: center;
+      margin: 10px 0;
+      line-height: 1.2;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: clamp(30px, 5vw, 60px);
+      margin-top: 5px;
+    }
+
+    .button-wrapper {
+      position: relative;
+      width: clamp(120px, 25vw, 180px);
+      height: clamp(120px, 25vw, 180px);
+      cursor: pointer;
+    }
+
+    .button-wrapper img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .default-image {
+      display: inline;
+      z-index: 1;
+    }
+
+    .hover-image {
+      display: none;
+      z-index: 2;
+    }
+
+    .button-wrapper:hover .default-image {
+      display: none;
+    }
+
+    .button-wrapper:hover .hover-image {
+      display: inline;
+    }
+
+    @media (max-width: 768px) {
+      .window {
+        width: 95%;
+        margin: 10px;
+      }
+
+      .title-bar-text {
+        font-size: 28px;
+      }
+
+      .title-bar-icon {
+        width: 28px;
+        height: 28px;
+        padding: 3px;
+      }
+
+      .title-bar-icon::before,
+      .title-bar-icon::after,
+      .title-bar-icon span {
+        height: 2px;
+        margin: 2px 0;
+      }
+
+      .menu-text {
+        font-size: 46px;
+        margin: 8px 0;
+      }
+
+      .button-container {
+        margin-top: 4px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .window {
+        width: 98%;
+        margin: 5px;
+      }
+
+      .title-bar-text {
+        font-size: 24px;
+      }
+
+      .title-bar-icon {
+        width: 24px;
+        height: 24px;
+        padding: 3px;
+      }
+
+      .title-bar-icon::before,
+      .title-bar-icon::after,
+      .title-bar-icon span {
+        height: 2px;
+        margin: 1px 0;
+      }
+
+      .title-bar {
+        padding: 6px 8px;
+      }
+
+      .menu-text {
+        font-size: 40px;
+        margin: 6px 0;
+      }
+
+      .button-wrapper {
+        width: clamp(100px, 30vw, 140px);
+        height: clamp(100px, 30vw, 140px);
+      }
+
+      .button-container {
+        margin-top: 3px;
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      .window-body {
+        padding: 15px;
+        gap: 5px;
+      }
+
+      .menu-text {
+        font-size: 36px;
+        margin: 4px 0;
+      }
+
+      .button-container {
+        margin-top: 2px;
+      }
+    }
+  </style>
+  <script>
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+  </script>
+</head>
+<body>
+  <audio autoplay loop hidden>
+    <source src="../music/background_music.mp3" type="audio/mpeg" />
+  </audio>
+  <audio id="clickSound" src="../music/click_sound.mp3" preload="auto"></audio>
+
+  <div class="window">
+    <div class="title-bar">
+      <div class="title-bar-left">
+        <div class="title-bar-icon">
+          <span></span>
+        </div>
+        <div class="title-bar-text">Main Menu</div>
+      </div>
+      <div class="title-bar-controls">
+        <button onclick="playClickAndGo('codego_homepage.html')">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="menu-text">
+        To start, where do you want to go?
+      </div>
+      <div class="button-container">
+        <div class="button-wrapper" onclick="playClickAndGo('codego_learningpage.html')">
+          <img src="../images/menu_buttons/6.png" alt="Learning Hub" class="default-image" />
+          <img src="../images/menu_buttons/7.png" alt="Learning Hub Hover" class="hover-image" />
+        </div>
+        <div class="button-wrapper" onclick="playClickAndGo('codego_gamingpage.html')">
+          <img src="../images/menu_buttons/8.png" alt="Gaming Spot" class="default-image" />
+          <img src="../images/menu_buttons/9.png" alt="Gaming Spot Hover" class="hover-image" />
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

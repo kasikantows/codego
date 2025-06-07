@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Tutorial Part 2 - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    section {
+      display: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: #1700d1 #c0c0c0;
+    }
+
+    .subsection-nav::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .subsection-nav::-webkit-scrollbar-track {
+      background: #c0c0c0;
+    }
+
+    .subsection-nav::-webkit-scrollbar-thumb {
+      background-color: #1700d1;
+      border-radius: 0;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 8px 15px;
+      margin: 0 2px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+      min-width: auto;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .subsection-nav button.active {
+      background-color: #1700d1;
+      color: white;
+      border: 2px inset #1700d1;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+      overflow-x: auto;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection code {
+      max-width: 100%;
+      overflow-x: auto;
+      white-space: pre;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .section-title {
+      color: #1700d1;
+      font-size: 24px;
+      margin-bottom: 15px;
+      border: none;
+      padding: 0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .main-content {
+        padding: 10px;
+        padding-bottom: 100px;
+      }
+
+      .subsection-nav {
+        margin: 10px -5px;
+        padding: 5px;
+        border-width: 1px 0;
+      }
+
+      .subsection-nav button {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-height: 35px;
+      }
+
+      .subsection {
+        padding: 10px;
+        margin: 5px 0;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 8px;
+        line-height: 1.4;
+      }
+
+      .example-box {
+        padding: 10px;
+        margin: 5px 0;
+        font-size: 13px;
+      }
+
+      h2, h3 {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        bottom: 60px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 8px;
+      }
+
+      .subsection-nav button {
+        padding: 5px 10px;
+        font-size: 12px;
+        min-height: 32px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 6px;
+        line-height: 1.3;
+      }
+
+      .example-box {
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      h2, h3 {
+        font-size: 16px;
+      }
+
+      p, li {
+        font-size: 13px;
+      }
+
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        bottom: 50px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Python Tutorial Part 2 - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#sets" class="sidebar-item active" onclick="showSection('sets')">Python Sets</a>
+        <a href="#dictionaries" class="sidebar-item" onclick="showSection('dictionaries')">Python Dictionaries</a>
+        <a href="#if-else" class="sidebar-item" onclick="showSection('if-else')">Python If...Else</a>
+        <a href="#match" class="sidebar-item" onclick="showSection('match')">Python Match</a>
+        <a href="#while-loops" class="sidebar-item" onclick="showSection('while-loops')">Python While Loops</a>
+        <a href="#for-loops" class="sidebar-item" onclick="showSection('for-loops')">Python For Loops</a>
+        <a href="#functions" class="sidebar-item" onclick="showSection('functions')">Python Functions</a>
+        <a href="#lambda" class="sidebar-item" onclick="showSection('lambda')">Python Lambda</a>
+        <a href="#arrays" class="sidebar-item" onclick="showSection('arrays')">Python Arrays</a>
+        <a href="#classes" class="sidebar-item" onclick="showSection('classes')">Python Classes/Objects</a>
+        <a href="#inheritance" class="sidebar-item" onclick="showSection('inheritance')">Python Inheritance</a>
+        <a href="#iterators" class="sidebar-item" onclick="showSection('iterators')">Python Iterators</a>
+      </div>
+
+      <div class="main-content">
+        <section id="sets">
+          <h2 class="section-title">Python Sets</h2>
+          
+          <div class="subsection-nav">
+            <button class="active" onclick="showSubsection('sets', 'sets-intro')">Python Sets</button>
+            <button onclick="showSubsection('sets', 'access-items')">Access Set Items</button>
+            <button onclick="showSubsection('sets', 'add-items')">Add Set Items</button>
+            <button onclick="showSubsection('sets', 'remove-items')">Remove Set Items</button>
+            <button onclick="showSubsection('sets', 'loop-sets')">Loop Sets</button>
+            <button onclick="showSubsection('sets', 'join-sets')">Join Sets</button>
+            <button onclick="showSubsection('sets', 'set-methods')">Set Methods</button>
+          </div>
+
+          <div id="sets-intro" class="subsection active">
+            <h3>Python Sets</h3>
+            <p>Sets are used to store multiple items in a single variable. They are unordered, unchangeable, and do not allow duplicate values:</p>
+            <div class="example-box">
+              <ul>
+                <li>Sets are written with curly brackets {}</li>
+                <li>Set items are unordered and unindexed</li>
+                <li>Set items are immutable (cannot be changed)</li>
+                <li>Sets do not allow duplicates</li>
+                <li>Sets can contain different data types</li>
+              </ul>
+            </div>
+            <code># Create a set using curly braces
+fruits = {"apple", "banana", "cherry"}
+print(fruits)
+
+# Create set from list
+numbers = set([1, 2, 3, 4, 5])
+
+# Create empty set
+empty_set = set()  # Don't use {} - that creates empty dict
+
+# Demonstrate no duplicates
+fruits = {"apple", "banana", "cherry", "apple"}
+print(fruits)  # {'apple', 'banana', 'cherry'}</code>
+          </div>
+
+          <div id="access-items" class="subsection">
+            <h3>Access Set Items</h3>
+            <p>Set items cannot be accessed by index or key. You can only loop through set items or check if a specified value is present:</p>
+            <div class="example-box">
+              <ul>
+                <li>Cannot access items by referring to an index</li>
+                <li>Cannot access items by key</li>
+                <li>Can loop through the set items</li>
+                <li>Can check if an item exists using in keyword</li>
+              </ul>
+            </div>
+            <code># Loop through set
+fruits = {"apple", "banana", "cherry"}
+for fruit in fruits:
+    print(fruit)
+
+# Check if item exists
+if "apple" in fruits:
+    print("Yes, apple is in the set")
+
+# Convert to list (not recommended)
+fruit_list = list(fruits)
+print(fruit_list[0])  # Note: order is not guaranteed</code>
+          </div>
+
+          <div id="add-items" class="subsection">
+            <h3>Add Set Items</h3>
+            <p>Once a set is created, you cannot change its items, but you can add new items using several methods:</p>
+            <div class="example-box">
+              <ul>
+                <li>Use add() to add one item</li>
+                <li>Use update() to add multiple items</li>
+                <li>The update() method can take any iterable object</li>
+                <li>Items can be of any data type</li>
+              </ul>
+            </div>
+            <code># Add single item
+fruits = {"apple", "banana", "cherry"}
+fruits.add("orange")
+
+# Add multiple items
+fruits.update(["mango", "grapes"])
+
+# Add from different iterables
+fruits.update(("pear", "kiwi"))         # from tuple
+fruits.update(["plum"], {"papaya"})     # from list and set
+
+# Add sets together
+tropical = {"mango", "pineapple"}
+fruits.update(tropical)</code>
+          </div>
+
+          <div id="remove-items" class="subsection">
+            <h3>Remove Set Items</h3>
+            <p>To remove items from a set, Python provides several built-in methods:</p>
+            <div class="example-box">
+              <ul>
+                <li>remove() will raise an error if item does not exist</li>
+                <li>discard() will NOT raise an error if item does not exist</li>
+                <li>pop() removes a random item</li>
+                <li>clear() removes all items</li>
+              </ul>
+            </div>
+            <code># Remove specified item
+fruits = {"apple", "banana", "cherry"}
+fruits.remove("banana")    # Raises error if not found
+
+# Discard item
+fruits.discard("cherry")   # No error if not found
+
+# Remove random item
+x = fruits.pop()
+print("Removed:", x)
+
+# Remove all items
+fruits.clear()
+print(fruits)    # set()</code>
+          </div>
+
+          <div id="loop-sets" class="subsection">
+            <h3>Loop Sets</h3>
+            <p>You can loop through a set using a for loop. Since sets are unordered, the items will appear in a random order:</p>
+            <div class="example-box">
+              <ul>
+                <li>Use for loop to iterate through items</li>
+                <li>Items appear in random order</li>
+                <li>Can use enumerate() to get counter</li>
+                <li>Can use set comprehension</li>
+              </ul>
+            </div>
+            <code># Simple for loop
+fruits = {"apple", "banana", "cherry"}
+for fruit in fruits:
+    print(fruit)
+
+# Using enumerate
+for i, fruit in enumerate(fruits):
+    print(f"{i}: {fruit}")
+
+# Set comprehension
+numbers = {1, 2, 3, 4, 5}
+squares = {x**2 for x in numbers}
+
+# Conditional loop
+for fruit in fruits:
+    if "a" in fruit:
+        print(f"{fruit} contains 'a'")</code>
+          </div>
+
+          <div id="join-sets" class="subsection">
+            <h3>Join Sets</h3>
+            <p>There are several ways to join two or more sets in Python using set operations:</p>
+            <div class="example-box">
+              <ul>
+                <li>union() - returns a new set with all items from both sets</li>
+                <li>intersection() - returns items that exist in both sets</li>
+                <li>difference() - returns items that exist in first set but not in second</li>
+                <li>symmetric_difference() - returns items that exist in either set, but not in both</li>
+              </ul>
+            </div>
+            <code># Union
+set1 = {"a", "b", "c"}
+set2 = {1, 2, 3}
+union_set = set1.union(set2)
+
+# Intersection
+x = {"apple", "banana", "cherry"}
+y = {"google", "microsoft", "apple"}
+intersection = x.intersection(y)
+
+# Difference
+difference = x.difference(y)
+
+# Symmetric difference
+sym_diff = x.symmetric_difference(y)</code>
+          </div>
+
+          <div id="set-methods" class="subsection">
+            <h3>Set Methods</h3>
+            <p>Python provides a set of built-in methods that you can use on sets:</p>
+            <div class="example-box">
+              <ul>
+                <li>add(), update() - Add items to set</li>
+                <li>remove(), discard(), pop(), clear() - Remove items</li>
+                <li>union(), intersection(), difference() - Set operations</li>
+                <li>issubset(), issuperset(), isdisjoint() - Set relations</li>
+              </ul>
+            </div>
+            <code># Set operations
+set1 = {1, 2, 3}
+set2 = {3, 4, 5}
+
+# Copy a set
+set3 = set1.copy()
+
+# Check relations
+print(set1.issubset(set2))      # False
+print(set1.issuperset(set2))    # False
+print(set1.isdisjoint(set2))    # False
+
+# Modify set
+set1.add(4)
+set1.remove(1)
+print(set1)                     # {2, 3, 4}</code>
+          </div>
+        </section>
+
+        <section id="dictionaries">
+          <h2 class="section-title">Python Dictionaries</h2>
+
+          <div class="subsection-nav">
+            <button class="active" onclick="showSubsection('dictionaries', 'dict-intro')">Python Dictionaries</button>
+            <button onclick="showSubsection('dictionaries', 'dict-access')">Access Items</button>
+            <button onclick="showSubsection('dictionaries', 'dict-change')">Change Items</button>
+            <button onclick="showSubsection('dictionaries', 'dict-add')">Add Items</button>
+            <button onclick="showSubsection('dictionaries', 'dict-remove')">Remove Items</button>
+            <button onclick="showSubsection('dictionaries', 'dict-loop')">Loop Dictionaries</button>
+            <button onclick="showSubsection('dictionaries', 'dict-copy')">Copy Dictionaries</button>
+            <button onclick="showSubsection('dictionaries', 'dict-nested')">Nested Dictionaries</button>
+            <button onclick="showSubsection('dictionaries', 'dict-methods')">Dictionary Methods</button>
+          </div>
+
+          <div id="dict-intro" class="subsection active">
+            <h3>Python Dictionaries</h3>
+            <p>Dictionaries are used to store key:value pairs. They are ordered (as of Python 3.7), changeable, and do not allow duplicate keys:</p>
+            <div class="example-box">
+              <ul>
+                <li>Created using curly brackets {}</li>
+                <li>Each item has a key and a value</li>
+                <li>Keys must be unique and immutable</li>
+                <li>Values can be of any data type</li>
+                <li>Items are ordered (Python 3.7+)</li>
+              </ul>
+            </div>
+            <code># Create a dictionary
+person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York"
+}
+
+# Dictionary with different value types
+mixed_dict = {
+    "string": "Hello",
+    "number": 123,
+    "boolean": True,
+    "list": [1, 2, 3],
+    "dict": {"x": 1, "y": 2}
+}
+
+# Create using dict() constructor
+car = dict(brand="Ford", model="Mustang", year=1964)
+
+print(person)
+print(type(person))  # <class 'dict'></code>
+          </div>
+
+          <div id="dict-access" class="subsection">
+            <h3>Access Dictionary Items</h3>
+            <p>Dictionary items can be accessed by referring to their key names inside square brackets or by using the get() method:</p>
+            <div class="example-box">
+              <ul>
+                <li>Use square brackets with key name</li>
+                <li>Use get() method for safe access</li>
+                <li>Access keys, values, or items</li>
+                <li>Check if key exists</li>
+              </ul>
+            </div>
+            <code># Access using key name
+person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York"
+}
+
+print(person["name"])       # Using brackets
+print(person.get("age"))    # Using get() method
+
+# get() with default value
+print(person.get("country", "USA"))  # Returns "USA" if key not found
+
+# Check if key exists
+if "name" in person:
+    print("Name exists")
+
+# Get all keys, values, or items
+print(person.keys())
+print(person.values())
+print(person.items())</code>
+          </div>
+
+          <div id="dict-change" class="subsection">
+            <h3>Change Dictionary Items</h3>
+            <p>You can change the value of a specific item by referring to its key name:</p>
+            <div class="example-box">
+              <ul>
+                <li>Change value using key name</li>
+                <li>Update multiple items at once</li>
+                <li>Replace existing values</li>
+                <li>Modify nested values</li>
+              </ul>
+            </div>
+            <code># Change value
+person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York"
+}
+
+person["age"] = 31
+print(person)
+
+# Update multiple items
+person.update({"age": 32, "city": "Los Angeles"})
+print(person)
+
+# Change value in nested dictionary
+nested = {
+    "child1": {"name": "Emil", "age": 10},
+    "child2": {"name": "Tobias", "age": 8}
+}
+nested["child1"]["age"] = 11</code>
+          </div>
+
+          <div id="dict-add" class="subsection">
+            <h3>Add Dictionary Items</h3>
+            <p>Adding items to a dictionary can be done in several ways:</p>
+            <div class="example-box">
+              <ul>
+                <li>Add new key-value pair using key name</li>
+                <li>Update dictionary with another dictionary</li>
+                <li>Use setdefault() for conditional adding</li>
+                <li>Add nested dictionaries</li>
+              </ul>
+            </div>
+            <code># Add new item
+person = {
+    "name": "John",
+    "age": 30
+}
+
+person["city"] = "New York"
+print(person)
+
+# Add using update()
+person.update({"email": "john@example.com"})
+
+# Add with setdefault()
+# Returns existing value if key exists, else adds new key-value
+email = person.setdefault("email", "default@example.com")
+
+# Add nested dictionary
+person["address"] = {
+    "street": "Main St",
+    "city": "New York",
+    "country": "USA"
+}</code>
+          </div>
+
+          <div id="dict-remove" class="subsection">
+            <h3>Remove Dictionary Items</h3>
+            <p>There are several methods to remove items from a dictionary:</p>
+            <div class="example-box">
+              <ul>
+                <li>pop() - removes item with specified key</li>
+                <li>popitem() - removes last inserted item</li>
+                <li>del - removes item or entire dictionary</li>
+                <li>clear() - removes all items</li>
+              </ul>
+            </div>
+            <code># Remove using pop()
+person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York"
+}
+age = person.pop("age")    # Removes and returns value
+print(age)                 # 30
+
+# Remove last inserted item
+last_item = person.popitem()
+print(last_item)          # Tuple of key-value pair
+
+# Delete specific item
+del person["name"]
+
+# Clear all items
+person.clear()
+print(person)             # {}</code>
+          </div>
+
+          <div id="dict-loop" class="subsection">
+            <h3>Loop Dictionaries</h3>
+            <p>You can loop through a dictionary in several ways:</p>
+            <div class="example-box">
+              <ul>
+                <li>Loop through keys (default)</li>
+                <li>Loop through values</li>
+                <li>Loop through key-value pairs</li>
+                <li>Use dictionary comprehension</li>
+              </ul>
+            </div>
+            <code># Loop through keys
+person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York"
+}
+
+for x in person:
+    print(x)              # Prints keys
+
+# Loop through values
+for value in person.values():
+    print(value)
+
+# Loop through key-value pairs
+for key, value in person.items():
+    print(f"{key}: {value}")
+
+# Dictionary comprehension
+squares = {x: x*x for x in range(5)}
+print(squares)            # {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}</code>
+          </div>
+
+          <div id="dict-copy" class="subsection">
+            <h3>Copy Dictionaries</h3>
+            <p>You cannot copy a dictionary simply by typing dict2 = dict1. There are ways to make copies:</p>
+            <div class="example-box">
+              <ul>
+                <li>copy() method - shallow copy</li>
+                <li>dict() constructor - shallow copy</li>
+                <li>deepcopy() - deep copy (nested dictionaries)</li>
+                <li>Understand reference vs copy</li>
+              </ul>
+            </div>
+            <code># Simple copy (shallow)
+original = {
+    "name": "John",
+    "age": 30,
+    "hobbies": ["reading", "music"]
+}
+
+# Method 1: copy()
+copy1 = original.copy()
+
+# Method 2: dict()
+copy2 = dict(original)
+
+# Deep copy (for nested dictionaries)
+from copy import deepcopy
+deep_copy = deepcopy(original)
+
+# Demonstrate difference
+original["hobbies"].append("sports")
+print(copy1["hobbies"])      # Changed (shallow copy)
+print(deep_copy["hobbies"])  # Unchanged (deep copy)</code>
+          </div>
+
+          <div id="dict-nested" class="subsection">
+            <h3>Nested Dictionaries</h3>
+            <p>A dictionary can contain dictionaries, this is called nested dictionaries:</p>
+            <div class="example-box">
+              <ul>
+                <li>Create nested dictionaries</li>
+                <li>Access nested items</li>
+                <li>Modify nested values</li>
+                <li>Add and remove nested items</li>
+              </ul>
+            </div>
+            <code># Create nested dictionary
+family = {
+    "child1": {
+        "name": "Emil",
+        "age": 10
+    },
+    "child2": {
+        "name": "Tobias",
+        "age": 8
+    }
+}
+
+# Access nested items
+print(family["child1"]["name"])
+
+# Modify nested values
+family["child1"]["age"] = 11
+
+# Add new nested dictionary
+family["child3"] = {
+    "name": "Linus",
+    "age": 5
+}
+
+# Remove nested dictionary
+del family["child2"]</code>
+          </div>
+
+          <div id="dict-methods" class="subsection">
+            <h3>Dictionary Methods</h3>
+            <p>Python has a set of built-in methods that you can use on dictionaries:</p>
+            <div class="example-box">
+              <ul>
+                <li>clear() - removes all elements</li>
+                <li>copy() - returns a copy</li>
+                <li>fromkeys() - creates dictionary with specified keys and value</li>
+                <li>get() - returns value of specified key</li>
+                <li>items() - returns key-value pairs</li>
+                <li>keys() - returns list of keys</li>
+                <li>pop() - removes element with specified key</li>
+                <li>popitem() - removes last inserted item</li>
+                <li>setdefault() - returns value of specified key</li>
+                <li>update() - updates dictionary with specified items</li>
+                <li>values() - returns list of values</li>
+              </ul>
+            </div>
+            <code># Dictionary method examples
+car = {
+    "brand": "Ford",
+    "model": "Mustang",
+    "year": 1964
+}
+
+# Create new dict with fromkeys()
+x = ('key1', 'key2', 'key3')
+y = 0
+new_dict = dict.fromkeys(x, y)
+
+# Get value safely
+value = car.get("color", "Not Found")
+
+# Set default value
+car.setdefault("color", "black")
+
+# Update dictionary
+car.update({"color": "red", "price": 45000})
+
+# Get all values
+print(car.values())</code>
+          </div>
+        </section>
+
+        <section id="if-else">
+          <h2 class="section-title">Python If...Else</h2>
+          <p>Conditional statements are used to execute different code based on conditions:</p>
+          <div class="example-box">
+            <ul>
+              <li>if statement - executes code if condition is True</li>
+              <li>elif statement - checks other conditions if previous was False</li>
+              <li>else statement - executes if all conditions are False</li>
+              <li>Nested if statements - if statements inside if statements</li>
+            </ul>
+          </div>
+          <code># Basic if statement
+age = 20
+if age >= 18:
+    print("You are an adult")
+
+# if-else statement
+age = 15
+if age >= 18:
+    print("You are an adult")
+else:
+    print("You are a minor")
+
+# if-elif-else statement
+score = 85
+if score >= 90:
+    print("A grade")
+elif score >= 80:
+    print("B grade")
+elif score >= 70:
+    print("C grade")
+else:
+    print("Failed")
+
+# Nested if statements
+age = 20
+has_license = True
+if age >= 18:
+    if has_license:
+        print("You can drive")
+    else:
+        print("You need a license")
+else:
+    print("Too young to drive")
+
+# Short hand if-else (ternary operator)
+age = 20
+message = "Adult" if age >= 18 else "Minor"</code>
+        </section>
+
+        <section id="match">
+          <h2 class="section-title">Python Match</h2>
+          <p>The match statement (Python 3.10+) is similar to switch statements in other languages:</p>
+          <div class="example-box">
+            <ul>
+              <li>Pattern matching with multiple cases</li>
+              <li>Can match literal values, sequences, mappings</li>
+              <li>Supports wildcard patterns</li>
+              <li>Can use guard conditions with if</li>
+            </ul>
+          </div>
+          <code># Basic match statement
+status = 404
+match status:
+    case 400:
+        print("Bad request")
+    case 404:
+        print("Not found")
+    case 418:
+        print("I'm a teapot")
+    case _:
+        print("Something else")
+
+# Pattern matching with sequences
+command = ["quit"]
+match command:
+    case ["quit"]:
+        print("Exiting")
+    case ["load", filename]:
+        print(f"Loading {filename}")
+    case ["save", filename]:
+        print(f"Saving {filename}")
+    case _:
+        print("Unknown command")
+
+# Pattern matching with guards
+point = (0, 0)
+match point:
+    case (0, 0):
+        print("Origin")
+    case (x, y) if x == y:
+        print("On diagonal")
+    case (x, y):
+        print(f"At ({x}, {y})")</code>
+        </section>
+
+        <section id="while-loops">
+          <h2 class="section-title">Python While Loops</h2>
+          <p>While loops execute a block of code as long as a condition is True:</p>
+          <div class="example-box">
+            <ul>
+              <li>while loop - repeats while condition is True</li>
+              <li>break statement - stops the loop</li>
+              <li>continue statement - skips current iteration</li>
+              <li>else clause - executes when condition becomes False</li>
+            </ul>
+          </div>
+          <code># Basic while loop
+i = 1
+while i < 6:
+    print(i)
+    i += 1
+
+# Break statement
+i = 1
+while i < 6:
+    if i == 3:
+        break
+    print(i)
+    i += 1
+
+# Continue statement
+i = 0
+while i < 6:
+    i += 1
+    if i == 3:
+        continue
+    print(i)
+
+# While loop with else
+i = 1
+while i < 6:
+    print(i)
+    i += 1
+else:
+    print("i is no longer less than 6")
+
+# Input validation loop
+while True:
+    try:
+        x = int(input("Enter a number: "))
+        break
+    except ValueError:
+        print("That's not a valid number!")</code>
+        </section>
+
+        <section id="for-loops">
+          <h2 class="section-title">Python For Loops</h2>
+          <p>For loops are used to iterate over sequences (lists, tuples, strings, etc.):</p>
+          <div class="example-box">
+            <ul>
+              <li>for loop with sequence</li>
+              <li>for loop with range()</li>
+              <li>Nested for loops</li>
+              <li>Loop control statements (break, continue)</li>
+            </ul>
+          </div>
+          <code># Loop through a list
+fruits = ["apple", "banana", "cherry"]
+for fruit in fruits:
+    print(fruit)
+
+# Loop through a string
+for char in "Python":
+    print(char)
+
+# Range function
+for i in range(5):        # 0 to 4
+    print(i)
+
+for i in range(2, 5):     # 2 to 4
+    print(i)
+
+for i in range(0, 10, 2): # 0 to 9, step 2
+    print(i)
+
+# Nested loops
+adj = ["red", "big"]
+fruits = ["apple", "banana"]
+for x in adj:
+    for y in fruits:
+        print(x, y)
+
+# Loop with else
+for x in range(5):
+    print(x)
+else:
+    print("Loop completed!")
+
+# Break and continue
+for x in range(10):
+    if x == 3:
+        continue  # Skip 3
+    if x == 7:
+        break    # Stop at 7
+    print(x)</code>
+        </section>
+
+        <section id="functions">
+          <h2 class="section-title">Python Functions</h2>
+          <p>Functions are blocks of reusable code that perform specific tasks:</p>
+          <div class="example-box">
+            <ul>
+              <li>Define with def keyword</li>
+              <li>Can have parameters and return values</li>
+              <li>Support default parameters</li>
+              <li>Can use *args and **kwargs for variable arguments</li>
+            </ul>
+          </div>
+          <code># Basic function
+def greet(name):
+    print(f"Hello, {name}!")
+
+greet("Alice")
+
+# Function with return value
+def add(x, y):
+    return x + y
+
+result = add(5, 3)
+print(result)  # 8
+
+# Default parameters
+def greet_with_title(name, title="Mr."):
+    print(f"Hello, {title} {name}!")
+
+greet_with_title("Smith")         # Uses default
+greet_with_title("Smith", "Dr.")  # Override default
+
+# Multiple parameters
+def calculate_total(price, tax_rate, discount=0):
+    tax = price * tax_rate
+    total = price + tax - discount
+    return total
+
+total = calculate_total(100, 0.1, 20)
+
+# *args for variable arguments
+def sum_all(*numbers):
+    return sum(numbers)
+
+print(sum_all(1, 2, 3, 4))  # 10
+
+# **kwargs for keyword arguments
+def print_info(**kwargs):
+    for key, value in kwargs.items():
+        print(f"{key}: {value}")
+
+print_info(name="Alice", age=25, city="New York")</code>
+        </section>
+
+        <section id="lambda">
+          <h2 class="section-title">Python Lambda</h2>
+          <p>Lambda functions are small anonymous functions that can have any number of arguments but only one expression:</p>
+          <div class="example-box">
+            <ul>
+              <li>Single-line function definition</li>
+              <li>Can be used as function argument</li>
+              <li>Commonly used with map(), filter(), reduce()</li>
+              <li>Limited to simple expressions</li>
+            </ul>
+          </div>
+          <code># Basic lambda function
+x = lambda a: a + 10
+print(x(5))  # 15
+
+# Lambda with multiple arguments
+sum = lambda a, b: a + b
+print(sum(5, 3))  # 8
+
+# Lambda with map()
+numbers = [1, 2, 3, 4, 5]
+doubled = list(map(lambda x: x * 2, numbers))
+print(doubled)  # [2, 4, 6, 8, 10]
+
+# Lambda with filter()
+numbers = [1, 2, 3, 4, 5, 6]
+even = list(filter(lambda x: x % 2 == 0, numbers))
+print(even)  # [2, 4, 6]
+
+# Lambda in sorting
+pairs = [(1, 'one'), (2, 'two'), (3, 'three')]
+pairs.sort(key=lambda x: x[1])  # Sort by second element
+print(pairs)
+
+# Lambda in list comprehension
+numbers = [1, 2, 3, 4]
+squared = [(lambda x: x**2)(x) for x in numbers]
+print(squared)  # [1, 4, 9, 16]</code>
+        </section>
+
+        <section id="arrays">
+          <h2 class="section-title">Python Arrays</h2>
+          <p>Arrays in Python (from array module) are used to store collections of same data type:</p>
+          <div class="example-box">
+            <ul>
+              <li>More memory efficient than lists</li>
+              <li>All elements must be same type</li>
+              <li>Support numerical operations</li>
+              <li>Common in scientific computing</li>
+            </ul>
+          </div>
+          <code># Import array module
+from array import array
+
+# Create arrays
+numbers = array('i', [1, 2, 3, 4, 5])  # 'i' for integers
+floats = array('f', [1.0, 2.0, 3.0])   # 'f' for floats
+
+# Access elements
+print(numbers[0])     # First element
+print(numbers[-1])    # Last element
+
+# Modify elements
+numbers[0] = 10
+numbers.append(6)
+numbers.extend([7, 8, 9])
+
+# Array operations
+print(len(numbers))   # Length
+numbers.pop()         # Remove last element
+numbers.remove(5)     # Remove first occurrence of 5
+
+# Array methods
+numbers.reverse()     # Reverse array
+numbers.tolist()      # Convert to list
+
+# NumPy arrays (more common in practice)
+import numpy as np
+np_array = np.array([1, 2, 3, 4, 5])
+print(np_array * 2)  # Element-wise multiplication</code>
+        </section>
+
+        <section id="classes">
+          <h2 class="section-title">Python Classes/Objects</h2>
+          <p>Classes are used to create objects that bundle data and functionality together:</p>
+          <div class="example-box">
+            <ul>
+              <li>Define with class keyword</li>
+              <li>__init__ method for initialization</li>
+              <li>self parameter refers to instance</li>
+              <li>Support methods and attributes</li>
+            </ul>
+          </div>
+          <code># Basic class
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def greet(self):
+        print(f"Hello, my name is {self.name}")
+
+# Create object
+person1 = Person("Alice", 25)
+person1.greet()
+
+# Class with properties
+class Circle:
+    def __init__(self, radius):
+        self._radius = radius
+    
+    @property
+    def radius(self):
+        return self._radius
+    
+    @property
+    def area(self):
+        return 3.14 * self._radius ** 2
+
+# Class methods and static methods
+class Math:
+    @staticmethod
+    def add(x, y):
+        return x + y
+    
+    @classmethod
+    def multiply(cls, x, y):
+        return x * y
+
+# Private attributes
+class BankAccount:
+    def __init__(self, balance):
+        self.__balance = balance  # Private
+    
+    def deposit(self, amount):
+        if amount > 0:
+            self.__balance += amount
+    
+    def get_balance(self):
+        return self.__balance</code>
+        </section>
+
+        <section id="inheritance">
+          <h2 class="section-title">Python Inheritance</h2>
+          <p>Inheritance allows a class to inherit attributes and methods from another class:</p>
+          <div class="example-box">
+            <ul>
+              <li>Create parent-child relationships</li>
+              <li>Support method overriding</li>
+              <li>Enable multiple inheritance</li>
+              <li>Use super() to access parent class</li>
+            </ul>
+          </div>
+          <code># Parent class
+class Animal:
+    def __init__(self, name):
+        self.name = name
+    
+    def speak(self):
+        pass
+
+# Child class
+class Dog(Animal):
+    def speak(self):
+        return f"{self.name} says Woof!"
+
+class Cat(Animal):
+    def speak(self):
+        return f"{self.name} says Meow!"
+
+# Multiple inheritance
+class A:
+    def method_a(self):
+        return "Method A"
+
+class B:
+    def method_b(self):
+        return "Method B"
+
+class C(A, B):
+    pass
+
+# Using super()
+class Employee:
+    def __init__(self, name, salary):
+        self.name = name
+        self.salary = salary
+
+class Manager(Employee):
+    def __init__(self, name, salary, department):
+        super().__init__(name, salary)
+        self.department = department
+
+# Method overriding with super()
+class Bird(Animal):
+    def __init__(self, name, wingspan):
+        super().__init__(name)
+        self.wingspan = wingspan
+    
+    def speak(self):
+        return f"{self.name} chirps!"</code>
+        </section>
+
+        <section id="iterators">
+          <h2 class="section-title">Python Iterators</h2>
+          <p>Iterators are objects that contain countable number of values:</p>
+          <div class="example-box">
+            <ul>
+              <li>Implement __iter__() and __next__()</li>
+              <li>Used in for loops</li>
+              <li>Support StopIteration</li>
+              <li>Create custom iteration behavior</li>
+            </ul>
+          </div>
+          <code># Basic iterator
+mytuple = ("apple", "banana", "cherry")
+myit = iter(mytuple)
+print(next(myit))  # apple
+print(next(myit))  # banana
+
+# Custom iterator class
+class Numbers:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+    
+    def __iter__(self):
+        self.current = self.start
+        return self
+    
+    def __next__(self):
+        if self.current > self.end:
+            raise StopIteration
+        else:
+            self.current += 1
+            return self.current - 1
+
+# Using custom iterator
+numbers = Numbers(1, 5)
+for num in numbers:
+    print(num)
+
+# Iterator with generator
+def fibonacci(n):
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+
+# Using generator iterator
+for num in fibonacci(10):
+    print(num)
+
+# Infinite iterator with itertools
+import itertools
+counter = itertools.count(start=1, step=2)
+for num in itertools.islice(counter, 5):
+    print(num)  # Prints first 5 odd numbers</code>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson1.html')">← Previous Lesson</button>
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson3.html')">Next Lesson →</button>
+
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 12;  // Total sections count
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['python_lesson2_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        if (!visitedSections || !(visitedSections instanceof Set)) {
+            console.error('Invalid visitedSections in updateProgress:', visitedSections);
+            return;
+        }
+
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        document.getElementById('progressBar').style.width = progressPercent + '%';
+        document.getElementById('progressText').textContent = 
+            `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        
+        // Save to user's data
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {};
+            }
+            allUsers[currentUser]['python_lesson2_progress'] = JSON.stringify([...visitedSections]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('.main-content section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show the selected section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeItem = document.querySelector(`.sidebar-item[href="#${sectionId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+      // Hide all subsections in the current section
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.querySelectorAll('.subsection').forEach(sub => {
+          sub.classList.remove('active');
+          sub.style.display = 'none';
+        });
+        
+        // Show selected subsection
+        const subsection = document.getElementById(subsectionId);
+        if (subsection) {
+          subsection.classList.add('active');
+          subsection.style.display = 'block';
+        }
+
+        // Update button states
+        section.querySelectorAll('.subsection-nav button').forEach(button => {
+          button.classList.remove('active');
+        });
+        const activeButton = section.querySelector(`button[onclick*="${subsectionId}"]`);
+        if (activeButton) {
+          activeButton.classList.add('active');
+        }
+      }
+    }
+
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    // Load progress when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+        showSection('sets');  // Show the first section
+        
+        // Count the first section as visited since it's the first thing users see
+        visitedSections.add('sets');
+        updateProgress();
+        
+        // Add click handlers to sidebar items
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = item.getAttribute('href').substring(1);
+                showSection(sectionId);
+            });
+        });
+    });
+  </script>
+</body>
+</html> 

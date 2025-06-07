@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C0D-3-G0</title>
+  <style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background-image: url('../images/background.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .center-image {
+        max-width: 30%;
+        height: auto;
+    }
+
+    .close_button {
+        position: absolute;
+        top: 125px;
+        left: 950px;
+        height: 5%;
+        cursor: pointer;
+    }
+  </style>
+  <script>
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300); // Adjust this delay if your click sound is longer
+    }
+  </script>
+</head>
+<body>
+    <audio autoplay loop hidden>
+        <source src="../music/background_music.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="clickSound" src="../music/click_sound.mp3" preload="auto"></audio>
+
+    <!-- Centered Image -->
+    <img src="../images/about_window.png" alt="Centered Image" class="center-image">
+
+    <!-- Close Button -->
+    <img src="../images/close_button.png" alt="Close Button" class="close_button" onclick="playClickAndGo('codego_homepage.html')">
+</body>
+</html>

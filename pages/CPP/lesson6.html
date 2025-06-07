@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Data Structures - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    section {
+      display: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 60px;
+        right: 10px;
+        padding: 8px 16px;
+      }
+
+      .prev-lesson-btn {
+        bottom: 60px;
+        left: 10px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .example-box {
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 50px;
+        right: 5px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .prev-lesson-btn {
+        bottom: 50px;
+        left: 5px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .progress-container {
+        padding: 5px;
+      }
+    }
+
+    @media screen and (max-height: 600px) {
+      .sidebar {
+        max-height: 100px;
+      }
+
+      .main-content {
+        padding-bottom: 80px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        padding: 8px 12px;
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">C++ Data Structures - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#stl" class="sidebar-item active" onclick="showSection('stl')">C++ Data Structures & STL</a>
+        <a href="#vectors" class="sidebar-item" onclick="showSection('vectors')">C++ Vectors</a>
+        <a href="#list" class="sidebar-item" onclick="showSection('list')">C++ List</a>
+        <a href="#stacks" class="sidebar-item" onclick="showSection('stacks')">C++ Stacks</a>
+        <a href="#queues" class="sidebar-item" onclick="showSection('queues')">C++ Queues</a>
+        <a href="#deque" class="sidebar-item" onclick="showSection('deque')">C++ Deque</a>
+        <a href="#sets" class="sidebar-item" onclick="showSection('sets')">C++ Sets</a>
+        <a href="#maps" class="sidebar-item" onclick="showSection('maps')">C++ Maps</a>
+        <a href="#iterators" class="sidebar-item" onclick="showSection('iterators')">C++ Iterators</a>
+        <a href="#algorithms" class="sidebar-item" onclick="showSection('algorithms')">C++ Algorithms</a>
+      </div>
+
+      <div class="main-content">
+        <section id="stl">
+          <h2>C++ Data Structures & STL</h2>
+          <p>The Standard Template Library (STL) is a powerful set of C++ template classes to provide general-purpose classes and functions with templates that implement many popular and commonly used algorithms and data structures.</p>
+          
+          <div class="example-box">
+            <h3>Main Components of STL:</h3>
+            <ul>
+              <li><strong>Containers:</strong> Objects that store data</li>
+              <li><strong>Algorithms:</strong> Functions for processing sequences of elements</li>
+              <li><strong>Iterators:</strong> Objects that connect algorithms with containers</li>
+            </ul>
+            <code>
+#include <vector>   // Dynamic array
+#include <list>     // Doubly linked list
+#include <stack>    // LIFO data structure
+#include <queue>    // FIFO data structure
+#include <set>      // Sorted unique elements
+#include <map>      // Key-value pairs
+#include <algorithm>// Algorithms like sort, find</code>
+          </div>
+        </section>
+
+        <section id="vectors">
+          <h2>C++ Vectors</h2>
+          <p>Vectors are dynamic arrays that can grow or shrink in size. They provide random access to elements.</p>
+
+          <div class="example-box">
+            <h3>Basic Vector Operations:</h3>
+            <code>
+#include <vector>
+
+int main() {
+    // Creating vectors
+    vector<int> numbers;                // Empty vector
+    vector<int> nums = {1, 2, 3, 4, 5}; // Initialize with values
+    vector<int> copy(nums);             // Copy constructor
+    
+    // Adding elements
+    numbers.push_back(10);    // Add at end
+    numbers.insert(numbers.begin(), 5); // Add at beginning
+    
+    // Accessing elements
+    cout << numbers[0];       // Using index
+    cout << numbers.at(0);    // Using at() with bounds checking
+    cout << numbers.front();  // First element
+    cout << numbers.back();   // Last element
+    
+    // Size operations
+    cout << numbers.size();     // Number of elements
+    cout << numbers.capacity(); // Allocated space
+    numbers.resize(10);        // Change size
+    
+    // Removing elements
+    numbers.pop_back();        // Remove last element
+    numbers.erase(numbers.begin()); // Remove first element
+    numbers.clear();           // Remove all elements
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="list">
+          <h2>C++ List</h2>
+          <p>Lists are implemented as doubly-linked lists, allowing efficient insertions and deletions anywhere in the sequence.</p>
+
+          <div class="example-box">
+            <h3>List Operations:</h3>
+            <code>
+#include <list>
+
+int main() {
+    // Creating lists
+    list<int> numbers;
+    list<int> nums = {1, 2, 3, 4, 5};
+    
+    // Adding elements
+    numbers.push_back(10);     // Add at end
+    numbers.push_front(5);     // Add at beginning
+    
+    // Inserting elements
+    auto it = numbers.begin();
+    advance(it, 2);           // Move iterator
+    numbers.insert(it, 7);    // Insert at position
+    
+    // Removing elements
+    numbers.pop_back();       // Remove from end
+    numbers.pop_front();      // Remove from beginning
+    numbers.remove(3);        // Remove all 3s
+    numbers.remove_if([](int n){ return n < 0; }); // Remove if negative
+    
+    // Sorting and reversing
+    numbers.sort();           // Sort elements
+    numbers.reverse();        // Reverse order
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="stacks">
+          <h2>C++ Stacks</h2>
+          <p>Stacks are LIFO (Last In, First Out) data structures, useful for tracking function calls, undo operations, etc.</p>
+
+          <div class="example-box">
+            <h3>Stack Operations:</h3>
+            <code>
+#include <stack>
+
+int main() {
+    // Creating stack
+    stack<int> numbers;
+    
+    // Adding elements
+    numbers.push(1);    // Add to top
+    numbers.push(2);
+    numbers.push(3);
+    
+    // Accessing top element
+    cout << numbers.top();  // View top element
+    
+    // Removing elements
+    numbers.pop();         // Remove top element
+    
+    // Size operations
+    cout << numbers.size();  // Number of elements
+    cout << numbers.empty(); // Check if empty
+    
+    // Example: Reversing a string
+    string str = "Hello";
+    stack<char> chars;
+    
+    // Push all characters
+    for(char c : str) {
+        chars.push(c);
+    }
+    
+    // Pop to reverse
+    string reversed;
+    while(!chars.empty()) {
+        reversed += chars.top();
+        chars.pop();
+    }
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="queues">
+          <h2>C++ Queues</h2>
+          <p>Queues are FIFO (First In, First Out) data structures, ideal for managing tasks in order.</p>
+
+          <div class="example-box">
+            <h3>Queue Operations:</h3>
+            <code>
+#include <queue>
+
+int main() {
+    // Creating queue
+    queue<int> numbers;
+    
+    // Adding elements
+    numbers.push(1);    // Add to back
+    numbers.push(2);
+    numbers.push(3);
+    
+    // Accessing elements
+    cout << numbers.front();  // First element
+    cout << numbers.back();   // Last element
+    
+    // Removing elements
+    numbers.pop();           // Remove first element
+    
+    // Size operations
+    cout << numbers.size();   // Number of elements
+    cout << numbers.empty();  // Check if empty
+    
+    // Priority Queue example
+    priority_queue<int> pq;
+    pq.push(3);
+    pq.push(1);
+    pq.push(4);
+    
+    // Elements come out in descending order
+    while(!pq.empty()) {
+        cout << pq.top() << " ";
+        pq.pop();
+    }
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="deque">
+          <h2>C++ Deque</h2>
+          <p>Deque (double-ended queue) allows fast insertions and deletions at both ends.</p>
+
+          <div class="example-box">
+            <h3>Deque Operations:</h3>
+            <code>
+#include <deque>
+
+int main() {
+    // Creating deque
+    deque<int> numbers;
+    
+    // Adding elements
+    numbers.push_back(1);   // Add to back
+    numbers.push_front(2);  // Add to front
+    
+    // Accessing elements
+    cout << numbers[0];     // Using index
+    cout << numbers.at(0);  // Using at()
+    cout << numbers.front();// First element
+    cout << numbers.back(); // Last element
+    
+    // Removing elements
+    numbers.pop_back();     // Remove from back
+    numbers.pop_front();    // Remove from front
+    
+    // Inserting elements
+    numbers.insert(numbers.begin() + 1, 5);
+    
+    // Size operations
+    cout << numbers.size();  // Number of elements
+    numbers.resize(5);      // Resize deque
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="sets">
+          <h2>C++ Sets</h2>
+          <p>Sets store unique elements in a sorted order. They're implemented using binary search trees.</p>
+
+          <div class="example-box">
+            <h3>Set Operations:</h3>
+            <code>
+#include <set>
+
+int main() {
+    // Creating sets
+    set<int> numbers;
+    set<int> nums = {4, 1, 3, 2}; // Automatically sorted
+    
+    // Adding elements
+    numbers.insert(5);    // Insert element
+    numbers.insert(5);    // Duplicate not added
+    
+    // Checking existence
+    if(numbers.count(5)) {
+        cout << "5 exists in set";
+    }
+    
+    // Finding elements
+    auto it = numbers.find(5);
+    if(it != numbers.end()) {
+        cout << "Found " << *it;
+    }
+    
+    // Removing elements
+    numbers.erase(5);     // Remove by value
+    numbers.erase(it);    // Remove by iterator
+    
+    // Size operations
+    cout << numbers.size();  // Number of elements
+    
+    // Multiset example (allows duplicates)
+    multiset<int> multi;
+    multi.insert(5);
+    multi.insert(5);  // Allowed in multiset
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="maps">
+          <h2>C++ Maps</h2>
+          <p>Maps store key-value pairs in a sorted order by key. Each key must be unique.</p>
+
+          <div class="example-box">
+            <h3>Map Operations:</h3>
+            <code>
+#include <map>
+
+int main() {
+    // Creating maps
+    map<string, int> ages;
+    map<string, string> capitals = {
+        {"USA", "Washington"},
+        {"UK", "London"}
+    };
+    
+    // Adding/Updating elements
+    ages["John"] = 25;     // Using operator[]
+    ages.insert({"Alice", 30}); // Using insert
+    
+    // Accessing elements
+    cout << ages["John"];   // Using operator[]
+    cout << ages.at("John");// Using at() with bounds check
+    
+    // Checking existence
+    if(ages.count("John")) {
+        cout << "John exists in map";
+    }
+    
+    // Finding elements
+    auto it = ages.find("John");
+    if(it != ages.end()) {
+        cout << it->first << ": " << it->second;
+    }
+    
+    // Removing elements
+    ages.erase("John");    // Remove by key
+    ages.erase(it);        // Remove by iterator
+    
+    // Iterating through map
+    for(const auto& pair : ages) {
+        cout << pair.first << ": " << pair.second << endl;
+    }
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="iterators">
+          <h2>C++ Iterators</h2>
+          <p>Iterators provide a way to access elements of containers sequentially without exposing the container's internal structure.</p>
+
+          <div class="example-box">
+            <h3>Iterator Types and Usage:</h3>
+            <code>
+#include <vector>
+#include <list>
+
+int main() {
+    vector<int> vec = {1, 2, 3, 4, 5};
+    list<int> lst = {1, 2, 3, 4, 5};
+    
+    // Basic iterators
+    vector<int>::iterator vit = vec.begin();
+    vector<int>::iterator vend = vec.end();
+    
+    // Const iterators
+    vector<int>::const_iterator cvit = vec.cbegin();
+    
+    // Reverse iterators
+    vector<int>::reverse_iterator rit = vec.rbegin();
+    
+    // Using iterators
+    while(vit != vend) {
+        cout << *vit << " ";
+        ++vit;
+    }
+    
+    // Range-based for loop (uses iterators internally)
+    for(const auto& element : vec) {
+        cout << element << " ";
+    }
+    
+    // Iterator operations
+    auto it = vec.begin();
+    advance(it, 2);     // Move forward
+    auto next_it = next(it);  // Next iterator
+    auto prev_it = prev(it);  // Previous iterator
+    
+    // Distance between iterators
+    auto dist = distance(vec.begin(), it);
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="algorithms">
+          <h2>C++ Algorithms</h2>
+          <p>The STL provides a rich set of algorithms that work with iterators to process container elements.</p>
+
+          <div class="example-box">
+            <h3>Common Algorithms:</h3>
+            <code>
+#include <algorithm>
+#include <vector>
+
+int main() {
+    vector<int> nums = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
+    
+    // Sorting
+    sort(nums.begin(), nums.end());  // Sort ascending
+    sort(nums.begin(), nums.end(), greater<int>()); // Sort descending
+    
+    // Searching
+    auto it = find(nums.begin(), nums.end(), 5);
+    auto it2 = binary_search(nums.begin(), nums.end(), 5);
+    
+    // Counting
+    int count5 = count(nums.begin(), nums.end(), 5);
+    int countEven = count_if(nums.begin(), nums.end(), 
+                           [](int n){ return n % 2 == 0; });
+    
+    // Min/Max
+    auto [min_it, max_it] = minmax_element(nums.begin(), nums.end());
+    
+    // Modifying sequences
+    replace(nums.begin(), nums.end(), 1, 10);  // Replace 1 with 10
+    remove(nums.begin(), nums.end(), 5);       // Remove all 5s
+    
+    // Generate values
+    generate(nums.begin(), nums.end(), rand);  // Fill with random
+    
+    // Transform elements
+    transform(nums.begin(), nums.end(), nums.begin(),
+             [](int n){ return n * 2; });  // Double each element
+    
+    // Heap operations
+    make_heap(nums.begin(), nums.end());
+    pop_heap(nums.begin(), nums.end());
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson5.html')">← Previous Lesson</button>
+  
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 10;  // Total sections count
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['cpp_lesson6_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        if (!visitedSections || !(visitedSections instanceof Set)) {
+            console.error('Invalid visitedSections in updateProgress:', visitedSections);
+            return;
+        }
+
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        document.getElementById('progressBar').style.width = progressPercent + '%';
+        document.getElementById('progressText').textContent = 
+            `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        
+        // Save to user's data
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {};
+            }
+            allUsers[currentUser]['cpp_lesson6_progress'] = JSON.stringify([...visitedSections]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('section').forEach(section => {
+            section.style.display = 'none';
+            section.classList.remove('active');
+        });
+        
+        // Show the target section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            targetSection.classList.add('active');
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick').includes(sectionId)) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Show first subsection if exists
+            const firstSubsection = targetSection.querySelector('.subsection');
+            if (firstSubsection) {
+                showSubsection(sectionId, firstSubsection.getAttribute('data-id'));
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            // Hide all subsections in this section
+            section.querySelectorAll('.subsection').forEach(sub => {
+                sub.style.display = 'none';
+                sub.classList.remove('active');
+            });
+            
+            // Show the selected subsection
+            const subsection = section.querySelector(`.subsection[data-id="${subsectionId}"]`);
+            if (subsection) {
+                subsection.style.display = 'block';
+                subsection.classList.add('active');
+            }
+
+            // Update button states
+            section.querySelectorAll('.subsection-nav button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const activeButton = section.querySelector(`button[onclick*="${subsectionId}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
+    }
+
+    function playClickAndGo(destination) {
+        const clickSound = document.getElementById('clickSound');
+        if (clickSound) {
+            clickSound.currentTime = 0;
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 300);
+        }
+    }
+
+    // Initialize when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+
+        // Get the first section
+        const firstSection = document.querySelector('section');
+        if (firstSection) {
+            // Show the first section
+            showSection(firstSection.id);
+            // Mark it as visited
+            visitedSections.add(firstSection.id);
+            updateProgress();
+        }
+
+        // Add click sound element if it doesn't exist
+        if (!document.getElementById('clickSound')) {
+            const audio = document.createElement('audio');
+            audio.id = 'clickSound';
+            audio.src = '../../music/click_sound.mp3';
+            audio.preload = 'auto';
+            document.body.appendChild(audio);
+        }
+    });
+  </script>
+</body>
+</html> 

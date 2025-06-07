@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java Data Structures - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      height: calc(100vh - 160px);
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      display: none;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+
+    th, td {
+      border: 1px solid #1700d1;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+      height: 50px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn, .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+      display: block;
+    }
+
+    .next-lesson-btn {
+      right: 20px;
+    }
+
+    .prev-lesson-btn {
+      left: 20px;
+    }
+
+    .next-lesson-btn:active,
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    .example-box h3 {
+      color: #1700d1;
+      margin-top: 0;
+    }
+
+    .practice-exercise {
+      background-color: #e6e6ff;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    @media screen and (max-width: 768px) {
+      code {
+        font-size: 12px;
+        padding: 10px;
+        line-height: 1.4;
+      }
+
+      .window-content {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        max-height: 200px;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      th, td {
+        padding: 6px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+        margin: 8px 0;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .window-title {
+        font-size: 14px;
+      }
+
+      .sidebar-item {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .progress-container {
+        height: 40px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        font-size: 12px;
+        padding: 8px 16px;
+        bottom: 50px;
+      }
+    }
+
+    /* Add popup styles */
+    
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+  
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Java Data Structures - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#data-structures" class="sidebar-item active" onclick="showSection('data-structures')">Java Data Structures</a>
+        <a href="#arraylist" class="sidebar-item" onclick="showSection('arraylist')">Java ArrayList</a>
+        <a href="#linkedlist" class="sidebar-item" onclick="showSection('linkedlist')">Java LinkedList</a>
+        <a href="#list-sorting" class="sidebar-item" onclick="showSection('list-sorting')">Java List Sorting</a>
+        <a href="#hashmap" class="sidebar-item" onclick="showSection('hashmap')">Java HashMap</a>
+        <a href="#hashset" class="sidebar-item" onclick="showSection('hashset')">Java HashSet</a>
+        <a href="#iterator" class="sidebar-item" onclick="showSection('iterator')">Java Iterator</a>
+        <a href="#wrapper" class="sidebar-item" onclick="showSection('wrapper')">Java Wrapper Classes</a>
+      </div>
+
+      <div class="main-content">
+        <section id="data-structures" class="active">
+          <h1>Java Data Structures</h1>
+          <p>Data structures are different ways of organizing data in a computer to use it efficiently. Java provides several built-in data structures through its Collections Framework.</p>
+
+          <h2>Types of Data Structures in Java</h2>
+          <div class="example-box">
+            <h3>Common Data Structures</h3>
+            <table>
+              <tr>
+                <th>Data Structure</th>
+                <th>Interface</th>
+                <th>Implementation Classes</th>
+                <th>Characteristics</th>
+              </tr>
+              <tr>
+                <td>List</td>
+                <td>List</td>
+                <td>ArrayList, LinkedList, Vector</td>
+                <td>Ordered collection, allows duplicates</td>
+              </tr>
+              <tr>
+                <td>Set</td>
+                <td>Set</td>
+                <td>HashSet, TreeSet, LinkedHashSet</td>
+                <td>Unique elements only</td>
+              </tr>
+              <tr>
+                <td>Queue</td>
+                <td>Queue</td>
+                <td>PriorityQueue, LinkedList</td>
+                <td>FIFO (First In First Out)</td>
+              </tr>
+              <tr>
+                <td>Map</td>
+                <td>Map</td>
+                <td>HashMap, TreeMap, LinkedHashMap</td>
+                <td>Key-value pairs</td>
+              </tr>
+            </table>
+          </div>
+
+          <h2>Collections Framework Hierarchy</h2>
+          <code>
+// Collection interface hierarchy
+Collection (interface)
+├── List (interface)
+│   ├── ArrayList
+│   ├── LinkedList
+│   └── Vector
+├── Set (interface)
+│   ├── HashSet
+│   ├── LinkedHashSet
+│   └── TreeSet
+└── Queue (interface)
+    ├── PriorityQueue
+    └── Deque (interface)
+        └── ArrayDeque
+
+// Map interface (separate hierarchy)
+Map (interface)
+├── HashMap
+├── LinkedHashMap
+└── TreeMap</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Basic Collections</h3>
+            <code>
+import java.util.*;
+
+public class CollectionsDemo {
+    public static void main(String[] args) {
+        // List example
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Orange");
+        System.out.println("List: " + list);
+        
+        // Set example
+        Set<Integer> set = new HashSet<>();
+        set.add(1);
+        set.add(2);
+        set.add(2);  // Duplicate won't be added
+        System.out.println("Set: " + set);
+        
+        // Queue example
+        Queue<String> queue = new LinkedList<>();
+        queue.offer("First");
+        queue.offer("Second");
+        queue.offer("Third");
+        System.out.println("Queue: " + queue);
+        
+        // Map example
+        Map<String, Integer> map = new HashMap<>();
+        map.put("One", 1);
+        map.put("Two", 2);
+        map.put("Three", 3);
+        System.out.println("Map: " + map);
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="arraylist">
+          <h1>Java ArrayList</h1>
+          <p>ArrayList is a resizable-array implementation of the List interface. It provides dynamic arrays in Java and is part of the Java Collections Framework.</p>
+
+          <h2>Creating and Using ArrayList</h2>
+          <div class="example-box">
+            <h3>Basic ArrayList Operations</h3>
+            <code>
+import java.util.ArrayList;
+import java.util.List;
+
+public class ArrayListDemo {
+    public static void main(String[] args) {
+        // Creating ArrayList
+        ArrayList<String> fruits = new ArrayList<>();
+        
+        // Adding elements
+        fruits.add("Apple");
+        fruits.add("Banana");
+        fruits.add("Orange");
+        
+        // Adding at specific index
+        fruits.add(1, "Mango");
+        
+        // Accessing elements
+        System.out.println("First fruit: " + fruits.get(0));
+        
+        // Modifying elements
+        fruits.set(0, "Pineapple");
+        
+        // Removing elements
+        fruits.remove("Banana");
+        fruits.remove(0);
+        
+        // Checking size
+        System.out.println("Size: " + fruits.size());
+        
+        // Checking if empty
+        System.out.println("Is empty? " + fruits.isEmpty());
+        
+        // Checking if contains element
+        System.out.println("Contains Orange? " + 
+            fruits.contains("Orange"));
+        
+        // Clearing ArrayList
+        fruits.clear();
+    }
+}</code>
+          </div>
+
+          <h2>ArrayList Methods</h2>
+          <div class="example-box">
+            <h3>Common ArrayList Methods</h3>
+            <table>
+              <tr>
+                <th>Method</th>
+                <th>Description</th>
+                <th>Example</th>
+              </tr>
+              <tr>
+                <td>add(E element)</td>
+                <td>Adds element to the end</td>
+                <td>list.add("Apple")</td>
+              </tr>
+              <tr>
+                <td>add(int index, E element)</td>
+                <td>Adds element at index</td>
+                <td>list.add(0, "Banana")</td>
+              </tr>
+              <tr>
+                <td>get(int index)</td>
+                <td>Returns element at index</td>
+                <td>list.get(0)</td>
+              </tr>
+              <tr>
+                <td>set(int index, E element)</td>
+                <td>Replaces element at index</td>
+                <td>list.set(0, "Orange")</td>
+              </tr>
+              <tr>
+                <td>remove(Object o)</td>
+                <td>Removes first occurrence</td>
+                <td>list.remove("Apple")</td>
+              </tr>
+              <tr>
+                <td>remove(int index)</td>
+                <td>Removes element at index</td>
+                <td>list.remove(0)</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Student Management System</h3>
+            <code>
+import java.util.ArrayList;
+
+class Student {
+    private String name;
+    private int id;
+    private double gpa;
+    
+    public Student(String name, int id, double gpa) {
+        this.name = name;
+        this.id = id;
+        this.gpa = gpa;
+    }
+    
+    public String getName() { return name; }
+    public int getId() { return id; }
+    public double getGpa() { return gpa; }
+    
+    @Override
+    public String toString() {
+        return "Student{name='" + name + "', id=" + id + 
+               ", gpa=" + gpa + "}";
+    }
+}
+
+public class StudentManagement {
+    private ArrayList<Student> students;
+    
+    public StudentManagement() {
+        students = new ArrayList<>();
+    }
+    
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+    
+    public void removeStudent(int id) {
+        students.removeIf(s -> s.getId() == id);
+    }
+    
+    public Student findStudent(int id) {
+        for (Student s : students) {
+            if (s.getId() == id) {
+                return s;
+            }
+        }
+        return null;
+    }
+    
+    public double getAverageGpa() {
+        if (students.isEmpty()) return 0.0;
+        
+        double sum = 0;
+        for (Student s : students) {
+            sum += s.getGpa();
+        }
+        return sum / students.size();
+    }
+    
+    public void displayAllStudents() {
+        for (Student s : students) {
+            System.out.println(s);
+        }
+    }
+    
+    public static void main(String[] args) {
+        StudentManagement system = new StudentManagement();
+        
+        // Adding students
+        system.addStudent(new Student("John", 1, 3.8));
+        system.addStudent(new Student("Alice", 2, 3.9));
+        system.addStudent(new Student("Bob", 3, 3.5));
+        
+        // Display all students
+        System.out.println("All Students:");
+        system.displayAllStudents();
+        
+        // Find a student
+        Student found = system.findStudent(2);
+        System.out.println("\nFound student: " + found);
+        
+        // Calculate average GPA
+        System.out.printf("\nAverage GPA: %.2f%n", 
+            system.getAverageGpa());
+        
+        // Remove a student
+        system.removeStudent(1);
+        
+        System.out.println("\nAfter removing student with ID 1:");
+        system.displayAllStudents();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="linkedlist">
+          <h1>Java LinkedList</h1>
+          <p>LinkedList is a doubly-linked list implementation of the List and Deque interfaces. It provides efficient insertion and deletion operations.</p>
+
+          <h2>Creating and Using LinkedList</h2>
+          <div class="example-box">
+            <h3>Basic LinkedList Operations</h3>
+            <code>
+import java.util.LinkedList;
+
+public class LinkedListDemo {
+    public static void main(String[] args) {
+        LinkedList<String> list = new LinkedList<>();
+        
+        // Adding elements
+        list.add("First");
+        list.addFirst("Start");  // Add at beginning
+        list.addLast("End");     // Add at end
+        list.add(1, "Middle");   // Add at index
+        
+        System.out.println("LinkedList: " + list);
+        
+        // Accessing elements
+        String first = list.getFirst();
+        String last = list.getLast();
+        String middle = list.get(1);
+        
+        // Removing elements
+        list.removeFirst();
+        list.removeLast();
+        list.remove(1);
+        
+        // Size and emptiness check
+        System.out.println("Size: " + list.size());
+        System.out.println("Is empty? " + list.isEmpty());
+    }
+}</code>
+          </div>
+
+          <h2>LinkedList vs ArrayList</h2>
+          <div class="example-box">
+            <h3>Comparison Table</h3>
+            <table>
+              <tr>
+                <th>Operation</th>
+                <th>LinkedList</th>
+                <th>ArrayList</th>
+              </tr>
+              <tr>
+                <td>Add/Remove at beginning</td>
+                <td>O(1) - Fast</td>
+                <td>O(n) - Slow</td>
+              </tr>
+              <tr>
+                <td>Add/Remove at end</td>
+                <td>O(1) - Fast</td>
+                <td>O(1) - Fast</td>
+              </tr>
+              <tr>
+                <td>Add/Remove in middle</td>
+                <td>O(n) - Search time</td>
+                <td>O(n) - Shift elements</td>
+              </tr>
+              <tr>
+                <td>Get by index</td>
+                <td>O(n) - Traverse</td>
+                <td>O(1) - Direct access</td>
+              </tr>
+              <tr>
+                <td>Memory usage</td>
+                <td>More (node objects)</td>
+                <td>Less (contiguous array)</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Task Manager</h3>
+            <code>
+import java.util.LinkedList;
+
+class Task {
+    private String name;
+    private int priority;
+    private boolean completed;
+    
+    public Task(String name, int priority) {
+        this.name = name;
+        this.priority = priority;
+        this.completed = false;
+    }
+    
+    public String getName() { return name; }
+    public int getPriority() { return priority; }
+    public boolean isCompleted() { return completed; }
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("Task{name='%s', priority=%d, completed=%b}",
+            name, priority, completed);
+    }
+}
+
+public class TaskManager {
+    private LinkedList<Task> tasks;
+    
+    public TaskManager() {
+        tasks = new LinkedList<>();
+    }
+    
+    // Add task to front (high priority)
+    public void addUrgentTask(Task task) {
+        tasks.addFirst(task);
+    }
+    
+    // Add task to end (low priority)
+    public void addTask(Task task) {
+        tasks.addLast(task);
+    }
+    
+    // Get next task
+    public Task getNextTask() {
+        return tasks.isEmpty() ? null : tasks.getFirst();
+    }
+    
+    // Complete task
+    public void completeTask() {
+        if (!tasks.isEmpty()) {
+            Task task = tasks.removeFirst();
+            task.setCompleted(true);
+            System.out.println("Completed: " + task);
+        }
+    }
+    
+    // Display all tasks
+    public void displayTasks() {
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks in the list");
+            return;
+        }
+        
+        System.out.println("\nCurrent Tasks:");
+        for (Task task : tasks) {
+            System.out.println(task);
+        }
+    }
+    
+    public static void main(String[] args) {
+        TaskManager manager = new TaskManager();
+        
+        // Adding tasks
+        manager.addTask(new Task("Write report", 3));
+        manager.addUrgentTask(new Task("Fix bug", 1));
+        manager.addTask(new Task("Review code", 2));
+        
+        // Display initial tasks
+        manager.displayTasks();
+        
+        // Complete some tasks
+        manager.completeTask();
+        manager.completeTask();
+        
+        // Display remaining tasks
+        manager.displayTasks();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="list-sorting">
+          <h1>Java List Sorting</h1>
+          <p>Java provides several ways to sort Lists, including the Collections.sort() method and custom Comparators.</p>
+
+          <h2>Basic Sorting</h2>
+          <div class="example-box">
+            <h3>Sorting Simple Lists</h3>
+            <code>
+import java.util.*;
+
+public class BasicSorting {
+    public static void main(String[] args) {
+        // Sorting strings
+        List<String> fruits = new ArrayList<>();
+        fruits.add("Orange");
+        fruits.add("Apple");
+        fruits.add("Banana");
+        
+        Collections.sort(fruits);  // Natural ordering
+        System.out.println("Sorted fruits: " + fruits);
+        
+        // Sorting numbers
+        List<Integer> numbers = Arrays.asList(5, 2, 8, 1, 9);
+        Collections.sort(numbers);
+        System.out.println("Sorted numbers: " + numbers);
+        
+        // Reverse order
+        Collections.reverse(fruits);
+        System.out.println("Reverse sorted fruits: " + fruits);
+    }
+}</code>
+          </div>
+
+          <h2>Custom Sorting with Comparator</h2>
+          <div class="example-box">
+            <h3>Complex Sorting Examples</h3>
+            <code>
+import java.util.*;
+
+class Person {
+    private String name;
+    private int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    
+    @Override
+    public String toString() {
+        return name + " (" + age + ")";
+    }
+}
+
+public class CustomSorting {
+    public static void main(String[] args) {
+        List<Person> people = new ArrayList<>();
+        people.add(new Person("John", 30));
+        people.add(new Person("Alice", 25));
+        people.add(new Person("Bob", 35));
+        
+        // Sort by age
+        Collections.sort(people, new Comparator<Person>() {
+            @Override
+            public int compare(Person p1, Person p2) {
+                return Integer.compare(p1.getAge(), p2.getAge());
+            }
+        });
+        
+        System.out.println("Sorted by age: " + people);
+        
+        // Sort by name using lambda
+        Collections.sort(people, 
+            (p1, p2) -> p1.getName().compareTo(p2.getName()));
+        
+        System.out.println("Sorted by name: " + people);
+        
+        // Multiple sorting criteria
+        Collections.sort(people, 
+            Comparator.comparing(Person::getName)
+                     .thenComparing(Person::getAge));
+        
+        System.out.println("Sorted by name and age: " + people);
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Student Grade Sorter</h3>
+            <code>
+import java.util.*;
+
+class Student {
+    private String name;
+    private double gpa;
+    private int grade;
+    private List<String> courses;
+    
+    public Student(String name, double gpa, int grade) {
+        this.name = name;
+        this.gpa = gpa;
+        this.grade = grade;
+        this.courses = new ArrayList<>();
+    }
+    
+    public String getName() { return name; }
+    public double getGpa() { return gpa; }
+    public int getGrade() { return grade; }
+    public List<String> getCourses() { return courses; }
+    
+    public void addCourse(String course) {
+        courses.add(course);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s (Grade: %d, GPA: %.2f)", 
+            name, grade, gpa);
+    }
+}
+
+public class StudentSorter {
+    private List<Student> students;
+    
+    public StudentSorter() {
+        students = new ArrayList<>();
+    }
+    
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+    
+    public void sortByGpa() {
+        Collections.sort(students, 
+            (s1, s2) -> Double.compare(s2.getGpa(), s1.getGpa()));
+    }
+    
+    public void sortByGrade() {
+        Collections.sort(students, 
+            Comparator.comparingInt(Student::getGrade));
+    }
+    
+    public void sortByName() {
+        Collections.sort(students, 
+            Comparator.comparing(Student::getName));
+    }
+    
+    public void sortByMultipleCriteria() {
+        Collections.sort(students, 
+            Comparator.comparingInt(Student::getGrade)
+                     .thenComparing(Student::getGpa, Comparator.reverseOrder())
+                     .thenComparing(Student::getName));
+    }
+    
+    public void displayStudents() {
+        for (Student student : students) {
+            System.out.println(student);
+        }
+    }
+    
+    public static void main(String[] args) {
+        StudentSorter sorter = new StudentSorter();
+        
+        // Add some students
+        Student s1 = new Student("John", 3.8, 11);
+        s1.addCourse("Math");
+        s1.addCourse("Physics");
+        
+        Student s2 = new Student("Alice", 4.0, 12);
+        s2.addCourse("Biology");
+        s2.addCourse("Chemistry");
+        
+        Student s3 = new Student("Bob", 3.5, 11);
+        s3.addCourse("History");
+        s3.addCourse("English");
+        
+        sorter.addStudent(s1);
+        sorter.addStudent(s2);
+        sorter.addStudent(s3);
+        
+        // Different sorting demonstrations
+        System.out.println("Original list:");
+        sorter.displayStudents();
+        
+        System.out.println("\nSorted by GPA (descending):");
+        sorter.sortByGpa();
+        sorter.displayStudents();
+        
+        System.out.println("\nSorted by Grade:");
+        sorter.sortByGrade();
+        sorter.displayStudents();
+        
+        System.out.println("\nSorted by Name:");
+        sorter.sortByName();
+        sorter.displayStudents();
+        
+        System.out.println("\nSorted by Grade, then GPA (desc), then Name:");
+        sorter.sortByMultipleCriteria();
+        sorter.displayStudents();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="hashmap">
+          <h1>Java HashMap</h1>
+          <p>HashMap is a part of Java's collection framework that stores key-value pairs. It uses a technique called Hashing to store elements and provides constant-time complexity for basic operations.</p>
+
+          <h2>HashMap Basics</h2>
+          <div class="example-box">
+            <h3>Creating and Using HashMap</h3>
+            <code>
+import java.util.HashMap;
+import java.util.Map;
+
+public class HashMapDemo {
+    public static void main(String[] args) {
+        // Creating HashMap
+        HashMap<String, Integer> scores = new HashMap<>();
+        
+        // Adding elements
+        scores.put("John", 95);
+        scores.put("Alice", 88);
+        scores.put("Bob", 92);
+        
+        // Accessing elements
+        System.out.println("John's score: " + scores.get("John"));
+        
+        // Checking if key exists
+        System.out.println("Has Alice? " + scores.containsKey("Alice"));
+        
+        // Checking if value exists
+        System.out.println("Has score 92? " + scores.containsValue(92));
+        
+        // Updating value
+        scores.put("John", 97);  // Overwrites old value
+        
+        // Remove entry
+        scores.remove("Bob");
+        
+        // Iterating over HashMap
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+        
+        // Alternative iteration methods
+        scores.forEach((key, value) -> 
+            System.out.println(key + ": " + value));
+            
+        // Get all keys
+        System.out.println("All students: " + scores.keySet());
+        
+        // Get all values
+        System.out.println("All scores: " + scores.values());
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Student Management with HashMap</h3>
+            <code>
+import java.util.HashMap;
+import java.util.Map;
+
+class Student {
+    private String name;
+    private int age;
+    private double gpa;
+    
+    public Student(String name, int age, double gpa) {
+        this.name = name;
+        this.age = age;
+        this.gpa = gpa;
+    }
+    
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public double getGpa() { return gpa; }
+    
+    @Override
+    public String toString() {
+        return String.format("Student{name='%s', age=%d, gpa=%.2f}", 
+            name, age, gpa);
+    }
+}
+
+public class StudentDatabase {
+    private HashMap<String, Student> students;
+    
+    public StudentDatabase() {
+        students = new HashMap<>();
+    }
+    
+    public void addStudent(String id, Student student) {
+        students.put(id, student);
+    }
+    
+    public Student getStudent(String id) {
+        return students.get(id);
+    }
+    
+    public void updateStudent(String id, Student student) {
+        if (students.containsKey(id)) {
+            students.put(id, student);
+        }
+    }
+    
+    public void removeStudent(String id) {
+        students.remove(id);
+    }
+    
+    public void displayAllStudents() {
+        for (Map.Entry<String, Student> entry : students.entrySet()) {
+            System.out.println("ID: " + entry.getKey());
+            System.out.println(entry.getValue());
+            System.out.println();
+        }
+    }
+    
+    public static void main(String[] args) {
+        StudentDatabase db = new StudentDatabase();
+        
+        // Adding students
+        db.addStudent("S001", new Student("John", 20, 3.8));
+        db.addStudent("S002", new Student("Alice", 21, 3.9));
+        db.addStudent("S003", new Student("Bob", 19, 3.5));
+        
+        // Display all students
+        System.out.println("All Students:");
+        db.displayAllStudents();
+        
+        // Update a student
+        db.updateStudent("S001", new Student("John", 20, 3.9));
+        
+        // Remove a student
+        db.removeStudent("S003");
+        
+        // Display updated list
+        System.out.println("\nAfter updates:");
+        db.displayAllStudents();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="hashset">
+          <h1>Java HashSet</h1>
+          <p>HashSet is a collection that stores unique elements in no particular order. It uses HashMap internally and ensures that no duplicate elements are stored.</p>
+
+          <h2>HashSet Operations</h2>
+          <div class="example-box">
+            <h3>Basic HashSet Usage</h3>
+            <code>
+import java.util.HashSet;
+
+public class HashSetDemo {
+    public static void main(String[] args) {
+        // Creating HashSet
+        HashSet<String> fruits = new HashSet<>();
+        
+        // Adding elements
+        fruits.add("Apple");
+        fruits.add("Banana");
+        fruits.add("Orange");
+        fruits.add("Apple");  // Duplicate - won't be added
+        
+        // Display set
+        System.out.println("Fruits: " + fruits);
+        
+        // Check if element exists
+        System.out.println("Has Apple? " + fruits.contains("Apple"));
+        
+        // Remove element
+        fruits.remove("Banana");
+        
+        // Size of set
+        System.out.println("Number of fruits: " + fruits.size());
+        
+        // Iterate over set
+        for (String fruit : fruits) {
+            System.out.println(fruit);
+        }
+        
+        // Clear set
+        fruits.clear();
+        
+        // Check if empty
+        System.out.println("Is empty? " + fruits.isEmpty());
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Unique Words Counter</h3>
+            <code>
+import java.util.HashSet;
+import java.util.Scanner;
+
+public class UniqueWordsCounter {
+    private HashSet<String> uniqueWords;
+    
+    public UniqueWordsCounter() {
+        uniqueWords = new HashSet<>();
+    }
+    
+    public void addWord(String word) {
+        // Convert to lowercase and remove punctuation
+        word = word.toLowerCase().replaceAll("[^a-z]", "");
+        if (!word.isEmpty()) {
+            uniqueWords.add(word);
+        }
+    }
+    
+    public void processText(String text) {
+        String[] words = text.split("\\s+");
+        for (String word : words) {
+            addWord(word);
+        }
+    }
+    
+    public int getUniqueWordCount() {
+        return uniqueWords.size();
+    }
+    
+    public void displayUniqueWords() {
+        System.out.println("Unique words:");
+        for (String word : uniqueWords) {
+            System.out.println(word);
+        }
+    }
+    
+    public static void main(String[] args) {
+        UniqueWordsCounter counter = new UniqueWordsCounter();
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Enter text (empty line to finish):");
+        String line;
+        while (!(line = scanner.nextLine()).isEmpty()) {
+            counter.processText(line);
+        }
+        
+        System.out.println("\nNumber of unique words: " + 
+            counter.getUniqueWordCount());
+        counter.displayUniqueWords();
+        
+        scanner.close();
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="iterator">
+          <h1>Java Iterator</h1>
+          <p>Iterator is an interface that provides methods to iterate over any Collection. It allows you to traverse through a collection, access or remove elements.</p>
+
+          <h2>Using Iterator</h2>
+          <div class="example-box">
+            <h3>Basic Iterator Operations</h3>
+            <code>
+import java.util.*;
+
+public class IteratorDemo {
+    public static void main(String[] args) {
+        // Create a collection
+        ArrayList<String> colors = new ArrayList<>();
+        colors.add("Red");
+        colors.add("Green");
+        colors.add("Blue");
+        colors.add("Yellow");
+        
+        // Get iterator
+        Iterator<String> it = colors.iterator();
+        
+        // Traverse forward
+        System.out.println("Traversing forward:");
+        while (it.hasNext()) {
+            String color = it.next();
+            System.out.println(color);
+        }
+        
+        // Using ListIterator for bidirectional traversal
+        ListIterator<String> listIt = colors.listIterator();
+        
+        // Go to end of list
+        while (listIt.hasNext()) {
+            listIt.next();
+        }
+        
+        // Traverse backward
+        System.out.println("\nTraversing backward:");
+        while (listIt.hasPrevious()) {
+            String color = listIt.previous();
+            System.out.println(color);
+        }
+        
+        // Remove elements using iterator
+        it = colors.iterator();
+        while (it.hasNext()) {
+            String color = it.next();
+            if (color.equals("Yellow")) {
+                it.remove();  // Safe way to remove while iterating
+            }
+        }
+        
+        System.out.println("\nAfter removal: " + colors);
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Custom Collection with Iterator</h3>
+            <code>
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+class CustomList<T> implements Iterable<T> {
+    private class Node {
+        T data;
+        Node next;
+        
+        Node(T data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
+    
+    private Node head;
+    private int size;
+    
+    public CustomList() {
+        head = null;
+        size = 0;
+    }
+    
+    public void add(T data) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            head = newNode;
+        } else {
+            Node current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        size++;
+    }
+    
+    public int size() {
+        return size;
+    }
+    
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private Node current = head;
+            
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+            
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                T data = current.data;
+                current = current.next;
+                return data;
+            }
+        };
+    }
+    
+    public static void main(String[] args) {
+        CustomList<String> list = new CustomList<>();
+        list.add("First");
+        list.add("Second");
+        list.add("Third");
+        
+        // Using for-each loop (uses iterator internally)
+        System.out.println("Using for-each loop:");
+        for (String item : list) {
+            System.out.println(item);
+        }
+        
+        // Using iterator explicitly
+        System.out.println("\nUsing iterator:");
+        Iterator<String> it = list.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="wrapper">
+          <h1>Java Wrapper Classes</h1>
+          <p>Wrapper classes provide a way to use primitive data types as objects. Each primitive data type has a corresponding wrapper class.</p>
+
+          <h2>Wrapper Class Basics</h2>
+          <div class="example-box">
+            <h3>Primitive Types and Their Wrappers</h3>
+            <table>
+              <tr>
+                <th>Primitive Type</th>
+                <th>Wrapper Class</th>
+                <th>Example</th>
+              </tr>
+              <tr>
+                <td>byte</td>
+                <td>Byte</td>
+                <td>Byte b = 1;</td>
+              </tr>
+              <tr>
+                <td>short</td>
+                <td>Short</td>
+                <td>Short s = 100;</td>
+              </tr>
+              <tr>
+                <td>int</td>
+                <td>Integer</td>
+                <td>Integer i = 10;</td>
+              </tr>
+              <tr>
+                <td>long</td>
+                <td>Long</td>
+                <td>Long l = 100L;</td>
+              </tr>
+              <tr>
+                <td>float</td>
+                <td>Float</td>
+                <td>Float f = 3.14f;</td>
+              </tr>
+              <tr>
+                <td>double</td>
+                <td>Double</td>
+                <td>Double d = 3.14;</td>
+              </tr>
+              <tr>
+                <td>boolean</td>
+                <td>Boolean</td>
+                <td>Boolean bool = true;</td>
+              </tr>
+              <tr>
+                <td>char</td>
+                <td>Character</td>
+                <td>Character c = 'A';</td>
+              </tr>
+            </table>
+          </div>
+
+          <h2>Working with Wrapper Classes</h2>
+          <code>
+public class WrapperDemo {
+    public static void main(String[] args) {
+        // Autoboxing (primitive to wrapper)
+        Integer num = 100;
+        Double pi = 3.14159;
+        
+        // Unboxing (wrapper to primitive)
+        int n = num;
+        double d = pi;
+        
+        // String to wrapper
+        Integer parsed = Integer.parseInt("123");
+        Double decimal = Double.parseDouble("3.14");
+        
+        // Wrapper to String
+        String str1 = num.toString();
+        String str2 = pi.toString();
+        
+        // Useful methods
+        System.out.println("Maximum Integer: " + Integer.MAX_VALUE);
+        System.out.println("Minimum Integer: " + Integer.MIN_VALUE);
+        
+        // Compare values
+        Integer x = 128;
+        Integer y = 128;
+        System.out.println("Equal by ==: " + (x == y));  // false
+        System.out.println("Equal by equals(): " + x.equals(y));  // true
+        
+        // Value conversion
+        int intValue = pi.intValue();
+        long longValue = pi.longValue();
+        float floatValue = pi.floatValue();
+    }
+}</code>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Number Processor</h3>
+            <code>
+import java.util.ArrayList;
+import java.util.List;
+
+public class NumberProcessor {
+    public static void processNumbers(String... numbers) {
+        List<Double> doubles = new ArrayList<>();
+        
+        // Parse strings to numbers
+        for (String num : numbers) {
+            try {
+                doubles.add(Double.parseDouble(num));
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number: " + num);
+            }
+        }
+        
+        if (doubles.isEmpty()) {
+            System.out.println("No valid numbers to process");
+            return;
+        }
+        
+        // Calculate statistics
+        Double sum = 0.0;
+        Double min = Double.MAX_VALUE;
+        Double max = Double.MIN_VALUE;
+        
+        for (Double num : doubles) {
+            sum += num;
+            min = Math.min(min, num);
+            max = Math.max(max, num);
+        }
+        
+        Double average = sum / doubles.size();
+        
+        // Display results
+        System.out.println("\nStatistics:");
+        System.out.printf("Sum: %.2f%n", sum);
+        System.out.printf("Average: %.2f%n", average);
+        System.out.printf("Minimum: %.2f%n", min);
+        System.out.printf("Maximum: %.2f%n", max);
+        
+        // Integer conversions
+        System.out.println("\nInteger conversions:");
+        for (Double num : doubles) {
+            System.out.printf("%.2f -> %d (rounded)%n", 
+                num, Math.round(num));
+        }
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("Processing numbers:");
+        processNumbers("10.5", "20.7", "30.2", "invalid", "40.9");
+    }
+}</code>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text">Progress: 0% (0/8 sections)</div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson3.html')">
+    ← Previous Lesson
+  </button>
+
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson5.html')">
+    Next Lesson →
+  </button>
+
+</body>
+
+<script>
+  function playClickAndGo(destination) {
+    const clickSound = document.getElementById('clickSound');
+    clickSound.currentTime = 0;
+    clickSound.play();
+    setTimeout(() => {
+      window.location.href = destination;
+    }, 300);
+  }
+
+  let visitedSections = new Set();
+  const totalSections = 8;
+
+  // Load progress from localStorage
+  function loadProgress() {
+      const currentUser = localStorage.getItem('username');
+      const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      const userData = allUsers[currentUser] || {};
+      const savedProgress = userData['java_lesson4_progress'];
+      if (savedProgress) {
+          visitedSections = new Set(JSON.parse(savedProgress));
+          updateProgress();
+      }
+  }
+
+  // Save progress to localStorage
+  function saveProgress() {
+      const currentUser = localStorage.getItem('username');
+      let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!allUsers[currentUser]) {
+          allUsers[currentUser] = {};
+      }
+      allUsers[currentUser]['java_lesson4_progress'] = JSON.stringify([...visitedSections]);
+      localStorage.setItem('users', JSON.stringify(allUsers));
+  }
+
+  function updateProgress() {
+    const progressPercent = (visitedSections.size / totalSections) * 100;
+    document.querySelector('.progress-fill').style.width = progressPercent + '%';
+    document.querySelector('.progress-text').textContent = 
+        `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+    saveProgress(); // Save progress after each update
+
+    // Check if lesson was just completed (100%) and show popup
+    if (progressPercent === 100 && visitedSections.size === totalSections) {
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        const lastProgress = allUsers[currentUser]?.['java_lesson4_last_progress'] || '0';
+        if (parseFloat(lastProgress) < 100) {
+            showCompletionPopup();
+        }
+        allUsers[currentUser]['java_lesson4_last_progress'] = '100';
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+  }
+
+  function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('section').forEach(section => {
+      section.style.display = 'none';
+      section.classList.remove('active');
+    });
+
+    // Show selected section
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.style.display = 'block';
+      section.classList.add('active');
+      visitedSections.add(sectionId);
+      updateProgress();
+
+      // Update sidebar active state
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + sectionId) {
+          item.classList.add('active');
+        }
+      });
+    }
+  }
+
+  // Load progress and show first section by default
+  document.addEventListener('DOMContentLoaded', () => {
+    loadProgress();
+    showSection('data-structures');
+  });
+
+
+</script>
+</html> 

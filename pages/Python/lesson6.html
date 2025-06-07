@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning Part 2 - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    section {
+      display: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .main-content {
+        padding: 10px;
+        padding-bottom: 100px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 8px;
+        line-height: 1.4;
+      }
+
+      .example-box {
+        padding: 10px;
+        margin: 5px 0;
+        font-size: 13px;
+      }
+
+      h2, h3 {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        bottom: 60px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 8px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 6px;
+        line-height: 1.3;
+      }
+
+      .example-box {
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      h2, h3 {
+        font-size: 16px;
+      }
+
+      p, li {
+        font-size: 13px;
+      }
+
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        bottom: 50px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Machine Learning Part 2 - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#confusion-matrix" class="sidebar-item active" onclick="showSection('confusion-matrix')">Confusion Matrix</a>
+        <a href="#hierarchical-clustering" class="sidebar-item" onclick="showSection('hierarchical-clustering')">Hierarchical Clustering</a>
+        <a href="#logistic-regression" class="sidebar-item" onclick="showSection('logistic-regression')">Logistic Regression</a>
+        <a href="#grid-search" class="sidebar-item" onclick="showSection('grid-search')">Grid Search</a>
+        <a href="#categorical-data" class="sidebar-item" onclick="showSection('categorical-data')">Categorical Data</a>
+        <a href="#kmeans" class="sidebar-item" onclick="showSection('kmeans')">K-means</a>
+        <a href="#bootstrap-aggregation" class="sidebar-item" onclick="showSection('bootstrap-aggregation')">Bootstrap Aggregation</a>
+        <a href="#cross-validation" class="sidebar-item" onclick="showSection('cross-validation')">Cross Validation</a>
+        <a href="#auc-roc" class="sidebar-item" onclick="showSection('auc-roc')">AUC - ROC Curve</a>
+        <a href="#knn" class="sidebar-item" onclick="showSection('knn')">K-nearest neighbors</a>
+      </div>
+
+      <div class="main-content">
+        <section id="confusion-matrix" class="active">
+          <h2 class="section-title">Confusion Matrix</h2>
+          <p>A confusion matrix is a performance measurement for machine learning classification:</p>
+          <div class="example-box">
+            <ul>
+              <li>True Positives (TP) and True Negatives (TN)</li>
+              <li>False Positives (FP) and False Negatives (FN)</li>
+              <li>Precision, Recall, and F1-Score</li>
+              <li>Classification Report</li>
+            </ul>
+          </div>
+          <code># Confusion Matrix Example
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Generate sample dataset
+X, y = make_classification(n_samples=1000, n_classes=2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+# Train model
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Create confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Plot confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('Confusion Matrix')
+plt.ylabel('True Label')
+plt.xlabel('Predicted Label')
+plt.show()
+
+# Print classification report
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+
+# Calculate metrics
+TP = cm[1,1]
+TN = cm[0,0]
+FP = cm[0,1]
+FN = cm[1,0]
+
+print("\nMetrics:")
+print(f"Accuracy: {(TP + TN) / (TP + TN + FP + FN):.3f}")
+print(f"Precision: {TP / (TP + FP):.3f}")
+print(f"Recall: {TP / (TP + FN):.3f}")
+print(f"F1-Score: {2 * TP / (2 * TP + FP + FN):.3f}")</code>
+        </section>
+
+        <section id="hierarchical-clustering">
+          <h2 class="section-title">Hierarchical Clustering</h2>
+          <p>Hierarchical clustering creates a tree of clusters by recursively merging or splitting groups:</p>
+          <div class="example-box">
+            <ul>
+              <li>Agglomerative clustering</li>
+              <li>Dendrogram visualization</li>
+              <li>Distance metrics</li>
+              <li>Cluster analysis</li>
+            </ul>
+          </div>
+          <code># Hierarchical Clustering Example
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+
+# Generate sample data
+X, y = make_blobs(n_samples=50, n_features=2, centers=3, random_state=42)
+
+# Create and fit the clustering model
+clustering = AgglomerativeClustering(n_clusters=3)
+clustering.fit(X)
+
+# Create linkage matrix for dendrogram
+linkage_matrix = linkage(X, method='ward')
+
+# Plot dendrogram
+plt.figure(figsize=(10, 7))
+dendrogram(linkage_matrix)
+plt.title('Hierarchical Clustering Dendrogram')
+plt.xlabel('Sample Index')
+plt.ylabel('Distance')
+plt.show()
+
+# Plot clusters
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(X[:, 0], X[:, 1], c=clustering.labels_, cmap='viridis')
+plt.title('Hierarchical Clustering Results')
+plt.colorbar(scatter)
+plt.show()
+
+# Different linkage methods comparison
+methods = ['single', 'complete', 'average', 'ward']
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+axes = axes.ravel()
+
+for idx, method in enumerate(methods):
+    clustering = AgglomerativeClustering(n_clusters=3, linkage=method)
+    clustering.fit(X)
+    
+    axes[idx].scatter(X[:, 0], X[:, 1], c=clustering.labels_, cmap='viridis')
+    axes[idx].set_title(f'Linkage Method: {method}')</code>
+        </section>
+
+        <section id="logistic-regression">
+          <h2 class="section-title">Logistic Regression</h2>
+          <p>Logistic regression is used for binary classification problems:</p>
+          <div class="example-box">
+            <ul>
+              <li>Binary classification</li>
+              <li>Probability estimation</li>
+              <li>Decision boundaries</li>
+              <li>Model evaluation</li>
+            </ul>
+          </div>
+          <code># Logistic Regression Example
+from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate dataset
+X, y = make_classification(n_samples=100, n_features=2, n_redundant=0, 
+                         n_informative=2, random_state=1, 
+                         n_clusters_per_class=1)
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, 
+                                                    random_state=42)
+
+# Create and train the model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Plot decision boundary
+def plot_decision_boundary(X, y, model):
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                         np.arange(y_min, y_max, 0.1))
+    
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    
+    plt.contourf(xx, yy, Z, alpha=0.4)
+    plt.scatter(X[:, 0], X[:, 1], c=y, alpha=0.8)
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+
+plt.figure(figsize=(10, 6))
+plot_decision_boundary(X, y, model)
+plt.title('Logistic Regression Decision Boundary')
+plt.show()
+
+# Make predictions
+y_pred = model.predict(X_test)
+y_pred_prob = model.predict_proba(X_test)
+
+# Print results
+from sklearn.metrics import accuracy_score, classification_report
+print("Model Accuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Plot probability distribution
+plt.figure(figsize=(10, 6))
+plt.hist(y_pred_prob[:, 1], bins=20)
+plt.title('Prediction Probability Distribution')
+plt.xlabel('Probability of Class 1')
+plt.ylabel('Count')
+plt.show()</code>
+        </section>
+
+        <section id="grid-search">
+          <h2 class="section-title">Grid Search</h2>
+          <p>Grid search is used for hyperparameter tuning in machine learning models:</p>
+          <div class="example-box">
+            <ul>
+              <li>Hyperparameter optimization</li>
+              <li>Cross-validation</li>
+              <li>Model selection</li>
+              <li>Performance comparison</li>
+            </ul>
+          </div>
+          <code># Grid Search Example
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+from sklearn.datasets import load_breast_cancer
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+
+# Load dataset
+data = load_breast_cancer()
+X, y = data.data, data.target
+
+# Scale features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Define parameter grid
+param_grid = {
+    'C': [0.1, 1, 10, 100],
+    'kernel': ['rbf', 'linear'],
+    'gamma': ['scale', 'auto', 0.1, 1],
+    'class_weight': [None, 'balanced']
+}
+
+# Create base model
+svm = SVC()
+
+# Create grid search object
+grid_search = GridSearchCV(
+    estimator=svm,
+    param_grid=param_grid,
+    cv=5,
+    n_jobs=-1,
+    verbose=2,
+    scoring='accuracy'
+)
+
+# Fit grid search
+grid_search.fit(X_scaled, y)
+
+# Print results
+print("Best parameters:", grid_search.best_params_)
+print("Best cross-validation score:", grid_search.best_score_)
+
+# Create results DataFrame
+results = pd.DataFrame(grid_search.cv_results_)
+results = results.sort_values('rank_test_score')
+
+# Print top 5 parameter combinations
+print("\nTop 5 parameter combinations:")
+print(results[['params', 'mean_test_score', 'std_test_score']].head())
+
+# Plot parameter comparison
+plt.figure(figsize=(12, 6))
+C_values = [0.1, 1, 10, 100]
+rbf_scores = []
+linear_scores = []
+
+for C in C_values:
+    rbf_mask = (results['param_kernel'] == 'rbf') & (results['param_C'] == C)
+    linear_mask = (results['param_kernel'] == 'linear') & (results['param_C'] == C)
+    
+    rbf_scores.append(results[rbf_mask]['mean_test_score'].max())
+    linear_scores.append(results[linear_mask]['mean_test_score'].max())
+
+plt.plot(C_values, rbf_scores, marker='o', label='RBF kernel')
+plt.plot(C_values, linear_scores, marker='s', label='Linear kernel')
+plt.xscale('log')
+plt.xlabel('C parameter')
+plt.ylabel('Validation score')
+plt.title('Parameter Comparison')
+plt.legend()
+plt.grid(True)
+plt.show()</code>
+        </section>
+
+        <section id="categorical-data">
+          <h2 class="section-title">Categorical Data</h2>
+          <p>Processing categorical data is essential for machine learning:</p>
+          <div class="example-box">
+            <ul>
+              <li>One-hot encoding</li>
+              <li>Label encoding</li>
+              <li>Ordinal encoding</li>
+              <li>Feature engineering</li>
+            </ul>
+          </div>
+          <code># Categorical Data Processing Example
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder, OrdinalEncoder
+from sklearn.compose import ColumnTransformer
+
+# Create sample dataset
+data = {
+    'color': ['red', 'blue', 'green', 'red', 'blue'],
+    'size': ['small', 'medium', 'large', 'medium', 'large'],
+    'price': [10, 15, 20, 12, 18]
+}
+df = pd.DataFrame(data)
+
+print("Original Data:")
+print(df)
+
+# Label Encoding
+label_encoder = LabelEncoder()
+df['color_label'] = label_encoder.fit_transform(df['color'])
+print("\nLabel Encoded Data:")
+print(df)
+
+# One-Hot Encoding
+one_hot = pd.get_dummies(df['color'], prefix='color')
+df = pd.concat([df, one_hot], axis=1)
+print("\nOne-Hot Encoded Data:")
+print(df)
+
+# Ordinal Encoding
+size_order = ['small', 'medium', 'large']
+ordinal_encoder = OrdinalEncoder(categories=[size_order])
+df['size_ordinal'] = ordinal_encoder.fit_transform(df[['size']])
+print("\nOrdinal Encoded Data:")
+print(df)
+
+# Column Transformer Example
+categorical_features = ['color', 'size']
+numeric_features = ['price']
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', 'passthrough', numeric_features),
+        ('cat', OneHotEncoder(drop='first', sparse=False), categorical_features)
+    ])
+
+# Fit and transform
+X = preprocessor.fit_transform(df)
+feature_names = (numeric_features + 
+                preprocessor.named_transformers_['cat']
+                .get_feature_names_out(categorical_features).tolist())
+
+print("\nTransformed Data:")
+print(pd.DataFrame(X, columns=feature_names))
+
+# Handling missing values
+df_missing = df.copy()
+df_missing.loc[0, 'color'] = None
+df_missing.loc[2, 'size'] = None
+
+print("\nData with Missing Values:")
+print(df_missing)
+
+# Fill missing values
+df_filled = df_missing.fillna({
+    'color': df_missing['color'].mode()[0],
+    'size': df_missing['size'].mode()[0]
+})
+
+print("\nData after Filling Missing Values:")
+print(df_filled)</code>
+        </section>
+
+        <section id="kmeans">
+          <h2 class="section-title">K-means Clustering</h2>
+          <p>K-means is a popular clustering algorithm that partitions data into K clusters:</p>
+          <div class="example-box">
+            <ul>
+              <li>Centroid-based clustering</li>
+              <li>Elbow method for optimal K</li>
+              <li>Cluster visualization</li>
+              <li>Silhouette analysis</li>
+            </ul>
+          </div>
+          <code># K-means Clustering Example
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import silhouette_score
+
+# Generate sample data
+X, y = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
+
+# Elbow method to find optimal K
+inertias = []
+silhouette_scores = []
+K = range(1, 11)
+
+for k in K:
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(X)
+    inertias.append(kmeans.inertia_)
+    if k > 1:  # Silhouette score needs at least 2 clusters
+        silhouette_scores.append(silhouette_score(X, kmeans.labels_))
+
+# Plot elbow curve
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plt.plot(K, inertias, 'bx-')
+plt.xlabel('k')
+plt.ylabel('Inertia')
+plt.title('Elbow Method')
+
+# Plot silhouette scores
+plt.subplot(1, 2, 2)
+plt.plot(list(K)[1:], silhouette_scores, 'rx-')
+plt.xlabel('k')
+plt.ylabel('Silhouette Score')
+plt.title('Silhouette Analysis')
+plt.tight_layout()
+plt.show()
+
+# Fit K-means with optimal K
+optimal_k = 4
+kmeans = KMeans(n_clusters=optimal_k, random_state=42)
+kmeans.fit(X)
+
+# Plot results
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(X[:, 0], X[:, 1], c=kmeans.labels_, cmap='viridis')
+centers = kmeans.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c='red', marker='x', s=200, linewidth=3)
+plt.title('K-means Clustering Results')
+plt.colorbar(scatter)
+plt.show()
+
+# Predict new points
+new_points = np.random.rand(5, 2) * 10
+predictions = kmeans.predict(new_points)
+print("\nPredictions for new points:")
+for point, cluster in zip(new_points, predictions):
+    print(f"Point {point} belongs to cluster {cluster}")</code>
+        </section>
+
+        <section id="bootstrap-aggregation">
+          <h2 class="section-title">Bootstrap Aggregation (Bagging)</h2>
+          <p>Bootstrap aggregation combines multiple models to improve prediction accuracy:</p>
+          <div class="example-box">
+            <ul>
+              <li>Random sampling with replacement</li>
+              <li>Ensemble learning</li>
+              <li>Variance reduction</li>
+              <li>Parallel processing</li>
+            </ul>
+          </div>
+          <code># Bootstrap Aggregation Example
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate dataset
+X, y = make_classification(n_samples=1000, n_features=20, 
+                         n_informative=15, n_redundant=5, 
+                         random_state=42)
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+                                                    random_state=42)
+
+# Create and train bagging classifier
+base_estimator = DecisionTreeClassifier(max_depth=3)
+bagging = BaggingClassifier(base_estimator=base_estimator,
+                           n_estimators=100,
+                           random_state=42)
+bagging.fit(X_train, y_train)
+
+# Compare with single decision tree
+tree = DecisionTreeClassifier(max_depth=3, random_state=42)
+tree.fit(X_train, y_train)
+
+# Make predictions
+y_pred_bagging = bagging.predict(X_test)
+y_pred_tree = tree.predict(X_test)
+
+# Print results
+from sklearn.metrics import accuracy_score, classification_report
+print("Bagging Classifier Performance:")
+print(classification_report(y_test, y_pred_bagging))
+print("\nSingle Tree Performance:")
+print(classification_report(y_test, y_pred_tree))
+
+# Plot feature importance
+importances = np.mean([tree.feature_importances_ 
+                      for tree in bagging.estimators_], axis=0)
+indices = np.argsort(importances)[::-1]
+
+plt.figure(figsize=(10, 6))
+plt.title("Feature Importances (Bagging)")
+plt.bar(range(X.shape[1]), importances[indices])
+plt.xticks(range(X.shape[1]), indices)
+plt.xlabel("Feature Index")
+plt.ylabel("Importance")
+plt.show()
+
+# Plot individual predictions
+predictions = np.array([tree.predict(X_test) 
+                       for tree in bagging.estimators_])
+plt.figure(figsize=(10, 6))
+plt.hist(predictions.mean(axis=0), bins=30)
+plt.title("Distribution of Averaged Predictions")
+plt.xlabel("Prediction Probability")
+plt.ylabel("Count")
+plt.show()</code>
+        </section>
+
+        <section id="cross-validation">
+          <h2 class="section-title">Cross Validation</h2>
+          <p>Cross validation helps assess model performance and prevent overfitting:</p>
+          <div class="example-box">
+            <ul>
+              <li>K-fold cross validation</li>
+              <li>Stratified sampling</li>
+              <li>Model evaluation</li>
+              <li>Parameter tuning</li>
+            </ul>
+          </div>
+          <code># Cross Validation Example
+from sklearn.model_selection import cross_val_score, KFold, StratifiedKFold
+from sklearn.model_selection import learning_curve
+from sklearn.svm import SVC
+from sklearn.datasets import load_breast_cancer
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load dataset
+data = load_breast_cancer()
+X, y = data.data, data.target
+
+# K-fold cross validation
+kfold = KFold(n_splits=5, shuffle=True, random_state=42)
+stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# Create model
+model = SVC(kernel='rbf', random_state=42)
+
+# Perform cross validation
+cv_scores = cross_val_score(model, X, y, cv=kfold)
+stratified_cv_scores = cross_val_score(model, X, y, cv=stratified_kfold)
+
+print("K-fold CV scores:", cv_scores)
+print("Mean CV score:", cv_scores.mean())
+print("CV score std:", cv_scores.std())
+print("\nStratified K-fold CV scores:", stratified_cv_scores)
+print("Mean Stratified CV score:", stratified_cv_scores.mean())
+print("Stratified CV score std:", stratified_cv_scores.std())
+
+# Learning curves
+train_sizes, train_scores, test_scores = learning_curve(
+    model, X, y, cv=5, n_jobs=-1, 
+    train_sizes=np.linspace(0.1, 1.0, 10))
+
+train_mean = np.mean(train_scores, axis=1)
+train_std = np.std(train_scores, axis=1)
+test_mean = np.mean(test_scores, axis=1)
+test_std = np.std(test_scores, axis=1)
+
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes, train_mean, label='Training score')
+plt.plot(train_sizes, test_mean, label='Cross-validation score')
+plt.fill_between(train_sizes, train_mean - train_std,
+                 train_mean + train_std, alpha=0.1)
+plt.fill_between(train_sizes, test_mean - test_std,
+                 test_mean + test_std, alpha=0.1)
+plt.xlabel('Training Examples')
+plt.ylabel('Score')
+plt.title('Learning Curves')
+plt.legend(loc='best')
+plt.grid(True)
+plt.show()
+
+# Compare different CV strategies
+from sklearn.model_selection import TimeSeriesSplit
+cv_strategies = {
+    'KFold': KFold(n_splits=5, shuffle=True),
+    'StratifiedKFold': StratifiedKFold(n_splits=5),
+    'TimeSeriesSplit': TimeSeriesSplit(n_splits=5)
+}
+
+plt.figure(figsize=(15, 5))
+for i, (name, cv) in enumerate(cv_strategies.items()):
+    plt.subplot(1, 3, i+1)
+    for j, (train_idx, test_idx) in enumerate(cv.split(X)):
+        plt.plot([0, 1], [j, j], 'k-', alpha=0.2)
+        plt.fill_between([0, 0.7], j-0.4, j+0.4, alpha=0.1)
+        plt.fill_between([0.7, 1], j-0.4, j+0.4, alpha=0.3)
+    plt.title(name)
+    plt.xlabel('Sample Index')
+    plt.ylabel('CV Iteration')
+plt.tight_layout()
+plt.show()</code>
+        </section>
+
+        <section id="auc-roc">
+          <h2 class="section-title">AUC - ROC Curve</h2>
+          <p>The AUC-ROC curve is a performance measurement for classification problems:</p>
+          <div class="example-box">
+            <ul>
+              <li>True Positive Rate (Sensitivity)</li>
+              <li>False Positive Rate (1-Specificity)</li>
+              <li>Area Under Curve (AUC)</li>
+              <li>Model comparison</li>
+            </ul>
+          </div>
+          <code># AUC-ROC Curve Example
+from sklearn.metrics import roc_curve, auc
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate dataset
+X, y = make_classification(n_samples=1000, n_classes=2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+# Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train different models
+models = {
+    'Logistic Regression': LogisticRegression(),
+    'Random Forest': RandomForestClassifier(),
+    'SVM': SVC(probability=True)
+}
+
+plt.figure(figsize=(10, 6))
+for name, model in models.items():
+    # Train model
+    model.fit(X_train_scaled, y_train)
+    
+    # Get predictions
+    y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
+    
+    # Calculate ROC curve
+    fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+    roc_auc = auc(fpr, tpr)
+    
+    # Plot ROC curve
+    plt.plot(fpr, tpr, label=f'{name} (AUC = {roc_auc:.2f})')
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curves')
+plt.legend(loc="lower right")
+plt.grid(True)
+plt.show()
+
+# Detailed analysis for best model
+best_model = models['Random Forest']
+y_pred_proba = best_model.predict_proba(X_test_scaled)[:, 1]
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+
+# Plot ROC curve with thresholds
+plt.figure(figsize=(15, 5))
+
+# ROC curve
+plt.subplot(1, 2, 1)
+plt.plot(fpr, tpr, 'b-', label=f'ROC (AUC = {auc(fpr, tpr):.2f})')
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend()
+plt.grid(True)
+
+# Threshold analysis
+plt.subplot(1, 2, 2)
+plt.plot(thresholds, tpr[:-1], 'g-', label='True Positive Rate')
+plt.plot(thresholds, fpr[:-1], 'r-', label='False Positive Rate')
+plt.xlabel('Threshold')
+plt.ylabel('Rate')
+plt.title('Threshold Analysis')
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()</code>
+        </section>
+
+        <section id="knn">
+          <h2 class="section-title">K-nearest neighbors</h2>
+          <p>K-nearest neighbors is a simple but effective classification and regression algorithm:</p>
+          <div class="example-box">
+            <ul>
+              <li>Distance metrics</li>
+              <li>Optimal K selection</li>
+              <li>Feature scaling</li>
+              <li>Weighted voting</li>
+            </ul>
+          </div>
+          <code># K-nearest neighbors Example
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load dataset
+iris = load_iris()
+X = iris.data[:, [0, 1]]  # Take first two features
+y = iris.target
+
+# Split and scale data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, 
+                                                    random_state=42)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Find optimal K
+k_range = range(1, 31)
+scores = []
+for k in k_range:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train_scaled, y_train)
+    scores.append(knn.score(X_test_scaled, y_test))
+
+plt.figure(figsize=(10, 6))
+plt.plot(k_range, scores, 'bx-')
+plt.xlabel('Value of K')
+plt.ylabel('Testing Accuracy')
+plt.title('Optimal K Value')
+plt.grid(True)
+plt.show()
+
+# Train model with optimal K
+optimal_k = k_range[np.argmax(scores)]
+knn = KNeighborsClassifier(n_neighbors=optimal_k)
+knn.fit(X_train_scaled, y_train)
+
+# Create mesh grid for decision boundary
+x_min, x_max = X_train_scaled[:, 0].min() - 1, X_train_scaled[:, 0].max() + 1
+y_min, y_max = X_train_scaled[:, 1].min() - 1, X_train_scaled[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                     np.arange(y_min, y_max, 0.02))
+
+# Predict for each point in mesh
+Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Plot decision boundary
+plt.figure(figsize=(10, 6))
+plt.contourf(xx, yy, Z, alpha=0.4)
+plt.scatter(X_train_scaled[:, 0], X_train_scaled[:, 1], c=y_train, 
+           alpha=0.8)
+plt.xlabel(iris.feature_names[0])
+plt.ylabel(iris.feature_names[1])
+plt.title(f'KNN Decision Boundary (k={optimal_k})')
+plt.show()
+
+# Compare different distance metrics
+metrics = ['euclidean', 'manhattan', 'chebyshev']
+plt.figure(figsize=(15, 5))
+
+for i, metric in enumerate(metrics, 1):
+    plt.subplot(1, 3, i)
+    knn = KNeighborsClassifier(n_neighbors=optimal_k, metric=metric)
+    knn.fit(X_train_scaled, y_train)
+    
+    Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    
+    plt.contourf(xx, yy, Z, alpha=0.4)
+    plt.scatter(X_train_scaled[:, 0], X_train_scaled[:, 1], c=y_train, 
+               alpha=0.8)
+    plt.title(f'{metric.capitalize()} Distance')
+    
+plt.tight_layout()
+plt.show()
+
+# Print performance metrics
+print(f"Optimal K: {optimal_k}")
+print("\nModel Performance:")
+print(classification_report(y_test, knn.predict(X_test_scaled)))</code>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson5.html')">← Previous Lesson</button>
+
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 10;  // Total sections count
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['python_lesson6_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+        // Save to legacy storage
+        localStorage.setItem('python_lesson6_progress', JSON.stringify([...visitedSections]));
+
+        // Also save to user's data
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        if (!allUsers[currentUser]) {
+            allUsers[currentUser] = {};
+        }
+        allUsers[currentUser]['python_lesson6_progress'] = JSON.stringify([...visitedSections]);
+        
+        // Save completion status if 100%
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            allUsers[currentUser]['python_lesson6_last_progress'] = '100';
+        }
+        
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+
+    function updateProgress() {
+      const progressPercent = (visitedSections.size / totalSections) * 100;
+      document.getElementById('progressBar').style.width = progressPercent + '%';
+      document.getElementById('progressText').textContent = 
+        `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        saveProgress();
+
+        // Check if lesson was just completed (100%) and show popup
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const lastProgress = allUsers[currentUser]?.['python_lesson6_last_progress'] || '0';
+            if (parseFloat(lastProgress) < 100) {
+                showCompletionPopup();
+            }
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('.main-content section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show the selected section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeItem = document.querySelector(`.sidebar-item[href="#${sectionId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    // Load progress when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+        showSection('confusion-matrix');  // Show the first section
+        
+        // Count the first section as visited since it's the first thing users see
+        visitedSections.add('confusion-matrix');
+        updateProgress();
+        
+        // Add click handlers to sidebar items
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = item.getAttribute('href').substring(1);
+                showSection(sectionId);
+            });
+        });
+    });
+  </script>
+</body>
+</html> 

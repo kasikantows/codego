@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Java File Handling - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      height: calc(100vh - 160px);
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      display: none;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+
+    th, td {
+      border: 1px solid #1700d1;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+      height: 50px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn, .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+      display: block;
+    }
+
+    .next-lesson-btn {
+      right: 20px;
+    }
+
+    .prev-lesson-btn {
+      left: 20px;
+    }
+
+    .next-lesson-btn:active,
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    .example-box h3 {
+      color: #1700d1;
+      margin-top: 0;
+    }
+
+    .practice-exercise {
+      background-color: #e6e6ff;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+    }
+
+    @media screen and (max-width: 768px) {
+      code {
+        font-size: 12px;
+        padding: 10px;
+        line-height: 1.4;
+      }
+
+      .window-content {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        max-height: 200px;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      th, td {
+        padding: 6px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+        margin: 8px 0;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .window-title {
+        font-size: 14px;
+      }
+
+      .sidebar-item {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .progress-container {
+        height: 40px;
+      }
+
+      .next-lesson-btn, .prev-lesson-btn {
+        font-size: 12px;
+        padding: 8px 16px;
+        bottom: 50px;
+      }
+    }
+
+    /* Add popup styles */
+    
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+  
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Java File Handling - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#files" class="sidebar-item active" onclick="showSection('files')">Java Files</a>
+        <a href="#create-write" class="sidebar-item" onclick="showSection('create-write')">Java Create/Write Files</a>
+        <a href="#read" class="sidebar-item" onclick="showSection('read')">Java Read Files</a>
+        <a href="#delete" class="sidebar-item" onclick="showSection('delete')">Java Delete Files</a>
+      </div>
+
+      <div class="main-content">
+        <section id="files" class="active">
+          <h1>Java Files</h1>
+          <p>Java provides several classes to work with files. The main classes are File, FileReader, FileWriter, BufferedReader, and BufferedWriter.</p>
+
+          <h2>File Class</h2>
+          <div class="example-box">
+            <h3>Basic File Operations</h3>
+            <code>
+import java.io.File;
+
+public class FileDemo {
+    public static void main(String[] args) {
+        // Create a File object
+        File file = new File("example.txt");
+        
+        // Get file information
+        System.out.println("File name: " + file.getName());
+        System.out.println("Absolute path: " + file.getAbsolutePath());
+        System.out.println("Exists: " + file.exists());
+        System.out.println("Is file: " + file.isFile());
+        System.out.println("Is directory: " + file.isDirectory());
+        System.out.println("Can read: " + file.canRead());
+        System.out.println("Can write: " + file.canWrite());
+        System.out.println("File size: " + file.length() + " bytes");
+        
+        // Working with directories
+        File dir = new File("myDirectory");
+        if (!dir.exists()) {
+            dir.mkdir();  // Create single directory
+            // or dir.mkdirs(); // Create multiple directories
+        }
+        
+        // List files in directory
+        if (dir.isDirectory()) {
+            String[] files = dir.list();
+            System.out.println("\nFiles in directory:");
+            for (String f : files) {
+                System.out.println(f);
+            }
+        }
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: File Explorer</h3>
+            <code>
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class FileExplorer {
+    public static void exploreDirectory(String path, String indent) {
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        
+        if (files != null) {
+            for (File file : files) {
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                String lastModified = sdf.format(new Date(file.lastModified()));
+                
+                System.out.printf("%s%s [%s] %d bytes%n",
+                    indent,
+                    file.getName(),
+                    lastModified,
+                    file.length());
+                
+                if (file.isDirectory()) {
+                    exploreDirectory(file.getAbsolutePath(), indent + "  ");
+                }
+            }
+        }
+    }
+    
+    public static void main(String[] args) {
+        String path = ".";  // Current directory
+        System.out.println("File Explorer Starting at: " + 
+            new File(path).getAbsolutePath());
+        System.out.println("----------------------------------------");
+        exploreDirectory(path, "");
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="create-write">
+          <h1>Java Create/Write Files</h1>
+          <p>Java provides multiple ways to create and write files. We'll explore using FileWriter, BufferedWriter, and PrintWriter.</p>
+
+          <h2>Writing Files</h2>
+          <div class="example-box">
+            <h3>Different Ways to Write Files</h3>
+            <code>
+import java.io.*;
+
+public class FileWriteDemo {
+    public static void main(String[] args) {
+        // Using FileWriter
+        try (FileWriter writer = new FileWriter("file1.txt")) {
+            writer.write("Hello, FileWriter!\n");
+            writer.write("This is a new line.");
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+        }
+        
+        // Using BufferedWriter
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter("file2.txt"))) {
+            writer.write("Hello, BufferedWriter!");
+            writer.newLine();
+            writer.write("This is more efficient for large files.");
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+        }
+        
+        // Using PrintWriter
+        try (PrintWriter writer = new PrintWriter("file3.txt")) {
+            writer.println("Hello, PrintWriter!");
+            writer.printf("Formatted number: %d%n", 42);
+            writer.println("This is easier for formatted output.");
+        } catch (FileNotFoundException e) {
+            System.out.println("Error creating file: " + e.getMessage());
+        }
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: Log File Writer</h3>
+            <code>
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+class Logger {
+    private String logFile;
+    private BufferedWriter writer;
+    private DateTimeFormatter formatter;
+    
+    public Logger(String filename) throws IOException {
+        this.logFile = filename;
+        this.writer = new BufferedWriter(new FileWriter(filename, true));
+        this.formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    }
+    
+    public void log(String level, String message) throws IOException {
+        String timestamp = LocalDateTime.now().format(formatter);
+        String logEntry = String.format("[%s] %s: %s%n", 
+            timestamp, level, message);
+        writer.write(logEntry);
+        writer.flush();
+    }
+    
+    public void info(String message) throws IOException {
+        log("INFO", message);
+    }
+    
+    public void error(String message) throws IOException {
+        log("ERROR", message);
+    }
+    
+    public void warning(String message) throws IOException {
+        log("WARNING", message);
+    }
+    
+    public void close() throws IOException {
+        if (writer != null) {
+            writer.close();
+        }
+    }
+}
+
+public class LoggerDemo {
+    public static void main(String[] args) {
+        try (Logger logger = new Logger("application.log")) {
+            logger.info("Application started");
+            
+            // Simulate some application events
+            logger.info("Processing user request");
+            logger.warning("Low memory warning");
+            logger.error("Database connection failed");
+            
+            logger.info("Application shutting down");
+        } catch (IOException e) {
+            System.out.println("Error writing to log: " + e.getMessage());
+        }
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="read">
+          <h1>Java Read Files</h1>
+          <p>Java provides several ways to read files, including FileReader, BufferedReader, and Scanner.</p>
+
+          <h2>Reading Files</h2>
+          <div class="example-box">
+            <h3>Different Ways to Read Files</h3>
+            <code>
+import java.io.*;
+import java.util.Scanner;
+
+public class FileReadDemo {
+    public static void main(String[] args) {
+        // Using FileReader
+        try (FileReader reader = new FileReader("file1.txt")) {
+            int character;
+            System.out.println("Reading with FileReader:");
+            while ((character = reader.read()) != -1) {
+                System.out.print((char) character);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+        
+        // Using BufferedReader
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader("file2.txt"))) {
+            String line;
+            System.out.println("\n\nReading with BufferedReader:");
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+        
+        // Using Scanner
+        try (Scanner scanner = new Scanner(new File("file3.txt"))) {
+            System.out.println("\nReading with Scanner:");
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                System.out.println(line);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error opening file: " + e.getMessage());
+        }
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: CSV File Reader</h3>
+            <code>
+import java.io.*;
+import java.util.*;
+
+class Student {
+    private String name;
+    private int age;
+    private double gpa;
+    
+    public Student(String name, int age, double gpa) {
+        this.name = name;
+        this.age = age;
+        this.gpa = gpa;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s (Age: %d, GPA: %.2f)", 
+            name, age, gpa);
+    }
+}
+
+public class CSVReader {
+    private String filename;
+    
+    public CSVReader(String filename) {
+        this.filename = filename;
+    }
+    
+    public List<Student> readStudents() throws IOException {
+        List<Student> students = new ArrayList<>();
+        
+        try (BufferedReader reader = new BufferedReader(
+                new FileReader(filename))) {
+            // Skip header line
+            reader.readLine();
+            
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    String name = parts[0].trim();
+                    int age = Integer.parseInt(parts[1].trim());
+                    double gpa = Double.parseDouble(parts[2].trim());
+                    
+                    students.add(new Student(name, age, gpa));
+                }
+            }
+        }
+        
+        return students;
+    }
+    
+    public static void main(String[] args) {
+        // First create a CSV file
+        try (PrintWriter writer = new PrintWriter("students.csv")) {
+            writer.println("Name,Age,GPA");
+            writer.println("John Doe,20,3.8");
+            writer.println("Jane Smith,19,3.9");
+            writer.println("Bob Johnson,21,3.5");
+            writer.println("Alice Brown,20,4.0");
+        } catch (FileNotFoundException e) {
+            System.out.println("Error creating CSV: " + e.getMessage());
+            return;
+        }
+        
+        // Now read and display the data
+        CSVReader reader = new CSVReader("students.csv");
+        try {
+            List<Student> students = reader.readStudents();
+            
+            System.out.println("Students from CSV:");
+            for (Student student : students) {
+                System.out.println(student);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading CSV: " + e.getMessage());
+        }
+    }
+}</code>
+          </div>
+        </section>
+
+        <section id="delete">
+          <h1>Java Delete Files</h1>
+          <p>Java provides methods to delete files and directories. We'll explore different ways to handle file deletion.</p>
+
+          <h2>Deleting Files and Directories</h2>
+          <div class="example-box">
+            <h3>File Deletion Examples</h3>
+            <code>
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+
+public class FileDeletionDemo {
+    public static void main(String[] args) {
+        // Using File class
+        File file = new File("example.txt");
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("File deleted successfully");
+            } else {
+                System.out.println("Failed to delete file");
+            }
+        }
+        
+        // Using Files class (Java NIO)
+        Path path = Paths.get("another_file.txt");
+        try {
+            Files.deleteIfExists(path);
+            System.out.println("File deleted successfully");
+        } catch (IOException e) {
+            System.out.println("Error deleting file: " + e.getMessage());
+        }
+        
+        // Deleting directory
+        File directory = new File("myDirectory");
+        if (directory.exists()) {
+            if (directory.delete()) {
+                System.out.println("Directory deleted successfully");
+            } else {
+                System.out.println("Failed to delete directory " +
+                    "(might not be empty)");
+            }
+        }
+    }
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: File Cleanup Utility</h3>
+            <code>
+import java.io.*;
+import java.nio.file.*;
+import java.time.*;
+import java.util.*;
+
+public class FileCleanup {
+    private Path directory;
+    private Duration maxAge;
+    
+    public FileCleanup(String directoryPath, Duration maxAge) {
+        this.directory = Paths.get(directoryPath);
+        this.maxAge = maxAge;
+    }
+    
+    public void cleanup() throws IOException {
+        if (!Files.exists(directory)) {
+            System.out.println("Directory does not exist: " + directory);
+            return;
+        }
+        
+        System.out.println("Starting cleanup in: " + directory);
+        System.out.println("Deleting files older than: " + 
+            formatDuration(maxAge));
+        
+        try (DirectoryStream<Path> stream = 
+                Files.newDirectoryStream(directory)) {
+            for (Path file : stream) {
+                if (shouldDelete(file)) {
+                    deleteFile(file);
+                }
+            }
+        }
+    }
+    
+    private boolean shouldDelete(Path file) throws IOException {
+        if (!Files.isRegularFile(file)) {
+            return false;
+        }
+        
+        FileTime lastModified = Files.getLastModifiedTime(file);
+        Instant cutoff = Instant.now().minus(maxAge);
+        
+        return lastModified.toInstant().isBefore(cutoff);
+    }
+    
+    private void deleteFile(Path file) {
+        try {
+            Files.delete(file);
+            System.out.printf("Deleted: %s%n", file.getFileName());
+        } catch (IOException e) {
+            System.out.printf("Failed to delete %s: %s%n", 
+                file.getFileName(), e.getMessage());
+        }
+    }
+    
+    private String formatDuration(Duration duration) {
+        long days = duration.toDays();
+        long hours = duration.toHoursPart();
+        long minutes = duration.toMinutesPart();
+        
+        StringBuilder sb = new StringBuilder();
+        if (days > 0) {
+            sb.append(days).append(" days ");
+        }
+        if (hours > 0) {
+            sb.append(hours).append(" hours ");
+        }
+        if (minutes > 0) {
+            sb.append(minutes).append(" minutes");
+        }
+        return sb.toString().trim();
+    }
+    
+    public static void main(String[] args) {
+        // Create some test files
+        try {
+            Files.createDirectories(Paths.get("test_files"));
+            
+            // Create files with different dates
+            createTestFile("test_files/recent.txt", 
+                Instant.now().minus(Duration.ofHours(1)));
+            createTestFile("test_files/old.txt", 
+                Instant.now().minus(Duration.ofDays(7)));
+            createTestFile("test_files/very_old.txt", 
+                Instant.now().minus(Duration.ofDays(30)));
+            
+        } catch (IOException e) {
+            System.out.println("Error creating test files: " + e.getMessage());
+            return;
+        }
+        
+        // Clean up files older than 5 days
+        FileCleanup cleanup = new FileCleanup("test_files", 
+            Duration.ofDays(5));
+        
+        try {
+            cleanup.cleanup();
+        } catch (IOException e) {
+            System.out.println("Error during cleanup: " + e.getMessage());
+        }
+    }
+    
+    private static void createTestFile(String path, Instant lastModified) 
+            throws IOException {
+        Path file = Files.writeString(Paths.get(path), 
+            "Test content: " + lastModified);
+        Files.setLastModifiedTime(file, 
+            FileTime.from(lastModified));
+    }
+}</code>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text">Progress: 0% (0/4 sections)</div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson5.html')">
+    ← Previous Lesson
+  </button>
+
+</body>
+
+<script>
+  function playClickAndGo(destination) {
+    const clickSound = document.getElementById('clickSound');
+    clickSound.currentTime = 0;
+    clickSound.play();
+    setTimeout(() => {
+      window.location.href = destination;
+    }, 300);
+  }
+
+  let visitedSections = new Set();
+  const totalSections = 4;  // files, create-write, read, delete sections
+
+  // Load progress from localStorage
+  function loadProgress() {
+      const currentUser = localStorage.getItem('username');
+      const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      const userData = allUsers[currentUser] || {};
+      const savedProgress = userData['java_lesson6_progress'];
+      if (savedProgress) {
+          visitedSections = new Set(JSON.parse(savedProgress));
+          updateProgress();
+      }
+  }
+
+  // Save progress to localStorage
+  function saveProgress() {
+      const currentUser = localStorage.getItem('username');
+      let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!allUsers[currentUser]) {
+          allUsers[currentUser] = {};
+      }
+      allUsers[currentUser]['java_lesson6_progress'] = JSON.stringify([...visitedSections]);
+      localStorage.setItem('users', JSON.stringify(allUsers));
+  }
+
+  function updateProgress() {
+    const progressPercent = (visitedSections.size / totalSections) * 100;
+    document.querySelector('.progress-fill').style.width = progressPercent + '%';
+    document.querySelector('.progress-text').textContent = 
+        `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+    saveProgress(); // Save progress after each update
+
+    // Check if lesson was just completed (100%) and show popup
+    if (progressPercent === 100 && visitedSections.size === totalSections) {
+      const currentUser = localStorage.getItem('username');
+      let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+      const lastProgress = allUsers[currentUser]?.['java_lesson6_last_progress'] || '0';
+      if (parseFloat(lastProgress) < 100) {
+        showCompletionPopup();
+      }
+      allUsers[currentUser]['java_lesson6_last_progress'] = '100';
+      localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+  }
+
+  function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('section').forEach(section => {
+      section.style.display = 'none';
+      section.classList.remove('active');
+    });
+
+    // Show selected section
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.style.display = 'block';
+      section.classList.add('active');
+      visitedSections.add(sectionId);
+      updateProgress();
+
+      // Update sidebar items
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + sectionId) {
+          item.classList.add('active');
+        }
+      });
+    }
+  }
+
+  // Load progress and show first section by default
+  document.addEventListener('DOMContentLoaded', () => {
+    loadProgress();
+    showSection('files');
+  });
+
+  // Check for scroll on load and resize
+  window.addEventListener('load', checkCodeScroll);
+  window.addEventListener('resize', checkCodeScroll);
+
+
+</script>
+</html> 

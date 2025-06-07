@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Tutorial Part 3 - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    section {
+      display: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .example-box {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: #1700d1 #c0c0c0;
+    }
+
+    .subsection-nav::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .subsection-nav::-webkit-scrollbar-track {
+      background: #c0c0c0;
+    }
+
+    .subsection-nav::-webkit-scrollbar-thumb {
+      background-color: #1700d1;
+      border-radius: 0;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 8px 15px;
+      margin: 0 2px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+      min-width: auto;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .subsection-nav button.active {
+      background-color: #1700d1;
+      color: white;
+      border: 2px inset #1700d1;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+      overflow-x: auto;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection code {
+      max-width: 100%;
+      overflow-x: auto;
+      white-space: pre;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .section-title {
+      color: #1700d1;
+      font-size: 24px;
+      margin-bottom: 15px;
+      border: none;
+      padding: 0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .main-content {
+        padding: 10px;
+        padding-bottom: 100px;
+      }
+
+      .subsection-nav {
+        margin: 10px -5px;
+        padding: 5px;
+        border-width: 1px 0;
+      }
+
+      .subsection-nav button {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-height: 35px;
+      }
+
+      .subsection {
+        padding: 10px;
+        margin: 5px 0;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 8px;
+        line-height: 1.4;
+      }
+
+      .example-box {
+        padding: 10px;
+        margin: 5px 0;
+        font-size: 13px;
+      }
+
+      h2, h3 {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        bottom: 60px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 8px;
+      }
+
+      .subsection-nav button {
+        padding: 5px 10px;
+        font-size: 12px;
+        min-height: 32px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 6px;
+        line-height: 1.3;
+      }
+
+      .example-box {
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      h2, h3 {
+        font-size: 16px;
+      }
+
+      p, li {
+        font-size: 13px;
+      }
+
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        bottom: 50px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        min-height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">Python Tutorial Part 3 - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#polymorphism" class="sidebar-item active" onclick="showSection('polymorphism')">Python Polymorphism</a>
+        <a href="#scope" class="sidebar-item" onclick="showSection('scope')">Python Scope</a>
+        <a href="#modules" class="sidebar-item" onclick="showSection('modules')">Python Modules</a>
+        <a href="#dates" class="sidebar-item" onclick="showSection('dates')">Python Dates</a>
+        <a href="#math" class="sidebar-item" onclick="showSection('math')">Python Math</a>
+        <a href="#json" class="sidebar-item" onclick="showSection('json')">Python JSON</a>
+        <a href="#regex" class="sidebar-item" onclick="showSection('regex')">Python RegEx</a>
+        <a href="#pip" class="sidebar-item" onclick="showSection('pip')">Python PIP</a>
+        <a href="#try-except" class="sidebar-item" onclick="showSection('try-except')">Python Try...Except</a>
+        <a href="#string-formatting" class="sidebar-item" onclick="showSection('string-formatting')">Python String Formatting</a>
+        <a href="#user-input" class="sidebar-item" onclick="showSection('user-input')">Python User Input</a>
+        <a href="#virtualenv" class="sidebar-item" onclick="showSection('virtualenv')">Python VirtualEnv</a>
+      </div>
+
+      <div class="main-content">
+        <section id="polymorphism" class="active">
+          <h2 class="section-title">Python Polymorphism</h2>
+          <p>Polymorphism means "many forms", and it occurs when we have many classes that are related to each other by inheritance:</p>
+          <div class="example-box">
+            <ul>
+              <li>Same function name but different implementations</li>
+              <li>Method overriding in inheritance</li>
+              <li>Function polymorphism with different parameter types</li>
+              <li>Class polymorphism with inheritance</li>
+            </ul>
+          </div>
+          <code># Class Polymorphism
+class Animal:
+    def sound(self):
+        pass
+
+class Dog(Animal):
+    def sound(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def sound(self):
+        return "Meow!"
+
+# Function that works with any Animal
+def animal_sound(animal):
+    print(animal.sound())
+
+# Using polymorphism
+dog = Dog()
+cat = Cat()
+animal_sound(dog)  # Woof!
+animal_sound(cat)  # Meow!
+
+# Function Polymorphism
+len("Hello")           # Works with string
+len([1, 2, 3])        # Works with list
+len({"a": 1, "b": 2}) # Works with dictionary</code>
+        </section>
+
+        <section id="scope">
+          <h2 class="section-title">Python Scope</h2>
+          <p>A variable's scope determines where in your program a variable is accessible:</p>
+          <div class="example-box">
+            <ul>
+              <li>Local Scope (variables inside functions)</li>
+              <li>Global Scope (variables outside functions)</li>
+              <li>Enclosing Scope (nested functions)</li>
+              <li>Built-in Scope (Python's built-in names)</li>
+            </ul>
+          </div>
+          <code># Local Scope
+def my_function():
+    x = 300  # Local variable
+    print(x)
+
+my_function()
+# print(x)  # This would cause an error
+
+# Global Scope
+y = 200  # Global variable
+
+def print_global():
+    print(y)  # Accessing global variable
+
+print_global()
+
+# Using global keyword
+def modify_global():
+    global y
+    y = 300  # Modifying global variable
+
+# Enclosing (nonlocal) Scope
+def outer_function():
+    x = "outer"
+    
+    def inner_function():
+        nonlocal x
+        x = "inner"
+        print("inner:", x)
+    
+    inner_function()
+    print("outer:", x)
+
+# Built-in Scope
+print(len("Hello"))  # Built-in function
+print(type(42))      # Built-in function</code>
+        </section>
+
+        <section id="modules">
+          <h2 class="section-title">Python Modules</h2>
+          <p>A module is a file containing Python code that can be imported and used in other Python files:</p>
+          <div class="example-box">
+            <ul>
+              <li>Import entire modules</li>
+              <li>Import specific items</li>
+              <li>Create custom modules</li>
+              <li>Use aliases for modules</li>
+            </ul>
+          </div>
+          <code># Import entire module
+import math
+print(math.pi)
+print(math.sqrt(16))
+
+# Import specific items
+from random import randint, choice
+print(randint(1, 10))
+print(choice(['apple', 'banana', 'cherry']))
+
+# Import with alias
+import datetime as dt
+current_time = dt.datetime.now()
+
+# Create a custom module (mymodule.py)
+# def greeting(name):
+#     return f"Hello, {name}"
+#
+# person = {
+#     "name": "John",
+#     "age": 30
+# }
+
+# Using custom module
+import mymodule
+print(mymodule.greeting("Alice"))
+print(mymodule.person["age"])
+
+# List all names in module
+print(dir(math))
+
+# Built-in modules
+import os
+import sys
+import json
+import time</code>
+        </section>
+
+        <section id="dates">
+          <h2 class="section-title">Python Dates</h2>
+          <p>Python has built-in modules for working with dates and times:</p>
+          <div class="example-box">
+            <ul>
+              <li>datetime module for dates and times</li>
+              <li>date class for dates without times</li>
+              <li>time class for times without dates</li>
+              <li>timedelta for date arithmetic</li>
+            </ul>
+          </div>
+          <code># Import datetime module
+from datetime import datetime, date, time, timedelta
+
+# Current date and time
+now = datetime.now()
+print(now)
+
+# Create specific date
+date1 = date(2024, 3, 14)
+print(date1)
+
+# Create specific time
+time1 = time(13, 30, 0)
+print(time1)
+
+# Format dates
+now = datetime.now()
+formatted = now.strftime("%Y-%m-%d %H:%M:%S")
+print(formatted)
+
+# Date arithmetic
+today = date.today()
+tomorrow = today + timedelta(days=1)
+next_week = today + timedelta(weeks=1)
+
+# Parse string to date
+date_string = "2024-03-14"
+parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
+
+# Common format codes
+# %Y: Year with century (2024)
+# %m: Month as number (01-12)
+# %d: Day of month (01-31)
+# %H: Hour (00-23)
+# %M: Minute (00-59)
+# %S: Second (00-59)
+# %A: Weekday name (Wednesday)
+# %B: Month name (March)</code>
+        </section>
+
+        <section id="math">
+          <h2 class="section-title">Python Math</h2>
+          <p>Python has built-in math functions and a math module for advanced mathematical operations:</p>
+          <div class="example-box">
+            <ul>
+              <li>Built-in math functions</li>
+              <li>Math module constants</li>
+              <li>Advanced math operations</li>
+              <li>Trigonometric functions</li>
+            </ul>
+          </div>
+          <code># Built-in math functions
+x = -7.25
+print(abs(x))        # Absolute value: 7.25
+print(round(x))      # Round: -7
+print(pow(2, 3))     # Power: 8
+
+# Math module
+import math
+
+# Constants
+print(math.pi)       # 3.141592653589793
+print(math.e)        # 2.718281828459045
+
+# Math operations
+print(math.sqrt(16))      # Square root: 4.0
+print(math.ceil(3.1))     # Ceiling: 4
+print(math.floor(3.9))    # Floor: 3
+
+# Trigonometry
+print(math.sin(math.pi/2))    # Sine
+print(math.cos(math.pi))      # Cosine
+print(math.tan(math.pi/4))    # Tangent
+print(math.degrees(math.pi))  # Radians to degrees
+
+# Other functions
+print(math.gcd(12, 18))   # Greatest common divisor
+print(math.factorial(5))   # Factorial
+print(math.log(100, 10))  # Logarithm base 10</code>
+        </section>
+
+        <section id="json">
+          <h2 class="section-title">Python JSON</h2>
+          <p>JSON (JavaScript Object Notation) is a popular data format. Python has a built-in json module to work with JSON data:</p>
+          <div class="example-box">
+            <ul>
+              <li>Convert Python to JSON (dumps)</li>
+              <li>Convert JSON to Python (loads)</li>
+              <li>Read/Write JSON files</li>
+              <li>Format JSON output</li>
+            </ul>
+          </div>
+          <code># Import json module
+import json
+
+# Python dictionary
+person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York",
+    "married": False,
+    "hobbies": ["reading", "music"],
+    "children": None
+}
+
+# Convert to JSON string
+json_string = json.dumps(person)
+print(json_string)
+
+# Format JSON string
+formatted_json = json.dumps(person, indent=2)
+print(formatted_json)
+
+# Convert JSON string to Python
+json_data = '{"name": "Alice", "age": 25}'
+python_dict = json.loads(json_data)
+print(python_dict["name"])
+
+# Write JSON to file
+with open("data.json", "w") as f:
+    json.dump(person, f, indent=2)
+
+# Read JSON from file
+with open("data.json", "r") as f:
+    data = json.load(f)
+
+# Python to JSON conversion:
+# dict -> object
+# list, tuple -> array
+# str -> string
+# int, float -> number
+# True -> true
+# False -> false
+# None -> null</code>
+        </section>
+
+        <section id="regex">
+          <h2 class="section-title">Python RegEx</h2>
+          <p>Regular Expressions (RegEx) are used to search for patterns in strings:</p>
+          <div class="example-box">
+            <ul>
+              <li>Pattern matching and searching</li>
+              <li>String validation</li>
+              <li>String substitution</li>
+              <li>String splitting</li>
+            </ul>
+          </div>
+          <code># Import re module
+import re
+
+# Search pattern in string
+txt = "The rain in Spain"
+x = re.search("^The.*Spain$", txt)
+if x:
+    print("Pattern found!")
+
+# Find all matches
+txt = "The rain in Spain falls mainly in the plain"
+x = re.findall("ai", txt)
+print(x)  # ['ai', 'ai', 'ai']
+
+# Split string at matches
+x = re.split(r"\s", txt)
+print(x)  # ['The', 'rain', 'in', ...]
+
+# Replace matches
+x = re.sub(r"\s", "-", txt)
+print(x)  # The-rain-in-Spain...
+
+# Common patterns:
+# [abc]    - One character of a, b, or c
+# [^abc]   - Any character except a, b, or c
+# [0-9]    - Any digit
+# [a-z]    - Any lowercase letter
+# \d       - Any digit
+# \D       - Any non-digit
+# \s       - Whitespace
+# \S       - Non-whitespace
+# \w       - Word character [a-zA-Z0-9_]
+# \W       - Non-word character
+# *        - Zero or more occurrences
+# +        - One or more occurrences
+# ?        - Zero or one occurrence
+# {n}      - Exactly n occurrences
+# {n,}     - n or more occurrences
+# {n,m}    - Between n and m occurrences</code>
+        </section>
+
+        <section id="pip">
+          <h2 class="section-title">Python PIP</h2>
+          <p>PIP is Python's package installer, used to install and manage additional packages/modules:</p>
+          <div class="example-box">
+            <ul>
+              <li>Install packages</li>
+              <li>Uninstall packages</li>
+              <li>List installed packages</li>
+              <li>Create requirements.txt</li>
+            </ul>
+          </div>
+          <code># Check PIP version
+pip --version
+
+# Install a package
+pip install package_name
+pip install requests
+
+# Install specific version
+pip install requests==2.25.1
+
+# Upgrade package
+pip install --upgrade requests
+
+# Uninstall package
+pip uninstall requests
+
+# List installed packages
+pip list
+
+# Show package info
+pip show requests
+
+# Export requirements
+pip freeze > requirements.txt
+
+# Install from requirements
+pip install -r requirements.txt
+
+# Common useful packages:
+# requests - HTTP library
+# pandas - Data analysis
+# numpy - Scientific computing
+# matplotlib - Plotting
+# django - Web framework
+# flask - Web framework
+# pillow - Image processing
+# beautifulsoup4 - Web scraping</code>
+        </section>
+
+        <section id="try-except">
+          <h2 class="section-title">Python Try...Except</h2>
+          <p>Try...Except blocks are used for exception handling in Python:</p>
+          <div class="example-box">
+            <ul>
+              <li>Handle errors gracefully</li>
+              <li>Multiple except blocks</li>
+              <li>else and finally clauses</li>
+              <li>Raise custom exceptions</li>
+            </ul>
+          </div>
+          <code># Basic try-except
+try:
+    x = int(input("Enter a number: "))
+    result = 10 / x
+except:
+    print("An error occurred")
+
+# Multiple except blocks
+try:
+    x = int(input("Enter a number: "))
+    result = 10 / x
+except ValueError:
+    print("Invalid input")
+except ZeroDivisionError:
+    print("Cannot divide by zero")
+except:
+    print("Something else went wrong")
+
+# else and finally
+try:
+    x = int(input("Enter a number: "))
+    result = 10 / x
+except ValueError:
+    print("Invalid input")
+else:
+    print("Result:", result)  # Runs if no exception
+finally:
+    print("Cleanup code")     # Always runs
+
+# Raise exceptions
+def check_age(age):
+    if age < 0:
+        raise ValueError("Age cannot be negative")
+    if age > 120:
+        raise ValueError("Age is too high")
+
+# Custom exception
+class CustomError(Exception):
+    pass
+
+try:
+    raise CustomError("This is a custom error")
+except CustomError as e:
+    print(e)</code>
+        </section>
+
+        <section id="string-formatting">
+          <h2 class="section-title">Python String Formatting</h2>
+          <p>Python provides several ways to format strings:</p>
+          <div class="example-box">
+            <ul>
+              <li>String format() method</li>
+              <li>f-strings (Python 3.6+)</li>
+              <li>% operator (old style)</li>
+              <li>Template strings</li>
+            </ul>
+          </div>
+          <code># format() method
+name = "Alice"
+age = 25
+print("My name is {} and I am {} years old".format(name, age))
+
+# format() with indexes
+print("{1} is {0} years old".format(age, name))
+
+# format() with named arguments
+print("My name is {n} and I am {a} years old".format(n=name, a=age))
+
+# f-strings (Python 3.6+)
+print(f"My name is {name} and I am {age} years old")
+
+# f-strings with expressions
+price = 49.95
+quantity = 3
+print(f"Total: ${price * quantity:.2f}")
+
+# % operator (old style)
+print("My name is %s and I am %d years old" % (name, age))
+
+# Template strings
+from string import Template
+t = Template("$name is $age years old")
+print(t.substitute(name=name, age=age))
+
+# Format specifiers:
+# :.2f    - 2 decimal places
+# :>10    - Right align, width 10
+# :<10    - Left align, width 10
+# :^10    - Center align, width 10
+# :,      - Thousand separator
+# :+      - Show sign
+# :08d    - Pad with zeros
+print(f"{'Hello':>10}")    # Right aligned
+print(f"{'Hello':<10}")    # Left aligned
+print(f"{123456:,}")       # With thousand separator
+print(f"{12.3456:.2f}")    # Two decimal places</code>
+        </section>
+
+        <section id="user-input">
+          <h2 class="section-title">Python User Input</h2>
+          <p>Python allows user input through the input() function:</p>
+          <div class="example-box">
+            <ul>
+              <li>Get text input from user</li>
+              <li>Convert input to different types</li>
+              <li>Input validation</li>
+              <li>Command line arguments</li>
+            </ul>
+          </div>
+          <code># Basic input
+name = input("Enter your name: ")
+print(f"Hello, {name}!")
+
+# Convert input to integer
+age = int(input("Enter your age: "))
+next_year = age + 1
+print(f"Next year you'll be {next_year}")
+
+# Input with validation
+while True:
+    try:
+        age = int(input("Enter your age: "))
+        if 0 <= age <= 120:
+            break
+        print("Age must be between 0 and 120")
+    except ValueError:
+        print("Please enter a valid number")
+
+# Multiple inputs
+x, y = input("Enter two numbers (separated by space): ").split()
+print(f"Numbers: {x}, {y}")
+
+# Command line arguments
+import sys
+
+# python script.py arg1 arg2
+print("Arguments:", sys.argv)
+print("Script name:", sys.argv[0])
+print("First argument:", sys.argv[1])
+
+# Using argparse
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("name", help="your name")
+parser.add_argument("--age", type=int, help="your age")
+args = parser.parse_args()
+
+print(f"Hello, {args.name}")
+if args.age:
+    print(f"You are {args.age} years old")</code>
+        </section>
+
+        <section id="virtualenv">
+          <h2 class="section-title">Python VirtualEnv</h2>
+          <p>Virtual environments allow you to create isolated Python environments for your projects:</p>
+          <div class="example-box">
+            <ul>
+              <li>Create virtual environments</li>
+              <li>Activate/deactivate environments</li>
+              <li>Install packages in isolation</li>
+              <li>Manage project dependencies</li>
+            </ul>
+          </div>
+          <code># Install virtualenv (if not installed)
+pip install virtualenv
+
+# Create virtual environment
+virtualenv myenv
+# or
+python -m venv myenv
+
+# Activate virtual environment
+# Windows:
+myenv\Scripts\activate
+# Unix/MacOS:
+source myenv/bin/activate
+
+# Check Python interpreter
+which python
+# or
+where python
+
+# Install packages
+pip install requests
+pip install django
+
+# Save requirements
+pip freeze > requirements.txt
+
+# Install from requirements
+pip install -r requirements.txt
+
+# Deactivate environment
+deactivate
+
+# Delete virtual environment
+# Just delete the environment folder
+
+# Using virtualenvwrapper (optional)
+pip install virtualenvwrapper-win  # Windows
+pip install virtualenvwrapper      # Unix/MacOS
+
+# Create environment
+mkvirtualenv myenv
+
+# List environments
+lsvirtualenv
+
+# Switch environment
+workon myenv
+
+# Delete environment
+rmvirtualenv myenv</code>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson2.html')">← Previous Lesson</button>
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson4.html')">Next Lesson →</button>
+
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 12;  // Total sections count
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['python_lesson3_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+        // Save to legacy storage
+        localStorage.setItem('python_lesson3_progress', JSON.stringify([...visitedSections]));
+
+        // Also save to user's data
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        if (!allUsers[currentUser]) {
+            allUsers[currentUser] = {};
+        }
+        allUsers[currentUser]['python_lesson3_progress'] = JSON.stringify([...visitedSections]);
+        
+        // Save completion status if 100%
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            allUsers[currentUser]['python_lesson3_last_progress'] = '100';
+        }
+        
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+
+    function updateProgress() {
+      const progressPercent = (visitedSections.size / totalSections) * 100;
+      document.getElementById('progressBar').style.width = progressPercent + '%';
+      document.getElementById('progressText').textContent = 
+        `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        saveProgress();
+
+        // Check if lesson was just completed (100%) and show popup
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const lastProgress = allUsers[currentUser]?.['python_lesson3_last_progress'] || '0';
+            if (parseFloat(lastProgress) < 100) {
+                showCompletionPopup();
+            }
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('.main-content section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show the selected section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeItem = document.querySelector(`.sidebar-item[href="#${sectionId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    // Load progress when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+        showSection('polymorphism');  // Show the first section
+        
+        // Count the first section as visited since it's the first thing users see
+        visitedSections.add('polymorphism');
+        updateProgress();
+        
+        // Add click handlers to sidebar items
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = item.getAttribute('href').substring(1);
+                showSection(sectionId);
+            });
+        });
+    });
+  </script>
+</body>
+</html> 

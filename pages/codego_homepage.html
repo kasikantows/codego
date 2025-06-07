@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C0D-3-G0</title>
+  <style>
+    @font-face {
+      font-family: 'ComputerSaysNo';
+      src: url('../font/Computer Says No.otf') format('opentype');
+    }
+
+    body {
+        margin: 0;
+        height: 100vh;
+        background-image: url('../images/background.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .codego_logo,
+    .codego_title,
+    .button-wrapper {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .codego_logo {
+        height: 25vh;
+    }
+
+    .codego_title {
+        height: 20vh;
+        margin-top: 3vh;
+    }
+
+    .welcome-message {
+        text-align: center;
+        color: #1700d1;
+        font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+        font-size: 28px;
+        margin: 20px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .home_buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 5vh;
+    }
+
+    .button-wrapper {
+        position: relative;
+        height: 10vh;
+        width: fit-content;
+        cursor: pointer;
+    }
+
+    .button-wrapper img {
+        height: 100%;
+    }
+
+    .hover-image {
+        display: none;
+    }
+
+    .button-wrapper:hover .default-image {
+        display: none;
+    }
+
+    .button-wrapper:hover .hover-image {
+        display: inline;
+    }
+
+    .about_button {
+        height: 40px;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+    }
+
+    .achievements_button {
+        height: 40px;
+        position: fixed;
+        top: 60px;
+        left: 10px;
+        cursor: pointer;
+    }
+
+    .button-label {
+        position: fixed;
+        left: 60px;
+        color: #1700d1;
+        font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+        font-size: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .about-label {
+        top: 20px;
+    }
+
+    .achievements-label {
+        top: 70px;
+    }
+
+    .button-label:hover {
+        color: #0066cc;
+    }
+
+    .logout-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #c0c0c0;
+        border: 2px outset #c0c0c0;
+        color: black;
+        cursor: pointer;
+        font-family: 'ComputerSaysNo', 'MS Sans Serif', Arial, sans-serif;
+        font-size: 18px;
+    }
+
+    .logout-button:active {
+        border: 2px inset #c0c0c0;
+    }
+  </style>
+  <script>
+    // Check if user is logged in
+    window.onload = function() {
+      const sessionToken = localStorage.getItem('sessionToken');
+      const username = localStorage.getItem('username');
+      
+      if (!sessionToken || !username) {
+        window.location.href = 'codego_auth.html';
+        return;
+      }
+
+      // Display welcome message
+      document.getElementById('welcomeMessage').textContent = `Welcome, ${username}!`;
+    }
+
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    function playClickSound() {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+    }
+
+    function logout() {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play().then(() => {
+        // Only remove session-related data
+        localStorage.removeItem('sessionToken');
+        localStorage.removeItem('username');
+        window.location.replace('codego_auth.html');
+      }).catch(() => {
+        // Only remove session-related data
+        localStorage.removeItem('sessionToken');
+        localStorage.removeItem('username');
+        window.location.replace('codego_auth.html');
+      });
+    }
+  </script>
+</head>
+<body>
+    <audio autoplay loop hidden>
+        <source src="../music/background_music.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="clickSound" src="../music/click_sound.mp3" preload="auto"></audio>
+
+    <button class="logout-button" onclick="logout()">Logout</button>
+
+    <img src="../images/logo_codego.png" class="codego_logo" alt="Logo">
+    <div id="welcomeMessage" class="welcome-message"></div>
+    <img src="../images/title_codego.png" class="codego_title" alt="Title">
+
+    <div class="home_buttons">
+      <!-- Start Button -->
+      <div class="button-wrapper" onclick="playClickAndGo('codego_menu.html')">
+        <img src="../images/start_button.png" class="default-image" alt="Start">
+        <img src="../images/start_button_hover.png" class="hover-image" alt="Start Hover">
+      </div>
+
+      <!-- Quit Button -->
+      <div class="button-wrapper" onclick="playClickAndGo('codego_quit.html')">
+        <img src="../images/quit_button.png" class="default-image" alt="Quit">
+        <img src="../images/quit_button_hover.png" class="hover-image" alt="Quit Hover">
+      </div>
+    </div>
+
+    <!-- About Button and Label -->
+    <div style="position: relative;">
+        <img src="../images/about_button.png" class="about_button" onclick="playClickAndGo('codego_aboutpage.html')">
+        <span class="button-label about-label" onclick="playClickAndGo('codego_aboutpage.html')" style="cursor: pointer;">About</span>
+    </div>
+
+    <!-- Achievements Button and Label -->
+    <div style="position: relative;">
+        <img src="../images/achievement.png" class="achievements_button" onclick="playClickAndGo('codego_achievements.html')">
+        <span class="button-label achievements-label" onclick="playClickAndGo('codego_achievements.html')" style="cursor: pointer;">Achievements</span>
+    </div>
+
+</body>
+</html>

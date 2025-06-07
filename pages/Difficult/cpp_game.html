@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Quiz - Difficult Level - C0D3G0</title>
+    <style>
+        /* Same styles as java_game.html */
+        @font-face {
+            font-family: 'Computer Says No';
+            src: url('../../font/Computer Says No.otf') format('opentype');
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url('../../images/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+        }
+
+        .window-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #c0c0c0;
+            border: 2px solid #1700d1;
+            border-radius: 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+        }
+
+        .window-titlebar {
+            background: linear-gradient(to right, #1700d1, #0066cc);
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 30px;
+        }
+
+        .window-title {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .window-button {
+            width: 20px;
+            height: 20px;
+            border: 1px outset #c0c0c0;
+            background-color: #c0c0c0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: black;
+        }
+
+        .window-button:active {
+            border: 1px inset #c0c0c0;
+        }
+
+        .window-content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            color: black;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #dfdfdf;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+        }
+
+        .timer, .question-counter, .score {
+            font-size: 24px;
+            color: #000080;
+            padding: 5px 10px;
+            background: #fff;
+            border: 2px solid;
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        .code-container {
+            background: #000080;
+            color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 18px;
+            white-space: pre-wrap;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+        }
+
+        .answer-container {
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            font-family: monospace;
+            border: 2px solid;
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        .submit-btn {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 10px 20px;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:active {
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        #gameOverScreen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #gameOverScreen h2 {
+            font-size: 36px;
+            color: #000080;
+            margin-bottom: 20px;
+        }
+
+        .restart-btn {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 15px 30px;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .window-container {
+                margin: 10px;
+                height: calc(100vh - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .timer, .question-counter, .score {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+    <audio autoplay loop hidden>
+        <source src="../../music/games_music.mp3" type="audio/mpeg">
+      </audio>
+
+    <div class="window-container">
+        <div class="window-titlebar">
+            <div class="window-title">C++ Quiz - Difficult Level</div>
+            <div class="window-buttons">
+                <div class="window-button" onclick="playClickAndGo('difficult.html')">✕</div>
+            </div>
+        </div>
+        <div class="window-content">
+            <div id="gameScreen">
+                <div class="game-header">
+                    <div class="timer">Time: <span id="timeLeft">3:00</span></div>
+                    <div class="question-counter">Question: <span id="currentQuestion">1</span>/20</div>
+                    <div class="score">Score: <span id="currentScore">0</span></div>
+                </div>
+                <div class="code-container" id="questionCode">
+                    <!-- Question will be inserted here -->
+                </div>
+                <div class="answer-container">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here...">
+                    <button class="submit-btn" onclick="checkAnswer()">Submit Answer</button>
+                </div>
+            </div>
+
+            <div id="gameOverScreen">
+                <h2>Game Over!</h2>
+                <div id="finalScore"></div>
+                <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                <button class="restart-btn" onclick="window.location.href='difficult.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            {
+                code: `// Advanced template metaprogramming
+template<typename T>
+struct is_pointer {
+    static constexpr bool value = false;
+};
+
+template<typename T>
+struct is_pointer<T*> {
+    static constexpr bool value = ___;
+};`,
+                answer: "true",
+                explanation: "Template specialization value"
+            },
+            {
+                code: `// Custom allocator with placement new
+template<typename T>
+T* create(void* buffer) {
+    return new (___)T();
+}`,
+                answer: "buffer",
+                explanation: "Placement new location"
+            },
+            {
+                code: `// SFINAE implementation
+template<typename T>
+typename std::enable_if<std::is_integral<T>::value, bool>::___ 
+is_even(T value) {
+    return value % 2 == 0;
+}`,
+                answer: "type",
+                explanation: "SFINAE type alias"
+            },
+            {
+                code: `// Perfect forwarding
+template<typename T>
+void wrapper(T&& arg) {
+    helper(std::___(arg));
+}`,
+                answer: "forward<T>",
+                explanation: "Perfect forwarding function"
+            },
+            {
+                code: `// Custom memory management
+class MemoryPool {
+    void* allocate(size_t size) {
+        return ::operator ___(size);
+    }
+};`,
+                answer: "new",
+                explanation: "Memory allocation operator"
+            },
+            {
+                code: `// Advanced coroutine
+generator<int> sequence() {
+    int i = 0;
+    while (true) {
+        ___ i++;
+    }
+}`,
+                answer: "co_yield",
+                explanation: "Coroutine yield keyword"
+            },
+            {
+                code: `// Custom smart pointer
+template<typename T>
+class UniquePtr {
+    T* ptr;
+public:
+    UniquePtr(UniquePtr&&) ___ = default;
+    UniquePtr& operator=(UniquePtr&&) noexcept = default;
+};`,
+                answer: "noexcept",
+                explanation: "Move constructor specifier"
+            },
+            {
+                code: `// Variadic template recursion
+template<typename T>
+void print(T&& t) {
+    std::cout << t << std::endl;
+}
+
+template<typename T, typename... Args>
+void print(T&& t, Args&&... args) {
+    std::cout << t << " ";
+    print(std::forward<Args>(___)...);
+}`,
+                answer: "args",
+                explanation: "Variadic template forwarding"
+            },
+            {
+                code: `// Custom allocator traits
+template<typename T>
+struct allocator_traits {
+    using ___ = typename T::value_type;
+    static T* allocate(T& a, size_t n);
+};`,
+                answer: "value_type",
+                explanation: "Allocator type alias"
+            },
+            {
+                code: `// Advanced concepts
+template<typename T>
+concept Sortable = requires(T& t) {
+    { std::___(t.begin(), t.end()) } -> std::same_as<void>;
+};`,
+                answer: "sort",
+                explanation: "Concept requirement"
+            },
+            {
+                code: `// Custom iterator implementation
+template<typename T>
+class Iterator {
+public:
+    using iterator_category = std::___iterator_tag;
+    using value_type = T;
+};`,
+                answer: "random_access",
+                explanation: "Iterator category"
+            },
+            {
+                code: `// Advanced exception handling
+class CustomException : public std::exception {
+public:
+    const char* ___() const noexcept override {
+        return "Custom error";
+    }
+};`,
+                answer: "what",
+                explanation: "Exception message method"
+            },
+            {
+                code: `// Custom type traits
+template<typename T>
+struct remove_reference {
+    using type = T;
+};
+
+template<typename T>
+struct remove_reference<T&> {
+    using ___ = T;
+};`,
+                answer: "type",
+                explanation: "Type trait alias"
+            },
+            {
+                code: `// Advanced lambda expressions
+auto lambda = []<typename T>(T&& x) {
+    return [x = std::___<T>(x)]() mutable {
+        return x;
+    };
+};`,
+                answer: "forward",
+                explanation: "Lambda capture forwarding"
+            },
+            {
+                code: `// Custom memory order
+std::atomic<int> counter{0};
+int value = counter.___(___, std::memory_order_acquire);`,
+                answer: "exchange",
+                explanation: "Atomic operation"
+            },
+            {
+                code: `// Advanced template recursion
+template<size_t N>
+struct Factorial {
+    static constexpr size_t value = N * Factorial<___>::value;
+};`,
+                answer: "N-1",
+                explanation: "Recursive template parameter"
+            },
+            {
+                code: `// Custom allocator alignment
+template<typename T>
+class aligned_allocator {
+    static constexpr size_t alignment = ___;
+    T* allocate(size_t n);
+};`,
+                answer: "alignof(T)",
+                explanation: "Type alignment value"
+            },
+            {
+                code: `// Advanced CRTP pattern
+template<typename Derived>
+class Base {
+    void interface() {
+        static_cast<___*>(this)->implementation();
+    }
+};`,
+                answer: "Derived",
+                explanation: "CRTP cast type"
+            },
+            {
+                code: `// Custom fold expression
+template<typename... Args>
+auto sum(Args... args) {
+    return (___ + ...);
+}`,
+                answer: "args",
+                explanation: "Fold expression operand"
+            },
+            {
+                code: `// Advanced constexpr
+constexpr auto factorial(int n) {
+    if (n <= 1) return 1;
+    return n * ___(n - 1);
+}`,
+                answer: "factorial",
+                explanation: "Recursive constexpr call"
+            }
+        ];
+
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let timeLeft = 180; // 3 minutes
+        let score = 0;
+        let timer;
+
+        // Initialize the game
+        function initGame() {
+            // Check if user is logged in
+            const currentUser = localStorage.getItem('username');
+            if (!currentUser) {
+                alert('Please log in first!');
+                window.location.href = '../../index.html';
+                return;
+            }
+            
+            questions = shuffleArray(allQuestions).slice(0, 20);
+            currentQuestionIndex = 0;
+            timeLeft = 180;
+            score = 0;
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('currentScore').textContent = score;
+            document.getElementById('currentQuestion').textContent = '1';
+            showQuestion();
+            startTimer();
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                document.getElementById('questionCode').textContent = questions[currentQuestionIndex].code;
+                document.getElementById('answerInput').value = '';
+                document.getElementById('currentQuestion').textContent = `${currentQuestionIndex + 1}`;
+            }
+        }
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Start timer
+        function startTimer() {
+            document.getElementById('timeLeft').textContent = formatTime(timeLeft);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').textContent = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            if (userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
+                // Base score is 10 points
+                // Add time bonus: 1-5 extra points based on time left
+                const timeBonus = Math.ceil((timeLeft / 180) * 5);
+                const pointsEarned = 10 + timeBonus;
+                score += pointsEarned;
+            } else {
+                // Deduct 5 points for wrong answer
+                score = Math.max(0, score - 5); // Prevent negative score
+            }
+            
+            document.getElementById('currentScore').textContent = score;
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+            } else {
+                showQuestion();
+            }
+        }
+
+        // Handle Enter key press
+        document.getElementById('answerInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // End game
+        function endGame() {
+            clearInterval(timer);
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('gameOverScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+            updateLeaderboard();
+        }
+
+        // Update leaderboard
+        function updateLeaderboard() {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            // Initialize user data if it doesn't exist
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {
+                    scores: []
+                };
+            }
+            if (!allUsers[currentUser].scores) {
+                allUsers[currentUser].scores = [];
+            }
+            
+            // Add new score
+            allUsers[currentUser].scores.push({
+                score: score,
+                timestamp: new Date().toISOString(),
+                language: 'C++',
+                difficulty: 'difficult'
+            });
+            
+            // Save progress
+            localStorage.setItem('users', JSON.stringify(allUsers));
+
+            // Update lesson progress
+            let lessonProgress = new Set(JSON.parse(allUsers[currentUser]['cpp_lesson3_progress'] || '[]'));
+            lessonProgress.add('completed');
+            allUsers[currentUser]['cpp_lesson3_progress'] = JSON.stringify([...lessonProgress]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+
+        // Play click sound and go to destination
+        function playClickAndGo(destination) {
+            const clickSound = document.getElementById('clickSound');
+            clickSound.currentTime = 0;
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 300);
+        }
+
+        // Restart game
+        function restartGame() {
+            initGame();
+        }
+
+        // Initialize the game when the page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html> 

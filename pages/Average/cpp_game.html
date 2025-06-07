@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Quiz - Average Level - C0D3G0</title>
+    <style>
+        /* Same styles as java_game.html */
+        @font-face {
+            font-family: 'Computer Says No';
+            src: url('../../font/Computer Says No.otf') format('opentype');
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url('../../images/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+        }
+
+        .window-container {
+            max-width: 1200px;
+            margin: 20px auto;      
+            background-color: #c0c0c0;
+            border: 2px solid #1700d1;
+            border-radius: 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+        }
+
+        .window-titlebar {
+            background: linear-gradient(to right, #1700d1, #0066cc);
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 30px;
+        }
+
+        .window-title {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .window-button {
+            width: 20px;
+            height: 20px;
+            border: 1px outset #c0c0c0;
+            background-color: #c0c0c0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: black;
+        }
+
+        .window-button:active {
+            border: 1px inset #c0c0c0;
+        }
+
+        .window-content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            color: black;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #dfdfdf;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+        }
+
+        .timer, .question-counter, .score {
+            font-size: 24px;
+            color: #000080;
+            padding: 5px 10px;
+            background: #fff;
+            border: 2px solid;
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        .code-container {
+            background: #000080;
+            color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 18px;
+            white-space: pre-wrap;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+        }
+
+        .answer-container {
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            font-family: monospace;
+            border: 2px solid;
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        .submit-btn {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 10px 20px;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:active {
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        #gameOverScreen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #gameOverScreen h2 {
+            font-size: 36px;
+            color: #000080;
+            margin-bottom: 20px;
+        }
+
+        .restart-btn {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 15px 30px;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .window-container {
+                margin: 10px;
+                height: calc(100vh - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .timer, .question-counter, .score {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+    <audio autoplay loop hidden>
+        <source src="../../music/games_music.mp3" type="audio/mpeg">
+      </audio>
+
+    <div class="window-container">
+        <div class="window-titlebar">
+            <div class="window-title">C++ Quiz - Average Level</div>
+            <div class="window-buttons">
+                <div class="window-button" onclick="playClickAndGo('average.html')">✕</div>
+            </div>
+        </div>
+        <div class="window-content">
+            <div id="gameScreen">
+                <div class="game-header">
+                    <div class="timer">Time: <span id="timeLeft">2:00</span></div>
+                    <div class="question-counter">Question: <span id="currentQuestion">1</span>/20</div>
+                    <div class="score">Score: <span id="currentScore">0</span></div>
+                </div>
+                <div class="code-container" id="questionCode">
+                    <!-- Question will be inserted here -->
+                </div>
+                <div class="answer-container">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here...">
+                    <button class="submit-btn" onclick="checkAnswer()">Submit Answer</button>
+                </div>
+            </div>
+
+            <div id="gameOverScreen">
+                <h2>Game Over!</h2>
+                <div id="finalScore"></div>
+                <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                <button class="restart-btn" onclick="window.location.href='average.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            {
+                code: `// Template function
+template<typename T>
+T ___ (T a, T b) {
+    return (a > b) ? a : b;
+}`,
+                answer: "max",
+                explanation: "Template function name"
+            },
+            {
+                code: `// Smart pointer
+#include <memory>
+std::___<int> ptr = std::make_unique<int>(42);`,
+                answer: "unique_ptr",
+                explanation: "Unique pointer type"
+            },
+            {
+                code: `// Lambda capture
+int multiplier = 10;
+auto lambda = [___](int x) { return x * multiplier; };`,
+                answer: "=",
+                explanation: "Capture by value"
+            },
+            {
+                code: `// STL algorithm
+std::vector<int> vec{1, 2, 3, 4, 5};
+std::___(vec.begin(), vec.end(), 3);  // Find element`,
+                answer: "find",
+                explanation: "Find algorithm"
+            },
+            {
+                code: `// Move semantics
+class MyClass {
+public:
+    MyClass(___ MyClass&& other) {
+        // Move constructor
+    }
+};`,
+                answer: "noexcept",
+                explanation: "Move constructor specifier"
+            },
+            {
+                code: `// RAII implementation
+class Lock {
+    std::mutex& m;
+public:
+    Lock(std::mutex& mutex) : m(mutex) { m.___(); }
+    ~Lock() { m.unlock(); }
+};`,
+                answer: "lock",
+                explanation: "Mutex lock method"
+            },
+            {
+                code: `// Type traits
+std::___<T>::value  // Check if T is integral`,
+                answer: "is_integral",
+                explanation: "Type trait for integral types"
+            },
+            {
+                code: `// Range-based for loop
+for (const auto& ___ : container) {
+    std::cout << elem << std::endl;
+}`,
+                answer: "elem",
+                explanation: "Loop variable name"
+            },
+            {
+                code: `// Exception specification
+void riskyFunction() ___ (std::runtime_error) {
+    throw std::runtime_error("Error");
+}`,
+                answer: "throw",
+                explanation: "Exception specification"
+            },
+            {
+                code: `// Virtual inheritance
+class Derived : ___ virtual Base {
+    // Avoid diamond problem
+};`,
+                answer: "public",
+                explanation: "Virtual inheritance access"
+            },
+            {
+                code: `// STL container adapter
+std::___<int> container;  // LIFO container
+container.push(42);`,
+                answer: "stack",
+                explanation: "Stack container"
+            },
+            {
+                code: `// Variadic template
+template<typename... Args>
+void print(Args... ___) {
+    (std::cout << ... << args) << std::endl;
+}`,
+                answer: "args",
+                explanation: "Parameter pack name"
+            },
+            {
+                code: `// Perfect forwarding
+template<typename T>
+void wrapper(T&& param) {
+    helper(std::___(param));
+}`,
+                answer: "forward",
+                explanation: "Forward function"
+            },
+            {
+                code: `// Constexpr function
+___ int factorial(int n) {
+    return (n <= 1) ? 1 : n * factorial(n - 1);
+}`,
+                answer: "constexpr",
+                explanation: "Compile-time computation"
+            },
+            {
+                code: `// Custom iterator
+class Iterator {
+public:
+    using iterator_category = std::____iterator_tag;
+    // Iterator implementation
+};`,
+                answer: "forward",
+                explanation: "Iterator category"
+            },
+            {
+                code: `// Placement new
+char buffer[sizeof(MyClass)];
+MyClass* obj = new (___)MyClass();`,
+                answer: "buffer",
+                explanation: "Placement new location"
+            },
+            {
+                code: `// Function object
+struct Compare {
+    bool operator()(___ const& a, int const& b) const {
+        return a < b;
+    }
+};`,
+                answer: "int",
+                explanation: "Parameter type"
+            },
+            {
+                code: `// Mutex lock guard
+{
+    std::___<std::mutex> lock(mtx);
+    // Critical section
+}`,
+                answer: "lock_guard",
+                explanation: "Lock guard type"
+            },
+            {
+                code: `// Conditional compilation
+#___ DEBUG
+    std::cout << "Debug mode" << std::endl;
+#endif`,
+                answer: "ifdef",
+                explanation: "Preprocessor directive"
+            },
+            {
+                code: `// Allocator usage
+std::vector<int, std::___<int>> vec;
+// Custom memory allocation`,
+                answer: "allocator",
+                explanation: "Allocator type"
+            }
+        ];
+
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let timeLeft = 120; // 2 minutes
+        let score = 0;
+        let timer;
+
+        // Initialize the game
+        function initGame() {
+            // Check if user is logged in
+            const currentUser = localStorage.getItem('username');
+            if (!currentUser) {
+                alert('Please log in first!');
+                window.location.href = '../../index.html';
+                return;
+            }
+            
+            questions = shuffleArray(allQuestions).slice(0, 20);
+            currentQuestionIndex = 0;
+            timeLeft = 120;
+            score = 0;
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('currentScore').textContent = score;
+            document.getElementById('currentQuestion').textContent = '1';
+            showQuestion();
+            startTimer();
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                document.getElementById('questionCode').textContent = questions[currentQuestionIndex].code;
+                document.getElementById('answerInput').value = '';
+                document.getElementById('currentQuestion').textContent = `${currentQuestionIndex + 1}`;
+            }
+        }
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Start timer
+        function startTimer() {
+            document.getElementById('timeLeft').textContent = formatTime(timeLeft);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').textContent = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            if (userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
+                // Base score is 10 points
+                // Add time bonus: 1-5 extra points based on time left
+                const timeBonus = Math.ceil((timeLeft / 120) * 5);
+                const pointsEarned = 10 + timeBonus;
+                score += pointsEarned;
+            } else {
+                // Deduct 5 points for wrong answer
+                score = Math.max(0, score - 5); // Prevent negative score
+            }
+            
+            document.getElementById('currentScore').textContent = score;
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+            } else {
+                showQuestion();
+            }
+        }
+
+        // Handle Enter key press
+        document.getElementById('answerInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // End game
+        function endGame() {
+            clearInterval(timer);
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('gameOverScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+            updateLeaderboard();
+        }
+
+        // Update leaderboard
+        function updateLeaderboard() {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            // Initialize user data if it doesn't exist
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {
+                    scores: []
+                };
+            }
+            if (!allUsers[currentUser].scores) {
+                allUsers[currentUser].scores = [];
+            }
+            
+            // Add new score
+            allUsers[currentUser].scores.push({
+                score: score,
+                timestamp: new Date().toISOString(),
+                language: 'C++',
+                difficulty: 'average'
+            });
+            
+            // Save progress
+            localStorage.setItem('users', JSON.stringify(allUsers));
+
+            // Update lesson progress
+            let lessonProgress = new Set(JSON.parse(allUsers[currentUser]['cpp_lesson2_progress'] || '[]'));
+            lessonProgress.add('completed');
+            allUsers[currentUser]['cpp_lesson2_progress'] = JSON.stringify([...lessonProgress]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+
+        // Play click sound and go to destination
+        function playClickAndGo(destination) {
+            const clickSound = document.getElementById('clickSound');
+            clickSound.currentTime = 0;
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 300);
+        }
+
+        // Restart game
+        function restartGame() {
+            initGame();
+        }
+
+        // Initialize the game when the page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html> 

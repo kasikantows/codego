@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Quiz - C0D3G0</title>
+    <style>
+        /* Same styles as other game files */
+        @font-face {
+            font-family: 'Computer Says No';
+            src: url('../../font/Computer Says No.otf') format('opentype');
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-image: url('../../images/background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+        }
+
+        .window-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #c0c0c0;
+            border: 2px solid #1700d1;
+            border-radius: 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+        }
+
+        .window-titlebar {
+            background: linear-gradient(to right, #1700d1, #0066cc);
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 30px;
+        }
+
+        .window-title {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .window-button {
+            width: 20px;
+            height: 20px;
+            border: 1px outset #c0c0c0;
+            background-color: #c0c0c0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: black;
+        }
+
+        .window-button:active {
+            border: 1px inset #c0c0c0;
+        }
+
+        .window-content {
+            flex: 1;
+            padding: 20px;
+            background-color: white;
+            color: black;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #dfdfdf;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+        }
+
+        .timer, .question-counter, .score {
+            font-size: 24px;
+            color: #000080;
+            padding: 5px 10px;
+            background: #fff;
+            border: 2px solid;
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        .code-container {
+            background: #000080;
+            color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 18px;
+            white-space: pre-wrap;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+        }
+
+        .answer-container {
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            font-family: monospace;
+            border: 2px solid;
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        .submit-btn {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 10px 20px;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .submit-btn:active {
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        #gameOverScreen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #gameOverScreen h2 {
+            font-size: 36px;
+            color: #000080;
+            margin-bottom: 20px;
+        }
+
+        .restart-btn {
+            background: #c0c0c0;
+            border: 3px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 15px 30px;
+            font-family: 'Computer Says No', 'MS Sans Serif', Arial, sans-serif;
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .window-container {
+                margin: 10px;
+                height: calc(100vh - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .timer, .question-counter, .score {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+    <audio autoplay loop hidden>
+        <source src="../../music/games_music.mp3" type="audio/mpeg">
+      </audio>
+
+    <div class="window-container">
+        <div class="window-titlebar">
+            <div class="window-title">Python Quiz - Easy Level</div>
+            <div class="window-buttons">
+                <div class="window-button" onclick="playClickAndGo('easy.html')">✕</div>
+            </div>
+        </div>
+        <div class="window-content">
+            <div id="gameScreen">
+                <div class="game-header">
+                    <div class="timer">Time: <span id="timeLeft">3:00</span></div>
+                    <div class="question-counter">Question: <span id="currentQuestion">1</span>/20</div>
+                    <div class="score">Score: <span id="currentScore">0</span></div>
+                </div>
+                <div class="code-container" id="questionCode">
+                    <!-- Question will be inserted here -->
+                </div>
+                <div class="answer-container">
+                    <input type="text" class="answer-input" id="answerInput" placeholder="Type your answer here...">
+                    <button class="submit-btn" onclick="checkAnswer()">Submit Answer</button>
+                </div>
+            </div>
+
+            <div id="gameOverScreen">
+                <h2>Game Over!</h2>
+                <div id="finalScore"></div>
+                <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                <button class="restart-btn" onclick="window.location.href='easy.html'">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            {
+                code: `# Print function
+___(\"Hello Python!\")`,
+                answer: "print",
+                explanation: "Basic print function"
+            },
+            {
+                code: `# Variable assignment
+name ___ "John"  # Assign string to variable`,
+                answer: "=",
+                explanation: "Assignment operator"
+            },
+            {
+                code: `# List operation
+fruits = ["apple"]
+fruits.___(\"banana\")  # Add to list`,
+                answer: "append",
+                explanation: "List append method"
+            },
+            {
+                code: `# If statement
+age = 20
+___ age >= 18:
+    print("Adult")`,
+                answer: "if",
+                explanation: "If statement"
+            },
+            {
+                code: `# For loop
+___ i in range(5):
+    print(i)`,
+                answer: "for",
+                explanation: "For loop keyword"
+            },
+            {
+                code: `# List index
+numbers = [10, 20, 30]
+first = numbers[___]  # Get first number`,
+                answer: "0",
+                explanation: "List first index"
+            },
+            {
+                code: `# String formatting
+name = "Alice"
+print(f"Hello, {___}")`,
+                answer: "name",
+                explanation: "F-string variable"
+            },
+            {
+                code: `# Type conversion
+age = "25"
+number = ___(age)  # Convert to integer`,
+                answer: "int",
+                explanation: "Integer conversion"
+            },
+            {
+                code: `# Boolean value
+is_sunny = ___  # True value`,
+                answer: "True",
+                explanation: "Boolean True"
+            },
+            {
+                code: `# Math operation
+result = 10 ___ 2  # Multiply numbers`,
+                answer: "*",
+                explanation: "Multiplication operator"
+            },
+            {
+                code: `# Dictionary creation
+user = {
+    "name": "John",
+    ___: 25  # Add age key
+}`,
+                answer: '"age"',
+                explanation: "Dictionary key"
+            },
+            {
+                code: `# Function definition
+___ greet(name):
+    print(f"Hello, {name}")`,
+                answer: "def",
+                explanation: "Function definition"
+            },
+            {
+                code: `# List comprehension
+numbers = [1, 2, 3, 4, 5]
+squares = [x**2 ___ x in numbers]`,
+                answer: "for",
+                explanation: "List comprehension syntax"
+            },
+            {
+                code: `# String method
+text = "Hello, World"
+words = text.___(", ")`,
+                answer: "split",
+                explanation: "String split method"
+            },
+            {
+                code: `# Exception handling
+___ ValueError:
+    print("Invalid number")`,
+                answer: "except",
+                explanation: "Exception handling"
+            },
+            {
+                code: `# Class definition
+___ Person:
+    def __init__(self, name):
+        self.name = name`,
+                answer: "class",
+                explanation: "Class definition"
+            },
+            {
+                code: `# Module import
+___ random import randint`,
+                answer: "from",
+                explanation: "Import statement"
+            },
+            {
+                code: `# While loop
+___ True:
+    print("Infinite loop")
+    break`,
+                answer: "while",
+                explanation: "While loop"
+            },
+            {
+                code: `# Set operation
+numbers = {1, 2, 3}
+numbers.___(4)  # Add to set`,
+                answer: "add",
+                explanation: "Set add method"
+            },
+            {
+                code: `# Lambda function
+square = ___ x: x**2`,
+                answer: "lambda",
+                explanation: "Lambda function"
+            }
+        ];
+
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let timeLeft = 180; // 3 minutes
+        let score = 0;
+        let timer;
+
+        // Initialize the game
+        function initGame() {
+            // Check if user is logged in
+            const currentUser = localStorage.getItem('username');
+            if (!currentUser) {
+                alert('Please log in first!');
+                window.location.href = '../../index.html';
+                return;
+            }
+            
+            questions = shuffleArray(allQuestions).slice(0, 20);
+            currentQuestionIndex = 0;
+            timeLeft = 180;
+            score = 0;
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('currentScore').textContent = score;
+            document.getElementById('currentQuestion').textContent = '1';
+            showQuestion();
+            startTimer();
+        }
+
+        // Shuffle array function
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // Show current question
+        function showQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                document.getElementById('questionCode').textContent = questions[currentQuestionIndex].code;
+                document.getElementById('answerInput').value = '';
+                document.getElementById('currentQuestion').textContent = `${currentQuestionIndex + 1}`;
+            }
+        }
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Start timer
+        function startTimer() {
+            document.getElementById('timeLeft').textContent = formatTime(timeLeft);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').textContent = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            if (userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
+                // Base score is 10 points
+                // Add time bonus: 1-5 extra points based on time left
+                const timeBonus = Math.ceil((timeLeft / 180) * 5);
+                const pointsEarned = 10 + timeBonus;
+                score += pointsEarned;
+            } else {
+                // Deduct 5 points for wrong answer
+                score = Math.max(0, score - 5); // Prevent negative score
+            }
+            
+            document.getElementById('currentScore').textContent = score;
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+            } else {
+                showQuestion();
+            }
+        }
+
+        // Handle Enter key press
+        document.getElementById('answerInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // End game
+        function endGame() {
+            clearInterval(timer);
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('gameOverScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+            updateLeaderboard();
+        }
+
+        // Update leaderboard
+        function updateLeaderboard() {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            // Initialize user data if it doesn't exist
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {
+                    scores: []
+                };
+            }
+            if (!allUsers[currentUser].scores) {
+                allUsers[currentUser].scores = [];
+            }
+            
+            // Add new score
+            allUsers[currentUser].scores.push({
+                score: score,
+                timestamp: new Date().toISOString(),
+                language: 'Python',
+                difficulty: 'easy'
+            });
+            
+            // Save progress
+            localStorage.setItem('users', JSON.stringify(allUsers));
+
+            // Update lesson progress
+            let lessonProgress = new Set(JSON.parse(allUsers[currentUser]['python_lesson1_progress'] || '[]'));
+            lessonProgress.add('completed');
+            allUsers[currentUser]['python_lesson1_progress'] = JSON.stringify([...lessonProgress]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+
+        // Play click sound and go to destination
+        function playClickAndGo(destination) {
+            const clickSound = document.getElementById('clickSound');
+            clickSound.currentTime = 0;
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 300);
+        }
+
+        // Restart game
+        function restartGame() {
+            initGame();
+        }
+
+        // Initialize the game when the page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html> 

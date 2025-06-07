@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Classes - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .main-content section {
+      margin-bottom: 30px;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      display: none;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block !important;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+      flex: 0 1 auto;
+      min-width: max-content;
+    }
+
+    .subsection-nav button.active {
+      background-color: #1700d1;
+      color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box, .practice-exercise {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .prev-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .prev-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      .subsection-nav {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding: 5px;
+        gap: 2px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 60px;
+        right: 10px;
+        padding: 8px 16px;
+      }
+
+      .prev-lesson-btn {
+        bottom: 60px;
+        left: 10px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .subsection-nav button {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 50px;
+        right: 5px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .prev-lesson-btn {
+        bottom: 50px;
+        left: 5px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .progress-container {
+        padding: 5px;
+      }
+    }
+
+    @media screen and (max-height: 600px) {
+      .sidebar {
+        max-height: 100px;
+      }
+
+      .main-content {
+        padding-bottom: 80px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .subsection-nav button,
+      .window-button,
+      .next-lesson-btn,
+      .prev-lesson-btn {
+        padding: 8px 12px;
+        min-height: 44px;
+      }
+    }
+  </style>
+  <script>
+    let visitedSections = new Set();
+    const totalSections = 11;  // Total number of sections in lesson4
+
+    // Load progress from localStorage
+    function loadProgress() {
+        visitedSections = new Set();  // Reset visited sections
+        
+        // Load from user-specific storage
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const userData = allUsers[currentUser] || {};
+            const userProgress = userData['cpp_lesson4_progress'];
+            if (userProgress) {
+                visitedSections = new Set(JSON.parse(userProgress));
+            }
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        if (!visitedSections || !(visitedSections instanceof Set)) {
+            console.error('Invalid visitedSections in updateProgress:', visitedSections);
+            return;
+        }
+
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        document.getElementById('progressBar').style.width = progressPercent + '%';
+        document.getElementById('progressText').textContent = 
+            `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        
+        // Save to user's data
+        const currentUser = localStorage.getItem('username');
+        if (currentUser) {
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!allUsers[currentUser]) {
+                allUsers[currentUser] = {};
+            }
+            allUsers[currentUser]['cpp_lesson4_progress'] = JSON.stringify([...visitedSections]);
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+    }
+
+    function showSection(sectionId) {
+        // Hide all sections first
+        document.querySelectorAll('section').forEach(section => {
+            section.style.display = 'none';
+            section.classList.remove('active');
+        });
+        
+        // Show the target section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            targetSection.classList.add('active');
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick').includes(sectionId)) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Show first subsection if exists
+            const firstSubsection = targetSection.querySelector('.subsection');
+            if (firstSubsection) {
+                showSubsection(sectionId, firstSubsection.getAttribute('data-id'));
+            }
+            
+            // Only add to visitedSections if this was triggered by a user click
+            // and not the initial page load
+            if (document.readyState === 'complete') {
+                visitedSections.add(sectionId);
+                updateProgress();
+            }
+        }
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            // Hide all subsections in this section
+            section.querySelectorAll('.subsection').forEach(sub => {
+                sub.style.display = 'none';
+                sub.classList.remove('active');
+            });
+            
+            // Show the selected subsection
+            const subsection = section.querySelector(`.subsection[data-id="${subsectionId}"]`);
+            if (subsection) {
+                subsection.style.display = 'block';
+                subsection.classList.add('active');
+            }
+
+            // Update button states
+            section.querySelectorAll('.subsection-nav button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const activeButton = section.querySelector(`button[onclick*="${subsectionId}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
+    }
+
+    function playClickAndGo(destination) {
+        const clickSound = document.getElementById('clickSound');
+        if (clickSound) {
+            clickSound.currentTime = 0;
+            clickSound.play();
+            setTimeout(() => {
+                window.location.href = destination;
+            }, 300);
+        }
+    }
+
+    // Initialize when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadProgress();  // First load the saved progress
+
+        // Get the first section
+        const firstSection = document.querySelector('section');
+        if (firstSection) {
+            // Show the first section
+            showSection(firstSection.id);
+            // Mark it as visited
+            visitedSections.add(firstSection.id);
+            updateProgress();
+        }
+
+        // Add click sound element if it doesn't exist
+        if (!document.getElementById('clickSound')) {
+            const audio = document.createElement('audio');
+            audio.id = 'clickSound';
+            audio.src = '../../music/click_sound.mp3';
+            audio.preload = 'auto';
+            document.body.appendChild(audio);
+        }
+    });
+  </script>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">C++ Classes - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#oop" class="sidebar-item active" onclick="showSection('oop')">C++ OOP</a>
+        <a href="#classes" class="sidebar-item" onclick="showSection('classes')">C++ Classes/Objects</a>
+        <a href="#methods" class="sidebar-item" onclick="showSection('methods')">C++ Class Methods</a>
+        <a href="#constructors" class="sidebar-item" onclick="showSection('constructors')">C++ Constructors</a>
+        <a href="#access" class="sidebar-item" onclick="showSection('access')">C++ Access Specifiers</a>
+        <a href="#encapsulation" class="sidebar-item" onclick="showSection('encapsulation')">C++ Encapsulation</a>
+        <a href="#inheritance" class="sidebar-item" onclick="showSection('inheritance')">C++ Inheritance</a>
+        <a href="#polymorphism" class="sidebar-item" onclick="showSection('polymorphism')">C++ Polymorphism</a>
+        <a href="#templates" class="sidebar-item" onclick="showSection('templates')">C++ Templates</a>
+        <a href="#files" class="sidebar-item" onclick="showSection('files')">C++ Files</a>
+        <a href="#date" class="sidebar-item" onclick="showSection('date')">C++ Date</a>
+      </div>
+
+      <div class="main-content">
+        <section id="oop">
+          <h2>C++ Object-Oriented Programming</h2>
+          <p>OOP is a programming paradigm based on the concept of "objects" that contain data and code. The main principles of OOP are:</p>
+          <ul>
+            <li>Encapsulation - Bundling data and methods that work on that data within one unit</li>
+            <li>Inheritance - Creating new classes that are built upon existing classes</li>
+            <li>Polymorphism - Ability to present the same interface for different underlying forms (data types or classes)</li>
+            <li>Abstraction - Hiding complex implementation details and showing only necessary features</li>
+          </ul>
+          <div class="example-box">
+            <h3>Example:</h3>
+            <code>
+// Basic class example
+class Car {
+  public:
+    string brand;
+    string model;
+    int year;
+    
+    void displayInfo() {
+      cout << year << " " << brand << " " << model << endl;
+    }
+};</code>
+          </div>
+        </section>
+
+        <section id="classes">
+          <h2>C++ Classes/Objects</h2>
+          <p>A class is a user-defined data type that serves as a blueprint for creating objects. Objects are instances of a class.</p>
+          <div class="example-box">
+            <h3>Example:</h3>
+            <code>
+class Rectangle {
+  private:
+    int width;
+    int height;
+  
+  public:
+    void setDimensions(int w, int h) {
+      width = w;
+      height = h;
+    }
+    
+    int getArea() {
+      return width * height;
+    }
+};
+
+int main() {
+    Rectangle rect;  // Create an object
+    rect.setDimensions(5, 3);  // Set values
+    cout << "Area: " << rect.getArea() << endl;  // Use object
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="methods">
+          <h2>C++ Class Methods</h2>
+          <p>Class methods are functions that belong to a class. They can be defined inside or outside the class definition.</p>
+          <div class="example-box">
+            <h3>Inside Class Definition:</h3>
+            <code>
+class Calculator {
+  public:
+    // Method defined inside class
+    int add(int a, int b) {
+      return a + b;
+    }
+};</code>
+          </div>
+          <div class="example-box">
+            <h3>Outside Class Definition:</h3>
+            <code>
+class Calculator {
+  public:
+    // Method declared inside class
+    int multiply(int a, int b);
+};
+
+// Method defined outside class using scope resolution ::
+int Calculator::multiply(int a, int b) {
+  return a * b;
+}</code>
+          </div>
+        </section>
+
+        <section id="constructors">
+          <h2>C++ Constructors</h2>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('constructors', 'basic')" class="active">Constructor</button>
+            <button onclick="showSubsection('constructors', 'overloading')">Constructor Overloading</button>
+          </div>
+
+          <div class="subsection" data-id="basic">
+            <h2>Basic Constructor</h2>
+            <p>A constructor is a special member function that is automatically called when an object is created. It has the same name as the class and is used to initialize object attributes.</p>
+            <div class="example-box">
+              <h3>Default Constructor:</h3>
+              <code>class Student {
+  private:
+    string name;
+    int age;
+  
+  public:
+    // Default constructor
+    Student() {
+      name = "Unknown";
+      age = 0;
+    }
+};</code>
+            </div>
+
+            <div class="example-box">
+              <h3>Parameterized Constructor:</h3>
+              <code>class Rectangle {
+  private:
+    double width;
+    double height;
+  
+  public:
+    // Constructor with parameters
+    Rectangle(double w, double h) {
+      width = w;
+      height = h;
+    }
+};</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="overloading">
+            <h2>Constructor Overloading</h2>
+            <p>Constructor overloading allows a class to have multiple constructors with different parameters.</p>
+            <div class="example-box">
+              <h3>Multiple Constructors:</h3>
+              <code>class Car {
+  private:
+    string brand;
+    string model;
+    int year;
+  
+  public:
+    // Default constructor
+    Car() {
+      brand = "Unknown";
+      model = "Unknown";
+      year = 2024;
+    }
+    
+    // Constructor with brand only
+    Car(string b) {
+      brand = b;
+      model = "Unknown";
+      year = 2024;
+    }
+    
+    // Constructor with all parameters
+    Car(string b, string m, int y) {
+      brand = b;
+      model = m;
+      year = y;
+    }
+};</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="access">
+          <h2>C++ Access Specifiers</h2>
+          <p>Access specifiers define how class members can be accessed:</p>
+          <ul>
+            <li><strong>public:</strong> Members are accessible from outside the class</li>
+            <li><strong>private:</strong> Members can only be accessed within the class</li>
+            <li><strong>protected:</strong> Members can be accessed in inherited classes</li>
+          </ul>
+          <div class="example-box">
+            <h3>Example:</h3>
+            <code>
+class BankAccount {
+  private:
+    double balance;  // Only accessible within class
+    
+  protected:
+    string accountType;  // Accessible in derived classes
+    
+  public:
+    void deposit(double amount) {  // Accessible everywhere
+      balance += amount;
+    }
+    
+    double getBalance() {
+      return balance;
+    }
+};</code>
+          </div>
+        </section>
+
+        <section id="encapsulation">
+          <h2>C++ Encapsulation</h2>
+          <p>Encapsulation is the bundling of data and the methods that operate on that data within a single unit (class), hiding internal details.</p>
+          <div class="example-box">
+            <h3>Example:</h3>
+            <code>
+class Employee {
+  private:
+    string name;
+    double salary;
+    
+  public:
+    void setName(string n) {
+      name = n;
+    }
+    
+    string getName() {
+      return name;
+    }
+    
+    void setSalary(double s) {
+      if (s > 0) {  // Data validation
+        salary = s;
+      }
+    }
+    
+    double getSalary() {
+      return salary;
+    }
+};</code>
+          </div>
+        </section>
+
+        <section id="inheritance">
+          <h2>C++ Inheritance</h2>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('inheritance', 'basic')" class="active">Inheritance</button>
+            <button onclick="showSubsection('inheritance', 'multilevel')">Multilevel Inheritance</button>
+            <button onclick="showSubsection('inheritance', 'multiple')">Multiple Inheritance</button>
+            <button onclick="showSubsection('inheritance', 'access')">Access Specifiers</button>
+          </div>
+
+          <div class="subsection" data-id="basic">
+            <h2>Basic Inheritance</h2>
+            <p>Inheritance allows a class to inherit attributes and methods from another class. The class being inherited from is called the base class (or parent class), and the class that inherits is called the derived class (or child class).</p>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>
+class Animal {  // Base class
+  public:
+    string species;
+    void eat() {
+      cout << "This animal is eating" << endl;
+    }
+};
+
+class Dog : public Animal {  // Derived class
+  public:
+    string breed;
+    void bark() {
+      cout << "Woof!" << endl;
+    }
+};
+
+int main() {
+    Dog myDog;
+    myDog.species = "Canine";  // Inherited from Animal
+    myDog.breed = "Labrador";  // Dog's own attribute
+    myDog.eat();   // Inherited method
+    myDog.bark();  // Dog's own method
+    return 0;
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="multilevel">
+            <h2>Multilevel Inheritance</h2>
+            <p>In multilevel inheritance, a derived class inherits from another derived class. This creates a hierarchy of classes.</p>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>
+class Animal {  // Base class
+  public:
+    void eat() {
+      cout << "Eating..." << endl;
+    }
+};
+
+class Mammal : public Animal {  // First derived class
+  public:
+    void breathe() {
+      cout << "Breathing..." << endl;
+    }
+};
+
+class Dog : public Mammal {  // Second derived class
+  public:
+    void bark() {
+      cout << "Barking..." << endl;
+    }
+};
+
+int main() {
+    Dog myDog;
+    myDog.eat();     // From Animal class
+    myDog.breathe(); // From Mammal class
+    myDog.bark();    // From Dog class
+    return 0;
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="multiple">
+            <h2>Multiple Inheritance</h2>
+            <p>Multiple inheritance allows a class to inherit from more than one base class. This can be useful but needs to be used carefully to avoid ambiguity.</p>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>
+class Car {
+  public:
+    void drive() {
+      cout << "Driving..." << endl;
+    }
+};
+
+class Boat {
+  public:
+    void sail() {
+      cout << "Sailing..." << endl;
+    }
+};
+
+class AmphibiousVehicle : public Car, public Boat {
+  public:
+    void travel() {
+      cout << "Traveling on land and water!" << endl;
+      drive();  // From Car
+      sail();   // From Boat
+    }
+};
+
+int main() {
+    AmphibiousVehicle vehicle;
+    vehicle.drive();  // From Car
+    vehicle.sail();   // From Boat
+    vehicle.travel(); // Own method
+    return 0;
+}</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="access">
+            <h2>Inheritance Access Specifiers</h2>
+            <p>The access specifier used in inheritance affects how the base class members are accessed in the derived class.</p>
+            <div class="example-box">
+              <h3>Example:</h3>
+              <code>
+class Base {
+  public:
+    int publicVar;
+  protected:
+    int protectedVar;
+  private:
+    int privateVar;
+};
+
+// Public inheritance
+class Derived1 : public Base {
+  // publicVar remains public
+  // protectedVar remains protected
+  // privateVar is not accessible
+};
+
+// Protected inheritance
+class Derived2 : protected Base {
+  // publicVar becomes protected
+  // protectedVar remains protected
+  // privateVar is not accessible
+};
+
+// Private inheritance
+class Derived3 : private Base {
+  // publicVar becomes private
+  // protectedVar becomes private
+  // privateVar is not accessible
+};</code>
+            </div>
+            <div class="example-box">
+              <h3>Access Rules:</h3>
+              <ul>
+                <li>public inheritance: public → public, protected → protected</li>
+                <li>protected inheritance: public → protected, protected → protected</li>
+                <li>private inheritance: public → private, protected → private</li>
+                <li>private members are never accessible in derived classes</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="polymorphism">
+          <h2>C++ Polymorphism</h2>
+          <div class="subsection-nav">
+            <button onclick="showSubsection('polymorphism', 'basic')" class="active">Polymorphism</button>
+            <button onclick="showSubsection('polymorphism', 'virtual')">Virtual Functions</button>
+          </div>
+
+          <div class="subsection" data-id="basic">
+            <h2>Basic Polymorphism</h2>
+            <p>Polymorphism means "many forms". In C++, it allows us to perform a single action in different ways. There are two types of polymorphism:</p>
+            <ul>
+              <li>Compile-time polymorphism (Method Overloading)</li>
+              <li>Runtime polymorphism (Method Overriding)</li>
+            </ul>
+            <div class="example-box">
+              <h3>Method Overloading Example:</h3>
+              <code>
+class Calculator {
+public:
+    // Method overloading - same name, different parameters
+    int add(int a, int b) {
+        return a + b;
+    }
+    
+    double add(double a, double b) {
+        return a + b;
+    }
+    
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+};
+
+int main() {
+    Calculator calc;
+    cout << calc.add(5, 3);       // Calls int version
+    cout << calc.add(3.2, 4.1);   // Calls double version
+    cout << calc.add(1, 2, 3);    // Calls three parameter version
+    return 0;
+}</code>
+            </div>
+
+            <div class="example-box">
+              <h3>Method Overriding Example:</h3>
+              <code>
+class Animal {
+public:
+    void makeSound() {
+        cout << "Some sound" << endl;
+    }
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() {  // Overriding base class method
+        cout << "Woof!" << endl;
+    }
+};
+
+class Cat : public Animal {
+public:
+    void makeSound() {  // Overriding base class method
+        cout << "Meow!" << endl;
+    }
+};</code>
+            </div>
+          </div>
+
+          <div class="subsection" data-id="virtual">
+            <h2>Virtual Functions</h2>
+            <p>Virtual functions enable runtime polymorphism through a process called dynamic dispatch. When you declare a function as virtual in a base class, you can override it in any derived class.</p>
+            
+            <div class="example-box">
+              <h3>Basic Virtual Function:</h3>
+              <code>
+class Shape {
+public:
+    virtual double getArea() {
+        return 0;
+    }
+    
+    // Virtual destructor is important when using virtual functions
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+    
+public:
+    Circle(double r) : radius(r) {}
+    
+    double getArea() override {  // override keyword is optional but recommended
+        return 3.14159 * radius * radius;
+    }
+};
+
+class Rectangle : public Shape {
+private:
+    double width;
+    double height;
+    
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+    
+    double getArea() override {
+        return width * height;
+    }
+};</code>
+            </div>
+
+            <div class="example-box">
+              <h3>Using Virtual Functions with Pointers:</h3>
+              <code>
+int main() {
+    // Array of pointers to base class
+    Shape* shapes[3];
+    
+    // Creating objects of derived classes
+    shapes[0] = new Circle(5);
+    shapes[1] = new Rectangle(4, 6);
+    shapes[2] = new Circle(3);
+    
+    // Polymorphic behavior
+    for(int i = 0; i < 3; i++) {
+        cout << "Area: " << shapes[i]->getArea() << endl;
+    }
+    
+    // Clean up
+    for(int i = 0; i < 3; i++) {
+        delete shapes[i];
+    }
+    
+    return 0;
+}</code>
+            </div>
+
+            <div class="example-box">
+              <h3>Pure Virtual Functions:</h3>
+              <code>
+class AbstractShape {
+public:
+    // Pure virtual function makes this an abstract class
+    virtual double getArea() = 0;
+    virtual ~AbstractShape() {}
+};
+
+class Square : public AbstractShape {
+private:
+    double side;
+    
+public:
+    Square(double s) : side(s) {}
+    
+    // Must implement pure virtual function
+    double getArea() override {
+        return side * side;
+    }
+};</code>
+            </div>
+          </div>
+        </section>
+
+        <section id="templates">
+          <h2>C++ Templates</h2>
+          <p>Templates allow you to write code that can work with different data types without having to rewrite the code for each type.</p>
+          <div class="example-box">
+            <h3>Example:</h3>
+            <code>
+template <typename T>
+class Box {
+  private:
+    T content;
+    
+  public:
+    void setContent(T item) {
+      content = item;
+    }
+    
+    T getContent() {
+      return content;
+    }
+};
+
+int main() {
+    Box<int> intBox;        // Box for integers
+    Box<string> stringBox;  // Box for strings
+    
+    intBox.setContent(42);
+    stringBox.setContent("Hello");
+    
+    cout << intBox.getContent() << endl;     // 42
+    cout << stringBox.getContent() << endl;  // Hello
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="files">
+          <h2>C++ Files</h2>
+          <p>C++ provides classes for working with files: ofstream (writing), ifstream (reading), and fstream (both).</p>
+          <div class="example-box">
+            <h3>Example:</h3>
+            <code>
+#include <fstream>
+
+class FileHandler {
+  private:
+    string filename;
+    
+  public:
+    FileHandler(string fname) : filename(fname) {}
+    
+    void writeToFile(string text) {
+      ofstream file(filename);
+      if (file.is_open()) {
+        file << text;
+        file.close();
+      }
+    }
+    
+    string readFromFile() {
+      string content;
+      ifstream file(filename);
+      if (file.is_open()) {
+        getline(file, content);
+        file.close();
+      }
+      return content;
+    }
+};</code>
+          </div>
+        </section>
+
+        <section id="date">
+          <h2>C++ Date</h2>
+          <p>C++ doesn't have a built-in Date type, but you can work with dates using the ctime library or create your own Date class.</p>
+          <div class="example-box">
+            <h3>Example:</h3>
+            <code>
+class Date {
+  private:
+    int day;
+    int month;
+    int year;
+    
+  public:
+    Date(int d, int m, int y) {
+      day = d;
+      month = m;
+      year = y;
+    }
+    
+    string getFormattedDate() {
+      return to_string(day) + "/" + 
+             to_string(month) + "/" + 
+             to_string(year);
+    }
+    
+    bool isLeapYear() {
+      return (year % 4 == 0 && year % 100 != 0) || 
+             (year % 400 == 0);
+    }
+    
+    void addDays(int days) {
+      // Add implementation for date arithmetic
+    }
+};</code>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+  
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progressBar"></div>
+    </div>
+    <div class="progress-text">Progress: <span id="progressText">0%</span></div>
+  </div>
+  
+  <button class="prev-lesson-btn" onclick="playClickAndGo('lesson3.html')">← Previous Lesson</button>
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson5.html')">Next Lesson →</button>
+</body>
+</html> 

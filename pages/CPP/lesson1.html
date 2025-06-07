@@ -1,0 +1,2570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Tutorial Part 1 - C0D3G0</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-image: url('../../images/background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .window-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      background-color: #c0c0c0;
+      border: 2px solid #1700d1;
+      border-radius: 0;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 40px);
+    }
+
+    .window-titlebar {
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      padding: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 30px;
+    }
+
+    .window-title {
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .window-button {
+      width: 20px;
+      height: 20px;
+      border: 1px outset #c0c0c0;
+      background-color: #c0c0c0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: black;
+    }
+
+    .window-button:active {
+      border: 1px inset #c0c0c0;
+    }
+
+    .window-content {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      border-top: 1px solid white;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #c0c0c0;
+      border-right: 1px solid #1700d1;
+      padding: 10px 0;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      padding: 8px 15px;
+      color: black;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .sidebar-item.active {
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      color: black;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .main-content section {
+      margin-bottom: 30px;
+    }
+
+    code {
+      background-color: black;
+      padding: 15px;
+      border-radius: 0;
+      display: block;
+      margin: 10px 0;
+      color: #00ff00;
+      border: 1px solid #1700d1;
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-width: 100%;
+      font-size: 14px;
+    }
+
+    h1, h2 {
+      color: #1700d1;
+      border-bottom: 1px solid #1700d1;
+      padding-bottom: 5px;
+    }
+
+    .status-bar {
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: black;
+      margin-bottom: 60px;
+    }
+
+    section {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    section.active {
+      display: block !important;
+    }
+
+    .subsection {
+      display: none;
+      padding: 15px;
+      margin: 10px 0;
+      background-color: #f8f8f8;
+      border-left: 3px solid #1700d1;
+    }
+
+    .subsection.active {
+      display: block;
+    }
+
+    .subsection-nav {
+      margin: 20px 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border: 1px solid #1700d1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .subsection-nav button {
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      color: black;
+      flex: 0 1 auto;
+      min-width: max-content;
+    }
+
+    .subsection-nav button.active {
+      border: 2px inset #c0c0c0;
+      background-color: #1700d1;
+      color: white;
+    }
+
+    .subsection-nav button:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    .example-box, .practice-exercise {
+      background-color: #f0f0f0;
+      border: 1px solid #1700d1;
+      padding: 15px;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background-color: #c0c0c0;
+      border-top: 1px solid #1700d1;
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: white;
+      border: 2px inset #c0c0c0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, #1700d1, #0066cc);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 5px;
+      color: black;
+      font-size: 12px;
+    }
+
+    .next-lesson-btn {
+      position: fixed;
+      bottom: 70px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #c0c0c0;
+      border: 2px outset #c0c0c0;
+      color: black;
+      cursor: pointer;
+      font-family: 'MS Sans Serif', Arial, sans-serif;
+      z-index: 1000;
+    }
+
+    .next-lesson-btn:active {
+      border: 2px inset #c0c0c0;
+    }
+
+    @media screen and (max-width: 1024px) {
+      .window-container {
+        margin: 10px;
+        height: calc(100vh - 20px);
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        background-attachment: fixed;
+      }
+
+      .window-container {
+        margin: 0;
+        height: 100vh;
+        border: none;
+      }
+
+      .window-content {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 150px;
+        border-right: none;
+        border-bottom: 1px solid #1700d1;
+      }
+
+      .main-content {
+        padding: 15px;
+        padding-bottom: 100px;
+      }
+
+      .subsection-nav {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding: 5px;
+        gap: 2px;
+      }
+
+      code {
+        font-size: 12px;
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 60px;
+        right: 10px;
+        padding: 8px 16px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .window-title {
+        font-size: 14px;
+      }
+
+      .window-button {
+        width: 16px;
+        height: 16px;
+        font-size: 12px;
+      }
+
+      .sidebar {
+        max-height: 120px;
+      }
+
+      .main-content {
+        padding: 10px;
+      }
+
+      code {
+        font-size: 11px;
+        padding: 8px;
+      }
+
+      .subsection-nav button {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .example-box, .practice-exercise {
+        padding: 10px;
+      }
+
+      .next-lesson-btn {
+        bottom: 50px;
+        right: 5px;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .progress-container {
+        padding: 5px;
+      }
+    }
+
+    @media screen and (max-height: 600px) {
+      .sidebar {
+        max-height: 100px;
+      }
+
+      .main-content {
+        padding-bottom: 80px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .sidebar-item,
+      .subsection-nav button,
+      .window-button,
+      .next-lesson-btn {
+        padding: 8px 12px;
+        min-height: 44px;
+      }
+    }
+  </style>
+  <script>
+    function playClickAndGo(destination) {
+      const clickSound = document.getElementById('clickSound');
+      clickSound.currentTime = 0;
+      clickSound.play();
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 300);
+    }
+
+    let visitedSections = new Set();
+    const totalSections = 11;  // Total number of sections in lesson1
+
+    // Load progress from localStorage
+    function loadProgress() {
+        const currentUser = localStorage.getItem('username');
+        const allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        const userData = allUsers[currentUser] || {};
+        const savedProgress = userData['cpp_lesson1_progress'];
+        if (savedProgress) {
+            visitedSections = new Set(JSON.parse(savedProgress));
+            updateProgress();
+        }
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+        const currentUser = localStorage.getItem('username');
+        let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+        if (!allUsers[currentUser]) {
+            allUsers[currentUser] = {};
+        }
+        allUsers[currentUser]['cpp_lesson1_progress'] = JSON.stringify([...visitedSections]);
+        localStorage.setItem('users', JSON.stringify(allUsers));
+    }
+
+    function updateProgress() {
+        const progressPercent = (visitedSections.size / totalSections) * 100;
+        document.querySelector('.progress-fill').style.width = progressPercent + '%';
+        document.querySelector('.progress-text').textContent = 
+            `Progress: ${Math.round(progressPercent)}% (${visitedSections.size}/${totalSections} sections)`;
+        saveProgress(); // Save progress after each update
+
+        // Check if lesson was just completed (100%) and show popup
+        if (progressPercent === 100 && visitedSections.size === totalSections) {
+            const currentUser = localStorage.getItem('username');
+            let allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const lastProgress = allUsers[currentUser]?.['cpp_lesson1_last_progress'] || '0';
+            if (parseFloat(lastProgress) < 100) {
+                showCompletionPopup();
+            }
+            allUsers[currentUser]['cpp_lesson1_last_progress'] = '100';
+            localStorage.setItem('users', JSON.stringify(allUsers));
+        }
+    }
+
+    // Load progress when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProgress();
+      showSection('intro');
+    });
+
+    function showSection(sectionId) {
+      // Hide all sections first
+      document.querySelectorAll('section').forEach(section => {
+        section.style.display = 'none';
+        section.classList.remove('active');
+      });
+
+      // Show the target section
+      const targetSection = document.getElementById(sectionId);
+      if (targetSection) {
+        targetSection.style.display = 'block';
+        targetSection.classList.add('active');
+        
+        // Update sidebar active state
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+          item.classList.remove('active');
+          if (item.getAttribute('href') === '#' + sectionId) {
+            item.classList.add('active');
+          }
+        });
+
+        // If this section has subsections, show the first one
+        const subsectionNav = targetSection.querySelector('.subsection-nav');
+        if (subsectionNav) {
+          const firstButton = subsectionNav.querySelector('button');
+          if (firstButton) {
+            const onclickAttr = firstButton.getAttribute('onclick');
+            const match = onclickAttr.match(/showSubsection\('([^']+)',\s*'([^']+)'\)/);
+            if (match) {
+              showSubsection(match[1], match[2]);
+            }
+          }
+        }
+
+        visitedSections.add(sectionId);
+        updateProgress();
+      }
+    }
+
+    function showSubsection(sectionId, subsectionId) {
+        const clickSound = document.getElementById('clckSound');
+        if (clickSound) {
+            clickSound.currentTime = 0;
+            clickSound.play();
+        }
+
+        const section = document.getElementById(sectionId);
+        if (section) {
+            // Hide all subsections in this section
+            section.querySelectorAll('.subsection').forEach(sub => {
+                sub.style.display = 'none';
+                sub.classList.remove('active');
+            });
+            
+            // Show the selected subsection
+            const subsection = document.getElementById(subsectionId);
+            if (subsection) {
+                subsection.style.display = 'block';
+                subsection.classList.add('active');
+            }
+
+            // Update button states
+            section.querySelectorAll('.subsection-nav button').forEach(button => {
+                button.classList.remove('active');
+            });
+            const activeButton = section.querySelector(`button[onclick*="${subsectionId}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
+    }
+  </script>
+</head>
+<body>
+  <audio id="clickSound" src="../../music/click_sound.mp3" preload="auto"></audio>
+  <audio autoplay loop hidden>
+    <source src="../../music/reading_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="window-container">
+    <div class="window-titlebar">
+      <div class="window-title">C++ Tutorial Part 1 - C0D3G0</div>
+      <div class="window-buttons">
+        <div class="window-button" onclick="playClickAndGo('../../pages/codego_learningpage.html')">✕</div>
+      </div>
+    </div>
+
+    <div class="window-content">
+      <div class="sidebar">
+        <a href="#intro" class="sidebar-item active" onclick="showSection('intro')">C++ Intro</a>
+        <a href="#syntax" class="sidebar-item" onclick="showSection('syntax')">C++ Syntax</a>
+        <a href="#output" class="sidebar-item" onclick="showSection('output')">C++ Output</a>
+        <a href="#comments" class="sidebar-item" onclick="showSection('comments')">C++ Comments</a>
+        <a href="#variables" class="sidebar-item" onclick="showSection('variables')">C++ Variables</a>
+        <a href="#user-input" class="sidebar-item" onclick="showSection('user-input')">C++ User Input</a>
+        <a href="#data-types" class="sidebar-item" onclick="showSection('data-types')">C++ Data Types</a>
+        <a href="#operators" class="sidebar-item" onclick="showSection('operators')">C++ Operators</a>
+        <a href="#cpp_strings" class="sidebar-item" onclick="showSection('cpp_strings')">C++ Strings</a>
+        <a href="#math" class="sidebar-item" onclick="showSection('math')">C++ Math</a>
+        <a href="#booleans" class="sidebar-item" onclick="showSection('booleans')">C++ Booleans</a>
+      </div>
+
+      <div class="main-content">
+        <section id="intro" class="active">
+          <h1>Introduction to C++</h1>
+          <p>C++ is a powerful, general-purpose programming language created by Bjarne Stroustrup as an extension of the C programming language. It was first released in 1985 and has since become one of the most widely used programming languages.</p>
+          
+          <h2>Why Use C++?</h2>
+          <ul>
+            <li>High performance and efficiency</li>
+            <li>Rich standard library</li>
+            <li>Object-oriented programming support</li>
+            <li>Platform independence</li>
+            <li>Large community and extensive resources</li>
+            <li>Direct hardware manipulation capabilities</li>
+          </ul>
+
+          <h2>Get Started</h2>
+          <p>Here's your first C++ program:</p>
+          <code>
+// Your First C++ Program
+#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello, World!" << endl;
+    return 0;
+}</code>
+
+          <div class="example-box">
+            <h3>Real-World Applications</h3>
+            <p>C++ is used in various domains:</p>
+            <ul>
+              <li>Game Development: Many game engines (Unreal Engine, Unity) use C++</li>
+              <li>Operating Systems: Windows, parts of macOS and Linux</li>
+              <li>Web Browsers: Chrome, Firefox</li>
+              <li>Database Systems: MySQL, MongoDB</li>
+              <li>Embedded Systems: IoT devices, automotive software</li>
+            </ul>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise</h3>
+            <p>Modify the Hello World program to print your name:</p>
+            <code>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Change "Your Name" to your actual name
+    cout << "Hello, I am Your Name!" << endl;
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="syntax">
+          <h1>C++ Syntax</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('syntax', 'basic-syntax')" class="active">Syntax</button>
+              <button onclick="showSubsection('syntax', 'statements')">Statements</button>
+          </div>
+
+          <div id="basic-syntax" class="subsection active">
+              <h2>Basic Syntax</h2>
+              <p>C++ syntax includes several key elements that form the structure of a program:</p>
+
+              <h3>Program Structure</h3>
+              <code>
+#include <iostream>   // Header file inclusion
+using namespace std;  // Using directive
+
+int main() {         // Main function
+    // Program code goes here
+    return 0;        // Return statement
+}</code>
+
+              <h3>Essential Elements</h3>
+              <ul>
+                <li>Header Files (#include statements)</li>
+                <li>Main Function (entry point)</li>
+                <li>Namespaces</li>
+                <li>Curly Braces { } for code blocks</li>
+                <li>Semicolons ; to end statements</li>
+              </ul>
+
+              <div class="example-box">
+                <h3>Common Syntax Rules</h3>
+                <ul>
+                  <li>C++ is case-sensitive</li>
+                  <li>Each statement must end with a semicolon</li>
+                  <li>Code blocks are defined by curly braces</li>
+                  <li>Comments can be single-line (//) or multi-line (/* */)</li>
+                  <li>Whitespace is ignored by the compiler</li>
+                </ul>
+              </div>
+
+              <h3>Example Program</h3>
+              <code>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Variable declaration
+    int number = 42;
+    
+    // Output statement
+    cout << "The number is: " << number << endl;
+    
+    /* This is a multi-line comment
+       It can span multiple lines */
+    
+    return 0;
+}</code>
+          </div>
+
+          <div id="statements" class="subsection">
+              <h2>C++ Statements</h2>
+              <p>Statements are instructions that tell the computer what to do. Each statement in C++ must end with a semicolon.</p>
+
+              <h3>Types of Statements</h3>
+              <code>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Declaration statement
+    int age;
+    
+    // Assignment statement
+    age = 25;
+    
+    // Declaration and assignment in one statement
+    string name = "John";
+    
+    // Output statement
+    cout << "Name: " << name << endl;
+    
+    // Input statement
+    int number;
+    cout << "Enter a number: ";
+    cin >> number;
+    
+    // Expression statement
+    age = age + 1;
+    
+    // Function call statement
+    printf("Hello\n");
+    
+    return 0;  // Return statement
+}</code>
+
+              <div class="example-box">
+                <h3>Statement Categories</h3>
+                <ul>
+                  <li>Declaration statements</li>
+                  <li>Assignment statements</li>
+                  <li>Input/Output statements</li>
+                  <li>Expression statements</li>
+                  <li>Control flow statements</li>
+                  <li>Function calls</li>
+                  <li>Compound statements (blocks)</li>
+                </ul>
+              </div>
+
+              <div class="practice-exercise">
+                <h3>Practice Exercise</h3>
+                <p>Create a program that uses different types of statements:</p>
+                <code>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Declare variables
+    string name;
+    int age;
+    
+    // Get user input
+    cout << "Enter your name: ";
+    getline(cin, name);
+    
+    cout << "Enter your age: ";
+    cin >> age;
+    
+    // Process and output
+    age = age + 1;  // Expression statement
+    
+    cout << "Next year, " << name 
+         << " will be " << age 
+         << " years old." << endl;
+    
+    return 0;
+}</code>
+              </div>
+          </div>
+        </section>
+
+        <section id="output">
+          <h1>C++ Output</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('output', 'print-text')" class="active">Print Text</button>
+              <button onclick="showSubsection('output', 'print-numbers')">Print Numbers</button>
+              <button onclick="showSubsection('output', 'new-lines')">New Lines</button>
+          </div>
+
+          <div id="print-text" class="subsection active">
+              <h2>Print Text</h2>
+              <p>In C++, we use cout to print text to the console. Text must be enclosed in double quotes.</p>
+
+              <code>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Print simple text
+    cout << "Hello World!";
+    
+    // Print multiple text segments
+    cout << "Hello" << " " << "World!";
+    
+    // Print text with quotes
+    cout << "He said \"Hello!\"";
+    
+    // Print special characters
+    cout << "This is a tab:\t and this is after the tab";
+    
+    return 0;
+}</code>
+
+              <div class="example-box">
+                <h3>Text Formatting Tips</h3>
+                <ul>
+                  <li>Use \" to print double quotes</li>
+                  <li>Use \t for tab space</li>
+                  <li>Use << to combine multiple text segments</li>
+                  <li>Text must be in double quotes (")</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="print-numbers" class="subsection">
+              <h2>Print Numbers</h2>
+              <p>C++ can print both integers and decimal numbers directly using cout.</p>
+
+              <code>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Print integers
+    cout << 42 << endl;
+    
+    // Print decimal numbers
+    cout << 3.14159 << endl;
+    
+    // Print calculations
+    cout << 5 + 3 << endl;
+    
+    // Print numbers with text
+    cout << "The answer is: " << 42 << endl;
+    
+    // Print multiple numbers
+    cout << "Sum: " << 5 << " + " << 3 << " = " << 5 + 3 << endl;
+    
+    return 0;
+}</code>
+
+              <div class="example-box">
+                <h3>Number Formatting</h3>
+                <code>
+#include <iomanip>
+
+double value = 3.14159;
+stringstream ss;
+ss << fixed << setprecision(2) << value;
+string formatted = ss.str();  // "3.14"</code>
+              </div>
+          </div>
+
+          <div id="new-lines" class="subsection">
+              <h2>New Lines</h2>
+              <p>There are multiple ways to create new lines in C++ output.</p>
+
+              <code>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Using endl
+    cout << "Line 1" << endl;
+    cout << "Line 2" << endl;
+    
+    // Using \n
+    cout << "Line 1\nLine 2\n";
+    
+    // Using multiple endl
+    cout << "Line 1" << endl << "Line 2" << endl;
+    
+    // Combining methods
+    cout << "Line 1\n" << "Line 2" << endl;
+    
+    return 0;
+}</code>
+
+              <div class="example-box">
+                <h3>endl vs. \n</h3>
+                <ul>
+                  <li>endl flushes the output buffer</li>
+                  <li>\n is more efficient for multiple lines</li>
+                  <li>endl ensures immediate output</li>
+                  <li>Use \n for better performance in loops</li>
+                </ul>
+              </div>
+          </div>
+        </section>
+
+        <section id="comments">
+          <h1>C++ Comments</h1>
+          <p>Comments are used to explain code and make it more readable. They are ignored by the compiler.</p>
+
+          <h2>Types of Comments</h2>
+          <code>
+// This is a single-line comment
+
+/* This is a multi-line comment
+   It can span across multiple lines
+   Very useful for longer explanations */
+
+// You can also comment out code
+// int x = 5;  // This line won't execute
+
+/* Multiple line comment can be used to
+   comment out multiple lines of code:
+   int x = 5;
+   int y = 10;
+   int sum = x + y; */</code>
+
+          <div class="example-box">
+            <h3>Good Commenting Practices</h3>
+            <code>
+// Good commenting example
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Initialize variables
+    int score = 0;    // Holds the player's score
+    bool isGameOver = false;  // Game state flag
+    
+    /* Main game loop
+       Continues until player loses or
+       reaches maximum score */
+    while (!isGameOver) {
+        // Process player input
+        score += 10;  // Increment score
+        
+        // Check win condition
+        if (score >= 100) {
+            isGameOver = true;
+        }
+    }
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="variables">
+          <h1>C++ Variables</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('variables', 'declare-vars')" class="active">Declare Variables</button>
+              <button onclick="showSubsection('variables', 'multiple-vars')">Multiple Variables</button>
+              <button onclick="showSubsection('variables', 'identifiers')">Identifiers</button>
+              <button onclick="showSubsection('variables', 'constants')">Constants</button>
+              <button onclick="showSubsection('variables', 'real-life')">Real-life Examples</button>
+          </div>
+
+          <div id="declare-vars" class="subsection active">
+              <h2>Declare Variables</h2>
+              <p>Variables must be declared with a type before they can be used.</p>
+
+              <code>
+// Basic variable declaration
+int age;
+double price;
+char grade;
+string name;
+
+// Declaration with initialization
+int score = 95;
+double temperature = 98.6;
+char letter = 'A';
+string message = "Hello";
+
+// Declare and initialize later
+int count;
+count = 10;  // Initialize after declaration
+
+// Change value after initialization
+int x = 5;
+x = 10;  // Value changed to 10</code>
+
+              <div class="example-box">
+                <h3>Variable Declaration Rules</h3>
+                <ul>
+                  <li>Must declare before using</li>
+                  <li>Can initialize at declaration or later</li>
+                  <li>Type cannot be changed after declaration</li>
+                  <li>Can change value any time</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="multiple-vars" class="subsection">
+              <h2>Multiple Variables</h2>
+              <p>C++ allows declaring multiple variables in different ways.</p>
+
+              <code>
+// Declare multiple variables of same type
+int x, y, z;
+
+// Declare and initialize multiple variables
+int a = 1, b = 2, c = 3;
+
+// Multiple variables, different values
+double price = 9.99, 
+       tax = 0.08, 
+       total = 10.79;
+
+// Same value for multiple variables
+int i = j = k = 0;  // All set to 0
+
+// Different types on separate lines
+int count = 0;
+double average = 0.0;
+string name = "John";</code>
+
+              <div class="example-box">
+                <h3>Best Practices</h3>
+                <ul>
+                  <li>Declare variables close to their use</li>
+                  <li>Initialize variables when declaring</li>
+                  <li>One variable per line for better readability</li>
+                  <li>Use meaningful names</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="identifiers" class="subsection">
+              <h2>Identifiers</h2>
+              <p>Identifiers are names given to variables, functions, classes, etc.</p>
+
+              <code>
+// Valid identifiers
+int age;
+int _age;
+int Age;
+int age1;
+int my_age;
+int myAge;
+
+// Invalid identifiers
+int 1age;      // Cannot start with number
+int my age;    // No spaces allowed
+int my-age;    // No hyphens allowed
+int class;     // Cannot use keywords
+
+// Common naming conventions
+int studentAge;     // Camel case
+int student_age;    // Snake case
+int StudentAge;     // Pascal case
+int iAge;          // Hungarian notation</code>
+
+              <div class="example-box">
+                <h3>Identifier Rules</h3>
+                <ul>
+                  <li>Must start with letter or underscore</li>
+                  <li>Can contain letters, numbers, underscores</li>
+                  <li>Case-sensitive</li>
+                  <li>No keywords allowed</li>
+                  <li>No spaces or special characters</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="constants" class="subsection">
+              <h2>Constants</h2>
+              <p>Constants are variables whose values cannot be modified after initialization.</p>
+
+              <code>
+// Using const keyword
+const int MAX_SCORE = 100;
+const double PI = 3.14159;
+const char GRADE_A = 'A';
+const string ERROR_MSG = "Invalid input";
+
+// Using #define (preprocessor constant)
+#define MAX_PLAYERS 10
+#define GAME_NAME "Adventure"
+
+// Constant expressions
+const int MINUTES_PER_HOUR = 60;
+const int HOURS_PER_DAY = 24;
+const int MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
+
+// Constants in functions
+void printMax() {
+    const int MAX = 100;  // Local constant
+    cout << "Maximum value: " << MAX << endl;
+}</code>
+
+              <div class="example-box">
+                <h3>When to Use Constants</h3>
+                <ul>
+                  <li>Mathematical constants (PI)</li>
+                  <li>Array sizes</li>
+                  <li>Configuration values</li>
+                  <li>Maximum/minimum limits</li>
+                  <li>Error messages</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="real-life" class="subsection">
+              <h2>Real-life Examples</h2>
+              <p>Here are some practical examples of using variables in real programs.</p>
+
+              <code>
+// Student Management System
+string studentName = "John Smith";
+int studentId = 12345;
+double gpa = 3.75;
+bool isEnrolled = true;
+char grade = 'A';
+
+// Banking Application
+double accountBalance = 1000.50;
+const double INTEREST_RATE = 0.025;
+string accountHolder = "Jane Doe";
+const int MIN_BALANCE = 100;
+
+// Game Score System
+int playerScore = 0;
+const int MAX_LEVEL = 10;
+int currentLevel = 1;
+bool gameOver = false;
+string playerName = "Player1";
+
+// E-commerce Cart
+double itemPrice = 29.99;
+int quantity = 2;
+const double TAX_RATE = 0.08;
+double totalPrice = itemPrice * quantity * (1 + TAX_RATE);
+bool inStock = true;</code>
+
+              <div class="practice-exercise">
+                <h3>Practice Exercise</h3>
+                <p>Create a temperature conversion program:</p>
+                <code>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Constants
+    const double FREEZING_POINT = 32.0;
+    const double CONVERSION_FACTOR = 5.0/9.0;
+    
+    // Variables
+    double fahrenheit, celsius;
+    
+    // Get input
+    cout << "Enter temperature in Fahrenheit: ";
+    cin >> fahrenheit;
+    
+    // Convert and display
+    celsius = (fahrenheit - FREEZING_POINT) * CONVERSION_FACTOR;
+    cout << fahrenheit << "°F = " << celsius << "°C" << endl;
+    
+    return 0;
+}</code>
+              </div>
+          </div>
+        </section>
+
+        <section id="user-input">
+          <h1>C++ User Input</h1>
+          <p>In C++, we use cin to get input from the user. The input operator >> is used to store the input in variables.</p>
+
+          <code>#include <iostream>
+using namespace std;
+
+int main() {
+    // Get integer input
+    int number;
+    cout << "Enter a number: ";
+    cin >> number;
+    
+    // Get string input
+    string name;
+    cout << "Enter your name: ";
+    cin >> name;
+    
+    // Display the input
+    cout << "Hello " << name << "! ";
+    cout << "You entered: " << number << endl;
+    
+    return 0;
+}</code>
+
+          <div class="example-box">
+            <h3>Input Basics</h3>
+            <ul>
+              <li>cin reads input from keyboard</li>
+              <li>Use >> operator with cin</li>
+              <li>Input is stored in variables</li>
+              <li>cin stops at whitespace for strings</li>
+              <li>Use getline() for reading full lines of text</li>
+              <li>Clear input buffer when mixing cin >> and getline()</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <h3>Reading Full Lines</h3>
+            <code>#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string fullName;
+    cout << "Enter your full name: ";
+    cin.ignore();  // Clear buffer if needed
+    getline(cin, fullName);
+    cout << "Hello, " << fullName << "!" << endl;
+    return 0;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Input Validation</h3>
+            <code>#include <iostream>
+using namespace std;
+
+int main() {
+    int age;
+    bool validInput = false;
+    
+    do {
+        cout << "Enter your age (0-120): ";
+        cin >> age;
+        
+        if(cin.fail() || age < 0 || age > 120) {
+            cout << "Invalid input! Please try again.\n";
+            cin.clear();  // Clear error flags
+            cin.ignore(1000, '\n');  // Clear input buffer
+        } else {
+            validInput = true;
+        }
+    } while(!validInput);
+    
+    cout << "Valid age entered: " << age << endl;
+    return 0;
+}</code>
+          </div>
+
+          <div class="example-box">
+            <h3>Real-life Example: Simple Calculator</h3>
+            <code>#include <iostream>
+using namespace std;
+
+int main() {
+    double num1, num2;
+    char operation;
+    
+    cout << "Enter first number: ";
+    cin >> num1;
+    
+    cout << "Enter operation (+, -, *, /): ";
+    cin >> operation;
+    
+    cout << "Enter second number: ";
+    cin >> num2;
+    
+    switch(operation) {
+        case '+':
+            cout << "Result: " << num1 + num2;
+            break;
+        case '-':
+            cout << "Result: " << num1 - num2;
+            break;
+        case '*':
+            cout << "Result: " << num1 * num2;
+            break;
+        case '/':
+            if(num2 != 0)
+                cout << "Result: " << num1 / num2;
+            else
+                cout << "Error: Division by zero!";
+            break;
+        default:
+            cout << "Invalid operation!";
+    }
+    
+    return 0;
+}</code>
+          </div>
+
+          <div class="practice-exercise">
+            <h3>Practice Exercise: User Registration</h3>
+            <code>#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string username, password;
+    int age;
+    
+    cout << "=== User Registration ===\n";
+    
+    // Get username
+    do {
+        cout << "Enter username (min 3 chars): ";
+        getline(cin, username);
+    } while(username.length() < 3);
+    
+    // Get password
+    do {
+        cout << "Enter password (min 6 chars): ";
+        getline(cin, password);
+    } while(password.length() < 6);
+    
+    // Get age with validation
+    do {
+        cout << "Enter age (18-100): ";
+        cin >> age;
+    } while(age < 18 || age > 100);
+    
+    cout << "\nRegistration Successful!\n";
+    cout << "Welcome, " << username << "!\n";
+    
+    return 0;
+}</code>
+          </div>
+        </section>
+
+        <section id="data-types">
+          <h1>C++ Data Types</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('data-types', 'basic-types')" class="active">Basic Data Types</button>
+              <button onclick="showSubsection('data-types', 'numbers')">Numbers</button>
+              <button onclick="showSubsection('data-types', 'sub-booleans')">Booleans</button>
+              <button onclick="showSubsection('data-types', 'characters')">Characters</button>
+              <button onclick="showSubsection('data-types', 'strings')">Strings</button>
+              <button onclick="showSubsection('data-types', 'auto')">The auto Keyword</button>
+              <button onclick="showSubsection('data-types', 'examples')">Real-Life Examples</button>
+          </div>
+
+          <div id="basic-types" class="subsection active">
+              <h2>Basic Data Types</h2>
+              <p>C++ has several fundamental data types that serve as the building blocks for data manipulation.</p>
+
+              <div class="example-box">
+                <h3>Overview of Basic Types</h3>
+                <ul>
+                  <li>Numbers (int, float, double)</li>
+                  <li>Characters (char)</li>
+                  <li>Booleans (bool)</li>
+                  <li>Void (no type)</li>
+                </ul>
+              </div>
+
+              <code>// Basic type declarations
+int age;              // Integer type
+double price;         // Double-precision floating point
+char grade;           // Single character
+bool isActive;        // Boolean type
+void doSomething();   // No return type</code>
+
+              <div class="example-box">
+                <h3>Memory Sizes</h3>
+                <code>// Size of basic types
+cout << "Size of int: " << sizeof(int) << " bytes\n";
+cout << "Size of double: " << sizeof(double) << " bytes\n";
+cout << "Size of char: " << sizeof(char) << " bytes\n";
+cout << "Size of bool: " << sizeof(bool) << " bytes\n";</code>
+              </div>
+          </div>
+
+          <div id="numbers" class="subsection">
+              <h2>Numbers</h2>
+              <p>C++ provides several types for storing numeric values, each with different sizes and precision.</p>
+
+              <code>// Integer Types
+short shortNum = 32767;            // -32,768 to 32,767
+int normalNum = 2147483647;        // -2,147,483,648 to 2,147,483,647
+long longNum = 2147483647L;        // At least 32 bits
+long long longerNum = 9223372036854775807LL;  // At least 64 bits
+
+// Unsigned Integers (no negative values)
+unsigned short ushortNum = 65535;  // 0 to 65,535
+unsigned int uintNum = 4294967295; // 0 to 4,294,967,295
+
+// Floating-point Types
+float floatNum = 3.14159f;         // ~7 decimal digits
+double doubleNum = 3.14159265359;  // ~15 decimal digits
+long double longDouble = 3.14159265359L;  // More precision</code>
+
+              <div class="example-box">
+                <h3>Number Properties</h3>
+                <ul>
+                  <li>Integers are whole numbers</li>
+                  <li>Floating-point numbers have decimal points</li>
+                  <li>Unsigned types can't store negative values</li>
+                  <li>Size affects range and precision</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="sub-booleans" class="subsection">
+              <h2>Booleans</h2>
+              <p>Boolean type (bool) can hold only two values: true or false.</p>
+
+              <code>// Boolean declarations
+bool isTrue = true;
+bool isFalse = false;
+
+// Boolean from conditions
+bool isGreater = 5 > 3;    // true
+bool isEqual = 5 == 3;     // false
+
+// Boolean in conditions
+if (isTrue) {
+    cout << "This is true!" << endl;
+}
+
+// Boolean operators
+bool andResult = true && false;  // false
+bool orResult = true || false;   // true
+bool notResult = !true;          // false</code>
+
+              <div class="example-box">
+                <h3>Boolean Usage</h3>
+                <ul>
+                  <li>Control flow decisions</li>
+                  <li>Flag variables</li>
+                  <li>Status indicators</li>
+                  <li>Logical operations</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="characters" class="subsection">
+              <h2>Characters</h2>
+              <p>Character types store single characters and support various character encodings.</p>
+
+              <code>// Basic character
+char letter = 'A';
+char digit = '5';
+char symbol = '@';
+
+// Special characters
+char newline = '\n';
+char tab = '\t';
+char backslash = '\\';
+
+// Wide characters
+wchar_t wideLetter = L'Ω';
+char16_t unicode16 = u'⭐';
+char32_t unicode32 = U'🌟';
+
+// Character operations
+char lowercase = tolower('A');  // 'a'
+char uppercase = toupper('a');  // 'A'
+bool isDigit = isdigit('5');   // true</code>
+
+              <div class="example-box">
+                <h3>Character Types</h3>
+                <ul>
+                  <li>char: Basic ASCII characters</li>
+                  <li>wchar_t: Wide characters</li>
+                  <li>char16_t: 16-bit Unicode</li>
+                  <li>char32_t: 32-bit Unicode</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="strings" class="subsection">
+              <h2>Strings</h2>
+              <p>Strings are sequences of characters, implemented using the string class.</p>
+
+              <code>// String declarations
+string name = "John";
+string empty = "";
+string withSpaces = "Hello World";
+
+// String operations
+string firstName = "John";
+string lastName = "Doe";
+string fullName = firstName + " " + lastName;
+
+// String methods
+string text = "Hello";
+int length = text.length();          // 5
+string sub = text.substr(0, 2);      // "He"
+char first = text[0];                // 'H'
+text.append(" World");               // "Hello World"
+
+// String input/output
+string input;
+getline(cin, input);                 // Read full line
+cout << "You entered: " << input << endl;</code>
+
+              <div class="example-box">
+                <h3>String Features</h3>
+                <ul>
+                  <li>Dynamic size</li>
+                  <li>Rich set of methods</li>
+                  <li>Easy concatenation</li>
+                  <li>Safe memory management</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="auto" class="subsection">
+              <h2>The auto Keyword</h2>
+              <p>The auto keyword allows the compiler to automatically deduce the type of a variable.</p>
+
+              <code>// Basic auto usage
+auto number = 42;          // int
+auto decimal = 3.14;       // double
+auto text = "Hello";       // const char*
+auto name = string("John"); // string
+auto isValid = true;       // bool
+
+// Auto with expressions
+auto sum = 5 + 3.14;       // double
+auto result = sum * 2;     // double
+
+// Auto with modern C++ features
+auto lambda = [](int x) { return x * 2; };
+auto [x, y] = std::make_pair(1, 2);  // Structured binding
+
+// Auto in loops
+vector<int> numbers = {1, 2, 3, 4, 5};
+for (const auto& num : numbers) {
+    cout << num << endl;
+}</code>
+
+              <div class="example-box">
+                <h3>When to Use auto</h3>
+                <ul>
+                  <li>Complex type declarations</li>
+                  <li>Template programming</li>
+                  <li>Lambda expressions</li>
+                  <li>Range-based for loops</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="examples" class="subsection">
+              <h2>Real-Life Examples</h2>
+              <p>Practical examples of using different data types together.</p>
+
+              <div class="example-box">
+                <h3>Student Management System</h3>
+                <code>class Student {
+private:
+    string name;           // Student's name
+    int id;               // Student ID
+    double gpa;           // Grade Point Average
+    bool isEnrolled;      // Enrollment status
+    char grade;           // Current grade
+    
+public:
+    Student(string n, int i) : 
+        name(n), id(i), gpa(0.0), 
+        isEnrolled(true), grade('N') {}
+        
+    void updateGrade(double score) {
+        if (score >= 90) grade = 'A';
+        else if (score >= 80) grade = 'B';
+        else if (score >= 70) grade = 'C';
+        else grade = 'F';
+        
+        gpa = score / 25.0;  // Convert to 4.0 scale
+    }
+};</code>
+              </div>
+
+              <div class="example-box">
+                <h3>Shopping Cart System</h3>
+                <code>class Product {
+public:
+    string name;          // Product name
+    double price;         // Product price
+    int quantity;         // Stock quantity
+    bool inStock;         // Stock status
+    
+    double calculateTotal() {
+        const double TAX_RATE = 0.08;  // 8% tax
+        return price * (1 + TAX_RATE);
+    }
+};</code>
+              </div>
+
+              <div class="practice-exercise">
+                <h3>Practice Exercise</h3>
+                <p>Create a temperature conversion program using different data types:</p>
+                <code>int main() {
+    // Constants
+    const double FREEZING_POINT = 32.0;
+    const double CONVERSION_FACTOR = 5.0/9.0;
+    
+    // Variables of different types
+    double fahrenheit;
+    double celsius;
+    char scale;
+    bool isValid;
+    string message;
+    
+    // Get input
+    cout << "Enter temperature in Fahrenheit: ";
+    cin >> fahrenheit;
+    
+    // Convert
+    celsius = (fahrenheit - FREEZING_POINT) * CONVERSION_FACTOR;
+    isValid = celsius > -273.15;  // Check absolute zero
+    
+    // Format output
+    auto formatTemp = [](double temp) {
+        return to_string(int(temp)) + "°";
+    };
+    
+    // Display results
+    if (isValid) {
+        message = formatTemp(fahrenheit) + "F = " + 
+                 formatTemp(celsius) + "C";
+    } else {
+        message = "Temperature below absolute zero!";
+    }
+    
+    cout << message << endl;
+    return 0;
+}</code>
+              </div>
+          </div>
+        </section>
+
+        <section id="operators">
+          <h1>C++ Operators</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('operators', 'arithmetic')" class="active">Arithmetic</button>
+              <button onclick="showSubsection('operators', 'assignment')">Assignment</button>
+              <button onclick="showSubsection('operators', 'comparison')">Comparison</button>
+              <button onclick="showSubsection('operators', 'logical')">Logical</button>
+          </div>
+
+          <div id="arithmetic" class="subsection active">
+              <h2>Arithmetic Operators</h2>
+              <p>Arithmetic operators perform mathematical operations on numbers.</p>
+
+              <code>
+// Basic arithmetic operators
+int a = 10, b = 3;
+
+// Addition
+int sum = a + b;        // 13
+
+// Subtraction
+int difference = a - b;  // 7
+
+// Multiplication
+int product = a * b;    // 30
+
+// Division
+int quotient = a / b;   // 3
+double decimalQuotient = 10.0 / 3.0;  // 3.333...
+
+// Modulus (remainder)
+int remainder = a % b;  // 1
+
+// Increment and decrement
+int x = 5;
+x++;  // x is now 6 (post-increment)
+++x;  // x is now 7 (pre-increment)
+x--;  // x is now 6 (post-decrement)
+--x;  // x is now 5 (pre-decrement)</code>
+
+              <div class="example-box">
+                <h3>Order of Operations</h3>
+                <code>
+// Order of operations (PEMDAS)
+int result1 = 10 + 5 * 2;     // 20 (not 30)
+int result2 = (10 + 5) * 2;   // 30
+int result3 = 20 - 10 + 5;    // 15 (left to right)
+int result4 = 10 * (5 + 3);   // 80</code>
+              </div>
+          </div>
+
+          <div id="assignment" class="subsection">
+              <h2>Assignment Operators</h2>
+              <p>Assignment operators are used to assign values to variables.</p>
+
+              <code>
+// Simple assignment
+int x = 5;
+
+// Compound assignment operators
+x += 3;    // Same as: x = x + 3
+x -= 2;    // Same as: x = x - 2
+x *= 4;    // Same as: x = x * 4
+x /= 2;    // Same as: x = x / 2
+x %= 3;    // Same as: x = x % 3
+
+// Multiple assignments
+int a, b, c;
+a = b = c = 0;  // All variables set to 0
+
+// Combined with arithmetic
+int num = 10;
+num += 5 * 2;  // Same as: num = num + (5 * 2)</code>
+
+              <div class="example-box">
+                <h3>Assignment Tips</h3>
+                <ul>
+                  <li>Always initialize variables when declared</li>
+                  <li>Use compound assignments for shorter code</li>
+                  <li>Be careful with multiple assignments</li>
+                  <li>Remember operator precedence</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="comparison" class="subsection">
+              <h2>Comparison Operators</h2>
+              <p>Comparison operators compare two values and return a boolean result.</p>
+
+              <code>
+int a = 5, b = 10;
+
+// Equal to
+bool isEqual = (a == b);      // false
+
+// Not equal to
+bool notEqual = (a != b);     // true
+
+// Greater than
+bool greater = (a > b);       // false
+
+// Less than
+bool less = (a < b);          // true
+
+// Greater than or equal to
+bool greaterEqual = (a >= b); // false
+
+// Less than or equal to
+bool lessEqual = (a <= b);    // true
+
+// Comparing different types
+int num = 5;
+double decimal = 5.0;
+bool isEqualTypes = (num == decimal);  // true</code>
+
+              <div class="example-box">
+                <h3>Comparison Best Practices</h3>
+                <ul>
+                  <li>Use parentheses for clarity</li>
+                  <li>Be careful comparing floating-point numbers</li>
+                  <li>Consider type conversion effects</li>
+                  <li>Use appropriate types for comparison</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="logical" class="subsection">
+              <h2>Logical Operators</h2>
+              <p>Logical operators perform logical operations on boolean values.</p>
+
+              <code>
+// Basic logical operations
+bool a = true, b = false;
+
+// AND operator
+bool andResult = a && b;    // false
+
+// OR operator
+bool orResult = a || b;     // true
+
+// NOT operator
+bool notResult = !a;        // false
+
+// Complex conditions
+int age = 25;
+bool hasID = true;
+bool canVote = age >= 18 && hasID;
+
+// Short-circuit evaluation
+bool isValid = false;
+bool result = isValid && someFunction();    // someFunction not called
+bool result2 = true || someFunction();    // someFunction not called</code>
+
+              <div class="example-box">
+                <h3>Logical Operator Tips</h3>
+                <ul>
+                  <li>Use short-circuit evaluation to optimize code</li>
+                  <li>Group complex conditions with parentheses</li>
+                  <li>Keep conditions readable</li>
+                  <li>Consider the evaluation order</li>
+                </ul>
+              </div>
+          </div>
+        </section>
+
+        <section id="cpp_strings">
+          <h1>C++ Strings</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('cpp_strings', 'strings-intro')" class="active">Strings Intro</button>
+              <button onclick="showSubsection('cpp_strings', 'concatenation')">Concatenation</button>
+              <button onclick="showSubsection('cpp_strings', 'numbers-strings')">Numbers and Strings</button>
+              <button onclick="showSubsection('cpp_strings', 'string-length')">String Length</button>
+              <button onclick="showSubsection('cpp_strings', 'access-strings')">Access Strings</button>
+              <button onclick="showSubsection('cpp_strings', 'special-chars')">Special Characters</button>
+              <button onclick="showSubsection('cpp_strings', 'user-input-strings')">User Input Strings</button>
+              <button onclick="showSubsection('cpp_strings', 'omit-namespace')">Omitting Namespace</button>
+              <button onclick="showSubsection('cpp_strings', 'c-style-strings')">C-Style Strings</button>
+          </div>
+
+          <div id="strings-intro" class="subsection active">
+              <h2>Strings Introduction</h2>
+              <p>Strings in C++ are objects that represent sequences of characters.</p>
+
+              <code>
+#include <string>
+using namespace std;
+
+// String declaration
+string greeting = "Hello";
+string message("World");
+
+// Different ways to create strings
+string empty;              // Empty string
+string name = "John";      // Using string literal
+string copy = name;        // Copy of another string
+string combined = greeting + " " + message;  // Combining strings
+
+// String with multiple lines
+string multiline = "This is line 1\n"
+                  "This is line 2\n"
+                  "This is line 3";</code>
+
+              <div class="example-box">
+                <h3>String Features</h3>
+                <ul>
+                  <li>Dynamic size</li>
+                  <li>Rich set of member functions</li>
+                  <li>Automatic memory management</li>
+                  <li>Easy to manipulate</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="concatenation" class="subsection">
+              <h2>String Concatenation</h2>
+              <p>Combining strings together using different methods.</p>
+
+              <code>
+// Using + operator
+string firstName = "John";
+string lastName = "Doe";
+string fullName = firstName + " " + lastName;
+
+// Using += operator
+string text = "Hello";
+text += " ";
+text += "World";
+
+// Using append() method
+string message = "Hello";
+message.append(" ");
+message.append("World");
+
+// Chaining append calls
+string greeting = "Hello";
+greeting.append(" ").append("World");
+
+// Concatenating multiple times
+string repeated = "Ha";
+repeated = repeated + repeated;  // "HaHa"</code>
+
+              <div class="example-box">
+                <h3>Concatenation Tips</h3>
+                <ul>
+                  <li>Use + for simple concatenation</li>
+                  <li>Use append() for better performance with multiple operations</li>
+                  <li>Consider string capacity for large operations</li>
+                  <li>Watch for unnecessary temporary strings</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="numbers-strings" class="subsection">
+              <h2>Numbers and Strings</h2>
+              <p>Converting between numbers and strings.</p>
+
+              <code>
+// Converting numbers to strings
+int num = 42;
+string numStr = to_string(num);
+
+double pi = 3.14159;
+string piStr = to_string(pi);
+
+// Converting strings to numbers
+string numberText = "42";
+int number = stoi(numberText);    // string to int
+
+string decimalText = "3.14159";
+double decimal = stod(decimalText);  // string to double
+
+// Error handling for conversions
+try {
+    string invalid = "abc";
+    int value = stoi(invalid);  // Will throw exception
+} catch (const invalid_argument& e) {
+    cout << "Invalid conversion" << endl;
+}</code>
+
+              <div class="example-box">
+                <h3>Number Formatting</h3>
+                <code>
+#include <iomanip>
+
+double value = 3.14159;
+stringstream ss;
+ss << fixed << setprecision(2) << value;
+string formatted = ss.str();  // "3.14"</code>
+              </div>
+          </div>
+
+          <div id="string-length" class="subsection">
+              <h2>String Length</h2>
+              <p>Different ways to get and work with string length.</p>
+
+              <code>
+string text = "Hello World";
+
+// Using length() method
+int len1 = text.length();    // 11
+
+// Using size() method
+int len2 = text.size();      // 11
+
+// Checking if string is empty
+bool isEmpty = text.empty();  // false
+
+// String capacity
+size_t cap = text.capacity();
+text.shrink_to_fit();        // Reduce capacity to fit content
+
+// Reserving space
+string large;
+large.reserve(100);          // Reserve space for 100 chars
+
+// Clear string content
+text.clear();               // String is now empty
+bool isNowEmpty = text.empty();  // true</code>
+
+              <div class="example-box">
+                <h3>Length vs Size</h3>
+                <ul>
+                  <li>length() and size() are identical</li>
+                  <li>Both return number of characters</li>
+                  <li>capacity() may be larger than length()</li>
+                  <li>empty() is more efficient than length() == 0</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="access-strings" class="subsection">
+              <h2>Access Strings</h2>
+              <p>Different ways to access and modify string characters.</p>
+
+              <code>
+string text = "Hello";
+
+// Using array index
+char first = text[0];      // 'H'
+char last = text[4];       // 'o'
+
+// Using at() method (safer, checks bounds)
+char second = text.at(1);  // 'e'
+
+// Modifying characters
+text[0] = 'h';            // "hello"
+text.at(4) = 'O';         // "hellO"
+
+// First and last characters
+char front = text.front(); // First character
+char back = text.back();   // Last character
+
+// Substring
+string part = text.substr(0, 2);    // "he"
+string end = text.substr(3);        // "lO"
+
+// Finding characters
+size_t pos = text.find('l');        // Position of 'l'
+bool contains = text.find('x') != string::npos;  // Check if contains 'x'</code>
+
+              <div class="example-box">
+                <h3>Access Safety</h3>
+                <ul>
+                  <li>[] operator doesn't check bounds</li>
+                  <li>at() throws exception for invalid index</li>
+                  <li>Always check string length before accessing</li>
+                  <li>Use find() to safely search for characters</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="special-chars" class="subsection">
+              <h2>Special Characters</h2>
+              <p>Working with special and escape characters in strings.</p>
+
+              <code>
+// Escape sequences
+string newline = "Line 1\nLine 2";    // Line break
+string tab = "Column1\tColumn2";      // Tab
+string quote = "He said \"Hello\"";   // Quotes
+string backslash = "C:\\Program Files"; // Backslash
+
+// Special characters
+string heart = "\u2764";     // Unicode heart
+string degree = "Temperature: 20\u00B0C"; // Degree symbol
+string copyright = "\u00A9 2024"; // Copyright symbol
+
+// Raw string literals
+string path = R"(C:\Program Files\MyApp)";
+string regex = R"(\d+\.\d*)";
+
+// Multiple lines with R-prefix
+string multiline = R"(
+    This is line 1
+    This is line 2
+    This is line 3
+)";</code>
+
+              <div class="example-box">
+                <h3>Common Escape Sequences</h3>
+                <ul>
+                  <li>\n - Newline</li>
+                  <li>\t - Tab</li>
+                  <li>\\ - Backslash</li>
+                  <li>\" - Double quote</li>
+                  <li>\' - Single quote</li>
+                  <li>\r - Carriage return</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="user-input-strings" class="subsection">
+              <h2>User Input Strings</h2>
+              <p>Different ways to read string input from users.</p>
+
+              <code>
+#include <string>
+#include <iostream>
+using namespace std;
+
+// Single word input
+string word;
+cout << "Enter a word: ";
+cin >> word;
+
+// Line input
+string line;
+cout << "Enter a line: ";
+cin.ignore();  // Clear buffer
+getline(cin, line);
+
+// Multiple word input with validation
+string name;
+do {
+    cout << "Enter full name: ";
+    getline(cin, name);
+} while (name.empty());
+
+// Reading until specific character
+string text;
+cout << "Enter text (end with #): ";
+getline(cin, text, '#');
+
+// Reading fixed number of characters
+string fixed;
+cout << "Enter 5 characters: ";
+cin.width(6);  // 5 chars + null terminator
+cin >> fixed;</code>
+
+              <div class="example-box">
+                <h3>Input Tips</h3>
+                <ul>
+                  <li>Use cin >> for single words</li>
+                  <li>Use getline() for full lines</li>
+                  <li>Clear buffer before getline()</li>
+                  <li>Always validate input</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="omit-namespace" class="subsection">
+              <h2>Omitting Namespace</h2>
+              <p>Working with strings without using namespace std.</p>
+
+              <code>
+#include <string>
+// Not using namespace std
+
+// String declaration
+std::string name = "John";
+
+// Input/output
+std::cout << "Enter text: ";
+std::string input;
+std::getline(std::cin, input);
+
+// String operations
+std::string text = "Hello";
+text.append(" World");
+
+// Using with other std items
+std::size_t length = text.length();
+std::cout << length << std::endl;
+
+// Multiple std:: uses
+void processString(const std::string& str) {
+    std::string copy = str;
+    std::cout << copy << std::endl;
+}</code>
+
+              <div class="example-box">
+                <h3>Benefits of Omitting Namespace</h3>
+                <ul>
+                  <li>Prevents name conflicts</li>
+                  <li>More explicit code</li>
+                  <li>Better practice for large projects</li>
+                  <li>Clearer dependency tracking</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="c-style-strings" class="subsection">
+              <h2>C-Style Strings</h2>
+              <p>Working with traditional C-style character arrays and strings.</p>
+
+              <code>
+// C-style string declaration
+char str1[] = "Hello";
+const char* str2 = "World";
+
+// String length
+size_t len = strlen(str1);
+
+// String copy
+char dest[20];
+strcpy(dest, str1);
+
+// String concatenation
+strcat(dest, " ");
+strcat(dest, str2);
+
+// String comparison
+int comp = strcmp(str1, str2);
+
+// Converting between string types
+std::string cpp_string = "Hello";
+const char* c_str = cpp_string.c_str();
+
+// Working with character arrays
+char name[50];
+std::cout << "Enter name: ";
+std::cin.getline(name, 50);</code>
+
+              <div class="example-box">
+                <h3>C vs C++ Strings</h3>
+                <ul>
+                  <li>C-style strings are null-terminated</li>
+                  <li>Fixed size vs dynamic size</li>
+                  <li>Manual vs automatic memory management</li>
+                  <li>Less safe but sometimes necessary</li>
+                </ul>
+              </div>
+          </div>
+        </section>
+
+        <section id="math">
+          <h1>C++ Math</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('math', 'basic-math')" class="active">Basic Math</button>
+              <button onclick="showSubsection('math', 'math-functions')">Math Functions</button>
+              <button onclick="showSubsection('math', 'random-numbers')">Random Numbers</button>
+              <button onclick="showSubsection('math', 'math-examples')">Examples</button>
+          </div>
+
+          <div id="basic-math" class="subsection active">
+              <h2>Basic Math</h2>
+              <p>C++ provides various mathematical operations and functions.</p>
+
+              <code>
+#include <cmath>
+
+// Basic arithmetic
+int sum = 5 + 3;          // Addition
+int difference = 10 - 4;  // Subtraction
+int product = 6 * 7;      // Multiplication
+int quotient = 15 / 2;    // Division
+int remainder = 15 % 2;   // Modulus
+
+// Math with decimals
+double decimal = 3.14;
+double power = pow(2.0, 3.0);    // 2³ = 8.0
+double squareRoot = sqrt(16.0);   // √16 = 4.0
+double absolute = abs(-5.5);      // |-5.5| = 5.5
+
+// Rounding
+double number = 3.7;
+int rounded = round(number);      // 4
+int ceiling = ceil(number);       // 4
+int floor = floor(number);        // 3</code>
+
+              <div class="example-box">
+                <h3>Math Constants</h3>
+                <code>
+// Mathematical constants
+const double PI = M_PI;          // 3.14159...
+const double E = M_E;            // 2.71828...
+const double SQRT2 = M_SQRT2;    // √2
+const double INF = INFINITY;     // Infinity</code>
+              </div>
+          </div>
+
+          <div id="math-functions" class="subsection">
+              <h2>Math Functions</h2>
+              <p>Advanced mathematical functions from the cmath library.</p>
+
+              <code>
+// Trigonometric functions
+double angle = 45.0;
+double radians = angle * M_PI / 180.0;
+double sine = sin(radians);
+double cosine = cos(radians);
+double tangent = tan(radians);
+
+// Inverse trigonometric functions
+double arcSine = asin(0.5);
+double arcCosine = acos(0.5);
+double arcTangent = atan(1.0);
+
+// Exponential and logarithmic
+double exp_value = exp(2.0);     // e²
+double log_value = log(10.0);    // Natural log
+double log10_value = log10(100); // Base-10 log
+
+// Power and roots
+double cube = pow(2.0, 3.0);     // 2³
+double cubeRoot = cbrt(27.0);    // ∛27
+double hypotenuse = hypot(3.0, 4.0); // √(3² + 4²)</code>
+
+              <div class="example-box">
+                <h3>Common Math Functions</h3>
+                <ul>
+                  <li>Trigonometric: sin, cos, tan</li>
+                  <li>Inverse trig: asin, acos, atan</li>
+                  <li>Exponential: exp, log, log10</li>
+                  <li>Power: pow, sqrt, cbrt</li>
+                  <li>Rounding: round, ceil, floor</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="random-numbers" class="subsection">
+              <h2>Random Numbers</h2>
+              <p>Generating random numbers in C++.</p>
+
+              <code>
+#include <random>
+#include <ctime>
+
+// Basic random numbers
+srand(time(0));  // Seed with current time
+int random1 = rand();            // 0 to RAND_MAX
+int dice = rand() % 6 + 1;       // 1 to 6
+
+// Modern random number generation
+random_device rd;
+mt19937 gen(rd());  // Mersenne Twister
+
+// Generate integers in range
+uniform_int_distribution<> dis(1, 100);
+int random2 = dis(gen);  // 1 to 100
+
+// Generate floating-point numbers
+uniform_real_distribution<> dis2(0.0, 1.0);
+double random3 = dis2(gen);  // 0.0 to 1.0
+
+// Normal distribution
+normal_distribution<> dis3(0.0, 1.0);
+double random4 = dis3(gen);  // Normal distribution</code>
+
+              <div class="example-box">
+                <h3>Random Number Tips</h3>
+                <ul>
+                  <li>Always seed the generator</li>
+                  <li>Use modern random facilities</li>
+                  <li>Choose appropriate distribution</li>
+                  <li>Consider range and precision</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="math-examples" class="subsection">
+              <h2>Math Examples</h2>
+              <p>Real-world examples using mathematical operations.</p>
+
+              <code>
+// Circle calculations
+class Circle {
+private:
+    double radius;
+    
+public:
+    Circle(double r) : radius(r) {}
+    
+    double area() {
+        return M_PI * pow(radius, 2);
+    }
+    
+    double circumference() {
+        return 2 * M_PI * radius;
+    }
+};
+
+// Vector magnitude
+double vectorMagnitude(double x, double y, double z) {
+    return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+}
+
+// Temperature conversion
+double fahrenheitToCelsius(double f) {
+    return (f - 32.0) * 5.0 / 9.0;
+}
+
+// Financial calculations
+double compoundInterest(double principal, 
+                       double rate, 
+                       int years) {
+    return principal * pow(1 + rate, years);
+}</code>
+
+              <div class="practice-exercise">
+                <h3>Practice Exercise</h3>
+                <p>Create a geometry calculator:</p>
+                <code>
+class GeometryCalculator {
+public:
+    // Triangle
+    static double triangleArea(double base, double height) {
+        return 0.5 * base * height;
+    }
+    
+    // Rectangle
+    static double rectangleArea(double length, double width) {
+        return length * width;
+    }
+    
+    // Circle
+    static double circleArea(double radius) {
+        return M_PI * pow(radius, 2);
+    }
+    
+    // Sphere
+    static double sphereVolume(double radius) {
+        return (4.0/3.0) * M_PI * pow(radius, 3);
+    }
+};</code>
+              </div>
+          </div>
+        </section>
+
+        <section id="booleans">
+          <h1>C++ Booleans</h1>
+          <div class="subsection-nav">
+              <button onclick="showSubsection('booleans', 'bool-values')" class="active">Boolean Values</button>
+              <button onclick="showSubsection('booleans', 'bool-expressions')">Boolean Expressions</button>
+              <button onclick="showSubsection('booleans', 'bool-examples')">Real-life Examples</button>
+          </div>
+
+          <div id="bool-values" class="subsection active">
+              <h2>Boolean Values</h2>
+              <p>Boolean values represent true or false states in C++.</p>
+
+              <code>
+// Basic boolean values
+bool isTrue = true;
+bool isFalse = false;
+
+// Boolean from numbers
+bool fromZero = bool(0);     // false
+bool fromOne = bool(1);      // true
+bool fromNumber = bool(42);  // true (any non-zero number)
+
+// Boolean from pointers
+int* ptr = nullptr;
+bool isNull = (ptr == nullptr);  // true
+
+// Boolean from comparison
+int x = 5, y = 10;
+bool isLess = x < y;         // true
+bool isEqual = x == y;       // false
+
+// Boolean operators
+bool notTrue = !true;        // false
+bool notFalse = !false;      // true</code>
+
+              <div class="example-box">
+                <h3>Boolean Properties</h3>
+                <ul>
+                  <li>Only two possible values: true and false</li>
+                  <li>Size is typically 1 byte</li>
+                  <li>Can be implicitly converted from numbers</li>
+                  <li>Used in conditional statements</li>
+                  <li>Core component of logical operations</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="bool-expressions" class="subsection">
+              <h2>Boolean Expressions</h2>
+              <p>Boolean expressions combine boolean values and operators to create complex conditions.</p>
+
+              <code>
+// Comparison operators
+int age = 25;
+bool isAdult = age >= 18;            // true
+bool isTeenager = age >= 13 && age <= 19;  // false
+
+// Logical operators
+bool hasLicense = true;
+bool canDrive = isAdult && hasLicense;     // true
+
+// Complex conditions
+bool isSunny = true;
+bool isWarm = true;
+bool goodWeather = isSunny && isWarm;      // true
+
+// Short-circuit evaluation
+bool isValid = false;
+bool result = isValid && someFunction();    // someFunction not called
+
+// Conditional statements
+if (isAdult && hasLicense) {
+    cout << "Can drive" << endl;
+}
+
+// Ternary operator
+string status = isAdult ? "Adult" : "Minor";
+
+// Switch with boolean
+switch (isValid) {
+    case true:
+        cout << "Valid" << endl;
+        break;
+    case false:
+        cout << "Invalid" << endl;
+        break;
+}</code>
+
+              <div class="example-box">
+                <h3>Expression Guidelines</h3>
+                <ul>
+                  <li>Use parentheses for clarity</li>
+                  <li>Take advantage of short-circuit evaluation</li>
+                  <li>Keep conditions simple and readable</li>
+                  <li>Use meaningful variable names</li>
+                </ul>
+              </div>
+          </div>
+
+          <div id="bool-examples" class="subsection">
+              <h2>Real-life Examples</h2>
+              <p>Practical examples of using boolean values and expressions in C++ programs.</p>
+
+              <code>
+// User Authentication System
+class User {
+private:
+    bool isLoggedIn;
+    bool isAdmin;
+    bool isEmailVerified;
+    
+public:
+    User() : isLoggedIn(false), isAdmin(false), 
+             isEmailVerified(false) {}
+    
+    bool canAccessAdminPanel() {
+        return isLoggedIn && isAdmin;
+    }
+    
+    bool canPostComments() {
+        return isLoggedIn && isEmailVerified;
+    }
+};
+
+// Form Validation
+class FormValidator {
+public:
+    static bool isValidEmail(const string& email) {
+        bool hasAtSign = email.find('@') != string::npos;
+        bool hasDot = email.find('.') != string::npos;
+        bool hasValidLength = email.length() >= 5;
+        
+        return hasAtSign && hasDot && hasValidLength;
+    }
+    
+    static bool isStrongPassword(const string& password) {
+        bool hasMinLength = password.length() >= 8;
+        bool hasUpperCase = any_of(password.begin(), 
+                                 password.end(), ::isupper);
+        bool hasNumber = any_of(password.begin(), 
+                              password.end(), ::isdigit);
+        
+        return hasMinLength && hasUpperCase && hasNumber;
+    }
+};
+
+// Game State Manager
+class GameState {
+private:
+    bool isPlaying;
+    bool isPaused;
+    bool isGameOver;
+    bool isMuted;
+    
+public:
+    bool canSave() {
+        return isPlaying && !isGameOver;
+    }
+    
+    bool shouldPlaySound() {
+        return isPlaying && !isPaused && !isMuted;
+    }
+    
+    bool canRestart() {
+        return isGameOver || isPaused;
+    }
+};</code>
+
+              <div class="example-box">
+                <h3>Common Use Cases</h3>
+                <ul>
+                  <li>User authentication and permissions</li>
+                  <li>Form validation and data checking</li>
+                  <li>Game state management</li>
+                  <li>Configuration settings</li>
+                  <li>Error handling and status flags</li>
+                </ul>
+              </div>
+
+              <div class="practice-exercise">
+                <h3>Practice Exercise</h3>
+                <p>Create a simple state machine for a traffic light system:</p>
+                <code>
+class TrafficLight {
+private:
+    bool isRed;
+    bool isYellow;
+    bool isGreen;
+    bool isBlinking;
+    bool isPowerOn;
+    
+public:
+    TrafficLight() : isPowerOn(false), isRed(true),
+                     isYellow(false), isGreen(false),
+                     isBlinking(false) {}
+    
+    bool canProceed() {
+        return isPowerOn && isGreen && !isBlinking;
+    }
+    
+    bool shouldStop() {
+        return isPowerOn && (isRed || isBlinking);
+    }
+    
+    bool shouldPrepareToStop() {
+        return isPowerOn && isYellow;
+    }
+    
+    void switchToGreen() {
+        if (isPowerOn && isRed) {
+            isRed = false;
+            isYellow = false;
+            isGreen = true;
+        }
+    }
+};</code>
+              </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      Ready
+    </div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text">Progress: 0% (0/11 sections)</div>
+  </div>
+
+  <button class="next-lesson-btn" onclick="playClickAndGo('lesson2.html')">
+    Next Lesson →
+  </button>
+</body>
+</html> 
